@@ -934,11 +934,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 70791a63-3c94-4f91-a48d-b44ad14fb755
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: FPSSample2
-  organizationId: 
+  projectName: RigTheMap
+  organizationId: superpupstudio
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
