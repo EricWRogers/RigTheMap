@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Gameplay.Leaderboard;
 using Unity.Collections;
 using Unity.Entities;
@@ -232,6 +233,7 @@ namespace Unity.MP_FPS
 
             var projectileSpawnList = new NativeList<ProjectileSpawnData>(Allocator.Temp);
             var vfxSpawnList = new NativeList<VfxSpawnData>(Allocator.Temp);
+            var placementSpawnList = new List<(Vector3 Position, Quaternion Rotation, GhostSpawner.GhostReference Prefab)>(8);
 
             foreach (var predictedPlayer in SystemAPI.Query<RefRW<PredictedPlayerGhost>>()
                          .WithAll<Simulate>())
@@ -319,6 +321,27 @@ namespace Unity.MP_FPS
                             {
                                 VisualEffectManager.ServerInstance.Server_RequestVfx(shooterNetworkId,
                                     predictedPlayer.ValueRO.EquippedWeaponID);
+                            }
+
+                            if (weaponData.IsPlacementWeapon)
+                            {
+                                int placementMask = weaponData.PlacementLayerMask.value != 0
+                                    ? weaponData.PlacementLayerMask.value
+                                    : LayerMask.GetMask("Ground", "Default");
+
+                                if (UnityEngine.Physics.Raycast(eyePosition, aimDirection, out var placementHit,
+                                        weaponData.HitscanRange, placementMask))
+                                {
+                                    var placementPosition = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
+                                    var placementRotation = Quaternion.LookRotation(placementHit.normal, Vector3.up);
+
+                                    if (weaponData.ProjectileGhostPrefab.GhostPrefab != null && weaponData.ProjectileGhostPrefab.GhostGuid.IsValid)
+                                    {
+                                        placementSpawnList.Add((placementPosition, placementRotation, weaponData.ProjectileGhostPrefab));
+                                    }
+                                }
+
+                                continue;
                             }
 
                             switch (weaponData.Type)
@@ -456,6 +479,15 @@ namespace Unity.MP_FPS
                     vfxData.Prefab,
                     vfxData.Position,
                     vfxData.Rotation,
+                    GhostGameObject.GenerateRandomHash());
+            }
+
+            foreach (var placement in placementSpawnList)
+            {
+                GhostSpawner.SpawnGhostPrefab(
+                    placement.Prefab,
+                    placement.Position,
+                    placement.Rotation,
                     GhostGameObject.GenerateRandomHash());
             }
 

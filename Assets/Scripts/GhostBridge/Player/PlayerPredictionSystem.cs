@@ -1,5 +1,6 @@
 // #define PREDICTION_DEBUG_LOGGING
 
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -191,6 +192,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
             predictedPlayer.ValueRW.RequestApplyMovement = false;
 
+            var placementSpawns = new List<(Vector3 Position, Quaternion Rotation, GhostSpawner.GhostReference Prefab)>();
+
             if (commands.Length > 0)
             {
                 float accumulateDT = dt;
@@ -239,6 +242,28 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                 if (VisualEffectManager.ClientInstance != null)
                                 {
                                     VisualEffectManager.ClientInstance.SpawnMuzzleFlash(playerGhost, predictedPlayer.ValueRO.EquippedWeaponID, true);
+                                }
+
+                                if (weaponData.IsPlacementWeapon)
+                                {
+                                    int placementMask = weaponData.PlacementLayerMask.value != 0
+                                        ? weaponData.PlacementLayerMask.value
+                                        : LayerMask.GetMask("Ground", "Default");
+
+                                    if (Physics.Raycast(eyePosition, aimDirection, out RaycastHit placementHit,
+                                            weaponData.HitscanRange, placementMask))
+                                    {
+                                        var placementPos = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
+                                        var placementRot = Quaternion.LookRotation(placementHit.normal, Vector3.up);
+                                        Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
+
+                                        if (weaponData.ProjectileGhostPrefab.GhostPrefab != null && weaponData.ProjectileGhostPrefab.GhostGuid.IsValid)
+                                        {
+                                            placementSpawns.Add((placementPos, placementRot, weaponData.ProjectileGhostPrefab));
+                                        }
+                                    }
+
+                                    continue;
                                 }
 
                                 if (weaponData.Type == WeaponType.Hitscan)
@@ -295,6 +320,15 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                             }
                         }
                     }
+                }
+
+                foreach (var placement in placementSpawns)
+                {
+                    GhostSpawner.SpawnGhostPrefab(
+                        placement.Prefab,
+                        placement.Position,
+                        placement.Rotation,
+                        GhostGameObject.GenerateRandomHash());
                 }
 
                 // apply

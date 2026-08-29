@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 92b6b833b5f846f45bbe32bd85d5ee8d
   m_SerializeEntries:
+  - m_GUID: 5c70b425b07041b4382bec59851df1c5
+    m_Address: Assets/Prefabs/ActorGhosts/Building.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63934da2ab499aa479387455c5ccfd99
     m_Address: Assets/Prefabs/Effects/MachineGunBulletHit.prefab
     m_ReadOnly: 0

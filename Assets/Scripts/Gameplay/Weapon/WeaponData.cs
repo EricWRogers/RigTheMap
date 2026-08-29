@@ -31,6 +31,13 @@ namespace Unity.MP_FPS
         [Header("Hitscan Properties")] [Tooltip("Max range for raycast-based weapons.")]
         public float HitscanRange = 100f;
 
+        [Header("Placement Properties")] [Tooltip("If true, the weapon will place a ghost prefab instead of dealing damage.")]
+        public bool IsPlacementWeapon = false;
+        [Tooltip("Layers that a placement weapon is allowed to place on. Leave at default to use Ground/Default.")]
+        public LayerMask PlacementLayerMask = default;
+        [Tooltip("Distance to offset the placed prefab from the surface normal.")]
+        public float PlacementOffset = 0.25f;
+
         [Header("Ammo & Reloading")] public int MagazineSize = 30;
         public float ReloadTime = 2.0f; // Time in seconds
 

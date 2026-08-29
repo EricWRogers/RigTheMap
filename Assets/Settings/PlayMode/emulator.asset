@@ -9,27 +9,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a689d91966dfb46499fb63f130d9b905, type: 3}
+  m_Script: {fileID: 15024, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: emulator
   m_EditorClassIdentifier: Unity.Multiplayer.PlayMode.Scenarios.Editor::Unity.Multiplayer.PlayMode.Scenarios.Editor.ScenarioConfig
   m_Description: 
   m_EnableEditors: 1
   m_MainEditorInstance:
     Name: Main Editor
-    <CorrespondingNodeId>k__BackingField: 
-    m_Nodes: []
+    <CorrespondingNodeId>k__BackingField: Main Editor|0_run
+    m_Nodes:
+    - Main Editor|0_run
+    - Main Editor|0_deploy
+    m_Role: 2
     m_PlayerTag: 
     m_InitialScene: {fileID: 102900000, guid: 987f785462a599447ab42dcb3abe5d22, type: 3}
   m_EditorInstances: []
   m_LocalInstances:
   - Name: Instance
-    <CorrespondingNodeId>k__BackingField: 
-    m_Nodes: []
-    m_BuildProfile: {fileID: 11400000, guid: 0a362bb5e24ebcc49ae6b1f3ad015ce2, type: 2}
+    <CorrespondingNodeId>k__BackingField: Instance - Run
+    m_Nodes:
+    - Instance - Build
+    - Instance - Run
+    m_BuildProfile: {fileID: 11400000, guid: 290010520c3c5d94aa1ec2bbfa2cc168, type: 2}
+    m_ServerSettings:
+      DeployMode: 0
+      SimulatorSettings:
+        AutoAllocate: 1
+      CliSettings:
+        UseDefaultArguments: 1
+        Port: 7777
+        QueryProtocol: 0
+        QueryPort: 20000
     advancedConfiguration:
       m_StreamLogsToMainEditor: 1
       m_LogsColor: {r: 0.3643, g: 0.581, b: 0.8679, a: 1}
-      m_Arguments: -screen-fullscreen 0 -screen-width 1024 -screen-height 720
+      m_LocalArguments: -screen-fullscreen 0 -screen-width 1024 -screen-height 720
+      m_SimulatedArguments: 
       m_DeviceID: 
       m_DeviceName: 
   m_RemoteInstances:
@@ -46,8 +61,6 @@ MonoBehaviour:
       m_StreamLogsToMainEditor: 0
       m_LogsColor: {r: 0.3643, g: 0.866, b: 0.513, a: 1}
       m_Arguments: -port $$port$$ -queryport $$query_port$$ -logFile $$log_dir$$/Engine.log
-  m_OverridePort: 0
-  m_Port: 0
   m_MainEditorInstanceObsolete:
     rid: -2
   references:

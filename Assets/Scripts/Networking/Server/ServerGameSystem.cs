@@ -201,11 +201,16 @@ namespace Unity.MP_FPS
             ecb.SetComponent(clientInputEntity, new PlayerCommandTarget { NetworkId = ownerNetworkId.Value });
 
             // Instantiate the player entity
-            var playerEntityPrefab = characterIndex == 0 ? playerEntityPrefabs.PlayerRifleEntityPrefab : playerEntityPrefabs.PlayerShotgunEntityPrefab;
+            var playerEntityPrefab = characterIndex switch
+            {
+                0 => playerEntityPrefabs.PlayerRifleEntityPrefab,
+                1 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                _ => playerEntityPrefabs.PlayerShotgunEntityPrefab
+            };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
 
-            var weaponId = characterIndex == 0 ? (uint)0 : 1;
-            
+            var weaponId = WeaponManager.Instance.WeaponRegistry.GetWeaponIdForCharacter(characterIndex);
+
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
 
