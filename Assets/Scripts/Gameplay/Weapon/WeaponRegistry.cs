@@ -32,7 +32,9 @@ namespace Unity.MP_FPS
                 case 1:
                     return 1;
                 case 2:
-                    return Weapons != null && Weapons.Count > 2 ? 2u : 1u;
+                    return 2;
+                case 3:
+                    return 3;
                 default:
                     return 0;
             }
