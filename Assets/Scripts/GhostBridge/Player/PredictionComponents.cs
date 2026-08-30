@@ -55,6 +55,8 @@ public struct PredictedPlayerGhost : IComponentData
     
     [GhostField] public uint EquippedWeaponID;
     [GhostField] public float WeaponCooldown;   // Timer to control rate of fire
+
+    [GhostField] public int SelectedPlacementPrefabIndex; // Index of the selected placement prefab in the weapon's PlacementGhostPrefabs list
     
     [GhostField] public int CurrentAmmo;
     [GhostField] public float LastDamageAmount;

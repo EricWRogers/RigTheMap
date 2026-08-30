@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Unity.MP_FPS
 {
@@ -42,10 +43,12 @@ namespace Unity.MP_FPS
         public float ReloadTime = 2.0f; // Time in seconds
 
         [Header("Projectile Properties")] [Tooltip("The ghost prefab for the projectile to be spawned.")]
-        public GhostSpawner.GhostReference ProjectileGhostPrefab;
+        public GhostSpawner.GhostReference ProjectileGhostPrefab; // a reference to the ghost prefab for the projectile to be spawned
+
+        public List<GhostSpawner.GhostReference> PlacementGhostPrefabs = new List<GhostSpawner.GhostReference>(); // List of ghost prefabs to spawn
 
         public GhostSpawner.GhostReference ProjectileHitVfxPrefab;
-        public GhostSpawner.GhostReference MuzzleFlashVfxPrefab;
+        public GhostSpawner.GhostReference MuzzleFlashVfxPrefab; 
         public SoundDef WeaponFireSfx;
         public SoundDef WeaponReloadSfx;
 

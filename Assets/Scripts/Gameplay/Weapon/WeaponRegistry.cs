@@ -39,5 +39,14 @@ namespace Unity.MP_FPS
                     return 0;
             }
         }
+
+        public List<WeaponData> GetAvailablePlacementItems()
+        {
+            if (Weapons == null)
+            {
+                return new List<WeaponData>();
+            }
+            return Weapons.FindAll(w => w != null && w.IsPlacementWeapon);
+        }
     }
 }

@@ -103,5 +103,8 @@ public partial class ClientInputReaderSystem : SystemBase
         playerInput.SetFlag(PlayerInput.InputFlag.Jump, controls.Player.Jump.triggered);
         playerInput.SetFlag(PlayerInput.InputFlag.Shoot, controls.FPS.ShootSingle.IsPressed());
         playerInput.SetFlag(PlayerInput.InputFlag.Reload, controls.FPS.Reload.triggered);
+
+        var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
+        playerInput.WeaponScrollDelta = scrollValue.y;
     }
 }

@@ -20,6 +20,8 @@ public struct PlayerInput
     public bool Jump => (InputFlags & (uint)InputFlag.Jump) != 0;
     public bool Shoot => (InputFlags & (uint)InputFlag.Shoot) != 0;
     public bool Reload => (InputFlags & (uint)InputFlag.Reload) != 0;
+    
+    public float WeaponScrollDelta;
 
     public void SetFlag(InputFlag flag, bool set)
     {
@@ -36,6 +38,11 @@ public struct PlayerInput
     public void UpdateFrom(in PlayerInput input)
     {
         InputFlags |= input.InputFlags;
+
+        if (input.WeaponScrollDelta != 0)
+        {
+            WeaponScrollDelta = input.WeaponScrollDelta;
+        }
     }
 }
 

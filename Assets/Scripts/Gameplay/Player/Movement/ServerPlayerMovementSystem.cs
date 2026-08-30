@@ -271,12 +271,36 @@ namespace Unity.MP_FPS
                 var predictedClient = predictedClientInputComponentLookup[inputLookup.ValueRO.ClientCommandInputEntity];
                 if (predictedClient.InputCount > 0)
                 {
-                    // get movement index for the last frame we are going to process
-                    var commandInput = commands[predictedClient.BeginInputIndex + predictedClient.InputCount - 1];
-                    if (commandInput.TryGetPlayerMovementInput(predictedPlayer.ValueRO.InputIndex, out var input))
+                    // loop through ALL inputs in the batch to find if a scroll occurred
+                    float scrollDelta = 0;
+                    for (int i = 0; i < predictedClient.InputCount; i++)
                     {
-                        playerGhost.ServerMovementInput = input;
+                        var input = commands[predictedClient.BeginInputIndex + i];
+                        if (input.PlayerInput.WeaponScrollDelta != 0)
+                        {
+                            scrollDelta = input.PlayerInput.WeaponScrollDelta;
+                            Debug.Log($"[Input Test] Scroll input detected! Delta: {scrollDelta}");
+                            break; // stop looking once we find a scroll event
+                        }
                     }
+
+                    // aapply the scroll delta if we found one
+                    if (scrollDelta != 0 && WeaponManager.Instance != null && WeaponManager.Instance.WeaponRegistry != null)
+                    {
+                        var equippedWeapon = WeaponManager.Instance.WeaponRegistry.GetWeaponData(predictedPlayer.ValueRO.EquippedWeaponID);
+
+                        if (equippedWeapon != null && equippedWeapon.IsPlacementWeapon && equippedWeapon.PlacementGhostPrefabs.Count > 0)
+                        {
+                            int totalPrefabs = equippedWeapon.PlacementGhostPrefabs.Count;
+                            int currentIndex = predictedPlayer.ValueRO.SelectedPlacementPrefabIndex;
+
+                            // Ensures index wraps correctly when scrolling up or down
+                            int nextIndex = (currentIndex + (scrollDelta > 0 ? 1 : -1) + totalPrefabs) % totalPrefabs;
+                            
+                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex = nextIndex;
+                        }
+                    }
+                    var commandInput = commands[predictedClient.BeginInputIndex + predictedClient.InputCount - 1];
 
                     predictedPlayer.ValueRW.ControllerState.Shoot = false;
 
@@ -323,6 +347,16 @@ namespace Unity.MP_FPS
                                     predictedPlayer.ValueRO.EquippedWeaponID);
                             }
 
+                            int selectedIndex = predictedPlayer.ValueRO.SelectedPlacementPrefabIndex;
+                            if (weaponData.PlacementGhostPrefabs != null && weaponData.PlacementGhostPrefabs.Count > 0)
+                            {
+                                selectedIndex = math.clamp(
+                                    predictedPlayer.ValueRO.SelectedPlacementPrefabIndex,
+                                    0,
+                                    weaponData.PlacementGhostPrefabs.Count - 1
+                                );
+                            }
+
                             if (weaponData.IsPlacementWeapon)
                             {
                                 int placementMask = weaponData.PlacementLayerMask.value != 0
@@ -335,9 +369,18 @@ namespace Unity.MP_FPS
                                     var placementPosition = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
                                     var placementRotation = Quaternion.LookRotation(placementHit.normal, Vector3.up);
 
-                                    if (weaponData.ProjectileGhostPrefab.GhostPrefab != null && weaponData.ProjectileGhostPrefab.GhostGuid.IsValid)
+                                    selectedIndex = math.clamp(
+                                        predictedPlayer.ValueRO.SelectedPlacementPrefabIndex,
+                                        0,
+                                        weaponData.PlacementGhostPrefabs.Count - 1
+                                    );
+
+                                    var selectedPrefab = weaponData.PlacementGhostPrefabs[selectedIndex];
+
+                                    if (selectedPrefab.GhostPrefab != null && selectedPrefab.GhostGuid.IsValid)
                                     {
-                                        placementSpawnList.Add((placementPosition, placementRotation, weaponData.ProjectileGhostPrefab));
+                                        placementSpawnList.Add((placementPosition, placementRotation, selectedPrefab));
+                                        Debug.Log("[Server] Purple death orb placed at " + placementPosition.ToString());
                                     }
                                 }
 
@@ -413,7 +456,7 @@ namespace Unity.MP_FPS
                                 case WeaponType.Projectile:
                                 {
                                     var prefabEntity =
-                                        GhostSpawner.FindGhostPrefabEntity(weaponData.ProjectileGhostPrefab.GhostGuid);
+                                        GhostSpawner.FindGhostPrefabEntity(weaponData.PlacementGhostPrefabs[selectedIndex].GhostGuid);
                                     if (prefabEntity != Entity.Null)
                                     {
                                         // Determine target point

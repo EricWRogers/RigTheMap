@@ -27,6 +27,55 @@ MonoBehaviour:
   ReloadTime: 0.01
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    m_GhostGuid:
+      Value:
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+  PlacementGhostPrefabs:
+  - <GhostPrefab>k__BackingField:
+      m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+    m_GhostGuid:
+      Value:
+        x: 2795305235
+        y: 1247169446
+        z: 1873977756
+        w: 2117713470
+  - <GhostPrefab>k__BackingField:
+      m_AssetGUID: 270b54e7b6714d049a29a8621caba037
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    m_GhostGuid:
+      Value:
+        x: 2118496370
+        y: 1087641451
+        z: 646615721
+        w: 1930083009
+  - <GhostPrefab>k__BackingField:
+      m_AssetGUID: ce624c635d4df5c4f810ece69b910d20
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
+    m_GhostGuid:
+      Value:
+        x: 918824684
+        y: 1281348821
+        z: 1858994575
+        w: 47192505
+  - <GhostPrefab>k__BackingField:
       m_AssetGUID: 5c70b425b07041b4382bec59851df1c5
       m_SubObjectName: 
       m_SubObjectType: 

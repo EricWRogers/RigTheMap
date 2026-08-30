@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 92b6b833b5f846f45bbe32bd85d5ee8d
   m_SerializeEntries:
+  - m_GUID: 270b54e7b6714d049a29a8621caba037
+    m_Address: Assets/Prefabs/Tower.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
+    m_Address: Assets/Prefabs/Ice.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c70b425b07041b4382bec59851df1c5
     m_Address: Assets/Prefabs/ActorGhosts/Building.prefab
     m_ReadOnly: 0
@@ -32,6 +42,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c93af8b935d1da7419ae22251a33748c
     m_Address: Assets/Prefabs/Effects/PlasmaHit.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce624c635d4df5c4f810ece69b910d20
+    m_Address: Assets/Prefabs/Honey.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
