@@ -456,7 +456,8 @@ namespace Unity.MP_FPS
                                 case WeaponType.Projectile:
                                 {
                                     var prefabEntity =
-                                        GhostSpawner.FindGhostPrefabEntity(weaponData.PlacementGhostPrefabs[selectedIndex].GhostGuid);
+                                        GhostSpawner.FindGhostPrefabEntity(weaponData.ProjectileGhostPrefab.GhostGuid);
+                                        Debug.Log($"PROJECTILE TEST: {prefabEntity}");
                                     if (prefabEntity != Entity.Null)
                                     {
                                         // Determine target point

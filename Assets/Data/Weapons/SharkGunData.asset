@@ -15,52 +15,57 @@ MonoBehaviour:
   WeaponName: Shark Gun
   Type: 1
   ReticleType: 1
-  CooldownInMs: 10
+  CooldownInMs: 0.5
   Damage: 25
   HitscanRange: 100
+  IsPlacementWeapon: 0
+  PlacementLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  PlacementOffset: 0.25
   MagazineSize: 30
   ReloadTime: 2
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 323c705da4774b340b95aca89a7141b7
+      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 3574055715
-        y: 1135900490
-        z: 2328517040
-        w: 2064914345
+        x: 1605990968
+        y: 1277661219
+        z: 240610982
+        w: 3023402984
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 
+      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
+        x: 1605990968
+        y: 1277661219
+        z: 240610982
+        w: 3023402984
   MuzzleFlashVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 
+      m_AssetGUID: d5370334ebfc741919094c943fa694ee
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
-  WeaponFireSfx: {fileID: 0}
-  WeaponReloadSfx: {fileID: 0}
+        x: 1127248733
+        y: 2437402558
+        z: 1237618833
+        w: 3997788915
+  WeaponFireSfx: {fileID: 11400000, guid: fc81bfa0b72614d498bbd910628ff6ef, type: 2}
+  WeaponReloadSfx: {fileID: 11400000, guid: 787dd818efa43da4f969b63e44de56b7, type: 2}
   Behavior: 0
   AoeRadius: 5
   ProjectileSpeed: 20

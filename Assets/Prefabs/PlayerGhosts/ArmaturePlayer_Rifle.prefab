@@ -145,12 +145,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.NetCode.Authoring.Hybrid::Unity.NetCode.GhostAuthoringComponent
-  DefaultGhostMode: 2
-  SupportedGhostModes: 3
-  OptimizationMode: 0
-  Importance: 200
-  MaxSendRate: 0
-  prefabId: d66bf1c0cf4a94990815a86b3d55b686
   HasOwner: 1
   SupportAutoCommandTarget: 0
   TrackInterpolationDelay: 0
@@ -159,6 +153,12 @@ MonoBehaviour:
   UseSingleBaseline: 0
   RollbackPredictedSpawnedGhostState: 0
   RollbackPredictionOnStructuralChanges: 0
+  DefaultGhostMode: 2
+  SupportedGhostModes: 3
+  OptimizationMode: 0
+  Importance: 200
+  MaxSendRate: 0
+  prefabId: d66bf1c0cf4a94990815a86b3d55b686
 --- !u!114 &3944503306077019667
 MonoBehaviour:
   m_ObjectHideFlags: 0
