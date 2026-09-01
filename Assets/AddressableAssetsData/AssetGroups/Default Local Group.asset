@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bdee9dcdb7731f4ea3bd5754b5ea8f8
+    m_Address: Assets/Prefabs/PlayerGhosts/Hammer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c70b425b07041b4382bec59851df1c5
     m_Address: Assets/Prefabs/ActorGhosts/Building.prefab
     m_ReadOnly: 0
