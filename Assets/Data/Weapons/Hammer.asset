@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 600e1b9bafb249d0907133f228c0a442, type: 3}
-  m_Name: SharkGunData
+  m_Name: Hammer
   m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.WeaponData
-  WeaponName: Shark Gun
-  Type: 1
-  ReticleType: 1
-  CooldownInMs: 1
+  WeaponName: Hammer
+  Type: 2
+  ReticleType: 0
+  CooldownInMs: 30
   Damage: 15
   HitscanRange: 100
   IsPlacementWeapon: 0
@@ -23,54 +23,54 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   PlacementOffset: 0.25
-  MagazineSize: 30
-  ReloadTime: 2
+  MagazineSize: 0
+  ReloadTime: 0
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 1605990968
-        y: 1277661219
-        z: 240610982
-        w: 3023402984
+        x: 0
+        y: 0
+        z: 0
+        w: 0
   PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 1605990968
-        y: 1277661219
-        z: 240610982
-        w: 3023402984
+        x: 0
+        y: 0
+        z: 0
+        w: 0
   MuzzleFlashVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: d5370334ebfc741919094c943fa694ee
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 1127248733
-        y: 2437402558
-        z: 1237618833
-        w: 3997788915
-  WeaponFireSfx: {fileID: 11400000, guid: fc81bfa0b72614d498bbd910628ff6ef, type: 2}
-  WeaponReloadSfx: {fileID: 11400000, guid: 787dd818efa43da4f969b63e44de56b7, type: 2}
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+  WeaponFireSfx: {fileID: 0}
+  WeaponReloadSfx: {fileID: 0}
   Behavior: 0
   AoeRadius: 5
-  ProjectileSpeed: 10
-  HammerRadius: 5
-  HammerUpForce: 12
-  HammerOutwardForce: 6
+  ProjectileSpeed: 30
+  HammerLaunchForce: 12
+  HammerImpactRadius: 2
   HammerDamage: 10
+  HammerGroundRange: 3

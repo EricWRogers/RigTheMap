@@ -35,6 +35,8 @@ namespace Unity.MP_FPS
                     return 2;
                 case 3:
                     return 3;
+                case 4:
+                    return 4;
                 default:
                     return 0;
             }

@@ -252,6 +252,11 @@ namespace Unity.MP_FPS
                         var weaponData =
                             WeaponManager.Instance.WeaponRegistry.GetWeaponData(
                                 predictedPlayer.ValueRO.EquippedWeaponID);
+                                Debug.Log(
+                                    $"[WEAPON TEST] ID={predictedPlayer.ValueRO.EquippedWeaponID} " +
+                                    $"NAME={weaponData?.WeaponName} " +
+                                    $"TYPE={weaponData?.Type}"
+                                );
                         if (weaponData != null)
                         {
                             predictedPlayer.ValueRW.CurrentAmmo = weaponData.MagazineSize;
@@ -323,12 +328,17 @@ namespace Unity.MP_FPS
 
                         if (wantsToShoot &&
                             !predictedPlayer.ValueRO.ControllerState.IsReloadingState &&
-                            predictedPlayer.ValueRO.CurrentAmmo > 0 &&
-                            predictedPlayer.ValueRO.WeaponCooldown >= weaponData.CooldownInMs)
+                            (weaponData.Type == WeaponType.Melee || (predictedPlayer.ValueRO.CurrentAmmo > 0 &&
+                            predictedPlayer.ValueRO.WeaponCooldown >= weaponData.CooldownInMs)))
                         {
                             predictedPlayer.ValueRW.WeaponCooldown = 0f;
-                            predictedPlayer.ValueRW.CurrentAmmo--;
                             predictedPlayer.ValueRW.LastShotTick = serverTick;
+                            if(weaponData.Type != WeaponType.Melee)
+                            {
+                                predictedPlayer.ValueRW.CurrentAmmo--;
+                            }
+                            
+                            
 
                             var shooterNetworkId = ghostOwnerLookup[entity].NetworkId;
                             var controllerState = predictedPlayer.ValueRO.ControllerState;
@@ -458,6 +468,9 @@ namespace Unity.MP_FPS
                                     var prefabEntity =
                                         GhostSpawner.FindGhostPrefabEntity(weaponData.ProjectileGhostPrefab.GhostGuid);
                                         Debug.Log($"PROJECTILE TEST: {prefabEntity}");
+                                        Debug.Log($"PROJECTILE NAME: {weaponData.ProjectileGhostPrefab.GhostPrefab.editorAsset?.name}");
+                                        Debug.Log($"PROJECTILE GUID: {weaponData.ProjectileGhostPrefab.GhostGuid}");
+                                        Debug.Log($"PROJECTILE ENTITY: {prefabEntity}");
                                     if (prefabEntity != Entity.Null)
                                     {
                                         // Determine target point
@@ -489,9 +502,64 @@ namespace Unity.MP_FPS
                                             WeaponId = predictedPlayer.ValueRO.EquippedWeaponID
                                         });
                                     }
-
                                     break;
                                 }
+                             case WeaponType.Melee:
+                            {
+                                
+                                if (!UnityEngine.Physics.Raycast(
+                                        eyePosition,
+                                        aimDirection,
+                                        out RaycastHit hammerGroundHit,
+                                        weaponData.HammerGroundRange,
+                                        LayerMask.GetMask("Ground", "Default"),
+                                        QueryTriggerInteraction.Ignore))
+                                {
+                                    Debug.Log("[Hammer] Aim at the ground nearby to use the hammer.");
+                                    break;
+                                }
+
+                                Vector3 impactPoint = hammerGroundHit.point;
+
+                                Debug.Log($"[Hammer] Ground slam at {impactPoint}");
+
+                                predictedPlayer.ValueRW.ControllerState.JumpFallSpeed =
+                                    weaponData.HammerLaunchForce;
+
+                                predictedPlayer.ValueRW.ControllerState.MovementType =
+                                    FirstPersonController.MovementType.Jumping;
+
+                                predictedPlayer.ValueRW.ControllerState.PreviousMovementType =
+                                    FirstPersonController.MovementType.Standing;
+
+                                predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+
+                                
+                                float3 selfLaunchDirection = aimDirection;
+                                selfLaunchDirection.y = 0f;
+                                selfLaunchDirection = math.normalizesafe(selfLaunchDirection);
+
+                                predictedPlayer.ValueRW.AccumulatedMovement +=
+                                    selfLaunchDirection *
+                                    weaponData.HammerLaunchForce *
+                                    deltaTime;
+
+                                Debug.DrawLine(
+                                    eyePosition,
+                                    hammerGroundHit.point,
+                                    Color.yellow,
+                                    1f);
+
+                                Debug.DrawRay(
+                                    impactPoint,
+                                    Vector3.up * 2f,
+                                    Color.yellow,
+                                    1f);
+
+                                break;
+                            }
                             }
                         }
                     }

@@ -118,3 +118,7 @@ MonoBehaviour:
   Behavior: 0
   AoeRadius: 0
   ProjectileSpeed: 30
+  HammerRadius: 5
+  HammerUpForce: 12
+  HammerOutwardForce: 6
+  HammerDamage: 10

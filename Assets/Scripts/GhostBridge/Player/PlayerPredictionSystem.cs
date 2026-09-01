@@ -222,10 +222,13 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                 predictedPlayer.ValueRW.LastReloadTick = commandInput.Tick.TickIndexForValidTick;
                             }
                             
-                            if (wantsToShoot && !predictedPlayer.ValueRO.ControllerState.IsReloadingState && predictedPlayer.ValueRO.CurrentAmmo > 0 && predictedPlayer.ValueRO.WeaponCooldown >= weaponData.CooldownInMs)
+                            if (wantsToShoot && !predictedPlayer.ValueRO.ControllerState.IsReloadingState &&  predictedPlayer.ValueRO.CurrentAmmo > 0 && predictedPlayer.ValueRO.WeaponCooldown >= weaponData.CooldownInMs)
                             {
                                 predictedPlayer.ValueRW.WeaponCooldown = 0f;
+                                
+                                
                                 predictedPlayer.ValueRW.CurrentAmmo--;
+                                
                                 predictedPlayer.ValueRW.LastShotTick = commandInput.Tick.TickIndexForValidTick;
 
                                 var playerGhost = controllerLink.Controller.GetComponent<PlayerGhost>();

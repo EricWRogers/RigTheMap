@@ -760,7 +760,21 @@ public class FirstPersonController : MonoBehaviour
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)
     {
     }
+    private static void LaunchPlayer(ref PredictedPlayerGhost player, float3 launchVelocity, float deltaTime)
+    {
+        var state = player.ControllerState;
+        state.JumpFallSpeed = launchVelocity.y;
+        state.MovementType = FirstPersonController.MovementType.Jumping;
+        state.PreviousMovementType = FirstPersonController.MovementType.Standing;
 
+        state.Jump = true;
+        state.Fall = false;
+        state.TimeInState = 0f;
+
+        player.ControllerState = state;
+        player.AccumulatedMovement += new float3(launchVelocity.x, 0f, launchVelocity.z)* deltaTime;
+
+    }
     public static void AccumulateMovement(ref ControllerState state,
         ref float3 accumulatedMovement, in PlayerInput input, in ControllerConsts consts, float deltaTime)
     {

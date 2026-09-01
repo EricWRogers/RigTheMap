@@ -87,21 +87,31 @@ namespace Unity.MP_FPS
                     return;
                 }
 
-                var spawnPoint = isFirstPerson ? player.VisualShotOrigin1P : player.VisualShotOrigin3P;
+               var spawnPoint = isFirstPerson
+                    ? player.VisualShotOrigin1P
+                    : player.VisualShotOrigin3P;
+
                 if (spawnPoint == null)
                 {
-                    spawnPoint = player.transform; // Fallback
+                    spawnPoint = player.transform;
+                }
+
+                // Melee weapons don't need a muzzle flash.
+                if (weaponData.MuzzleFlashVfxPrefab == null ||
+                    weaponData.MuzzleFlashVfxPrefab.GhostPrefab == null ||
+                    !weaponData.MuzzleFlashVfxPrefab.GhostPrefab.RuntimeKeyIsValid())
+                {
+                    Debug.Log($"No muzzle flash assigned for {weaponData.WeaponName}.");
+                    return;
                 }
 
                 try
                 {
                     var vfxInstance = await weaponData.MuzzleFlashVfxPrefab.GhostPrefab.InstantiateAsync(
-                        spawnPoint.position, spawnPoint.rotation, spawnPoint).Task;
-                    if (vfxInstance == null)
-                    {
-                        Debug.LogWarning("Cannot spawn muzzle flash: vfx instance is null");
-                        return;
-                    }
+                        spawnPoint.position,
+                        spawnPoint.rotation,
+                        spawnPoint
+                    ).Task;
 
                     vfxInstance.AddComponent<DestroyAfterDelay>().Lifetime = 0.5f;
 

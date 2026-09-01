@@ -7,6 +7,7 @@ public class PlayerEntityPrefabsAuthoring : MonoBehaviour
     [field: SerializeField] public GhostAuthoringComponent ClientInputEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerRifleEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerShotgunEntityPrefab { get; private set; }
+    [field: SerializeField] public GhostAuthoringComponent PlayerHammerEntityPrefab { get; private set; }
 }
 
 public struct PlayerEntityPrefabs : IComponentData
@@ -14,6 +15,7 @@ public struct PlayerEntityPrefabs : IComponentData
     public Entity ClientInputEntityPrefab;
     public Entity PlayerRifleEntityPrefab;
     public Entity PlayerShotgunEntityPrefab;
+    public Entity PlayerHammerEntityPrefab;
 }
 
 public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
@@ -36,6 +38,13 @@ public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
             PlayerShotgunEntityPrefab = 
                 authoring.PlayerShotgunEntityPrefab !=null ? 
                     GetEntity(authoring.PlayerShotgunEntityPrefab.gameObject, TransformUsageFlags.None) 
+                    : Entity.Null,
+
+            PlayerHammerEntityPrefab =
+                authoring.PlayerHammerEntityPrefab != null
+                    ? GetEntity(
+                        authoring.PlayerHammerEntityPrefab.gameObject,
+                        TransformUsageFlags.None)
                     : Entity.Null
         });
     }

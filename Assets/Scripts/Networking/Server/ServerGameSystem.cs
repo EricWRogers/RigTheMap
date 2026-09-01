@@ -205,6 +205,9 @@ namespace Unity.MP_FPS
             {
                 0 => playerEntityPrefabs.PlayerRifleEntityPrefab,
                 1 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                2 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                3 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                4 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
                 _ => playerEntityPrefabs.PlayerShotgunEntityPrefab
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);

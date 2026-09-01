@@ -177,8 +177,13 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
                     if (m_GhostGameObjects.TryGetValue(ghostGuid.ValueRO.Guid, out var matchingGhost))
                     {
-                        Debug.LogError(
-                            $"Trying to add {ghostGameObject.gameObject.name} but it has the same GUID as {matchingGhost.gameObject.name}");
+                         Debug.LogError(
+                            $"DUPLICATE GHOST GUID!\n" +
+                            $"New: {ghostGameObject.gameObject.name}\n" +
+                            $"Existing: {matchingGhost.gameObject.name}\n" +
+                            $"GUID: {ghostGuid.ValueRO.Guid}\n" +
+                            $"Prefab Asset GUID: {ghostPrefabGuid}\n" +
+                            $"Root Prefab GUID: {ghostRootPrefabGuid}");
                     }
 #endif
 
