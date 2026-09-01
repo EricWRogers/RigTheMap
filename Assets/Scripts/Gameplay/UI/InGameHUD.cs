@@ -18,6 +18,7 @@ namespace Unity.MP_FPS
         private ProgressBar m_AmmoBar;
         private Label m_AmmoLabel;
         private Label m_ReloadingLabel;
+        private Label m_SelectedBuildingLabel;
         private VisualElement m_Reticle;
 
         // UI-side timer to ensure shot feedback is visible for a minimum duration.
@@ -51,6 +52,7 @@ namespace Unity.MP_FPS
             m_AmmoBar = m_RootElement.Q<ProgressBar>("player-ammo-bar");
             m_ReloadingLabel = m_RootElement.Q<Label>("reloading-label");
             m_Reticle = m_RootElement.Q<VisualElement>("player-reticle");
+            m_SelectedBuildingLabel = m_RootElement.Q<Label>("selected-building-label");
         }
 
         private void InitializeEcs()
@@ -104,6 +106,27 @@ namespace Unity.MP_FPS
 
             // Get the player's data directly from the ECS component
             PredictedPlayerGhost playerData = m_LocalPlayerQuery.GetSingleton<PredictedPlayerGhost>();
+            
+            var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(playerData.EquippedWeaponID);
+            if(m_SelectedBuildingLabel != null)
+            {
+                if(weaponData != null && weaponData.IsPlacementWeapon
+                && weaponData.PlacementGhostPrefabs != null
+                && weaponData.PlacementGhostPrefabs.Count > 0)
+                {
+                    var selectedPrefab = weaponData.PlacementGhostPrefabs[playerData.SelectedPlacementPrefabIndex];
+                    m_SelectedBuildingLabel.text = $"Building: {selectedPrefab.GhostPrefab.editorAsset.name}";
+                    m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
+                    m_SelectedBuildingLabel.style.color = Color.white;
+                    m_SelectedBuildingLabel.style.fontSize = 25;
+                }
+                else
+                {
+                    m_SelectedBuildingLabel.text = "ERROR";
+                    m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
+                }
+            }
+
 
             // Update Health Bar
             if (m_HealthBar != null)
@@ -121,7 +144,7 @@ namespace Unity.MP_FPS
             // Update Ammo Label
             if (m_AmmoLabel != null)
             {
-                var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(playerData.EquippedWeaponID);
+                // var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(playerData.EquippedWeaponID);
                 int magazineSize = weaponData != null ? weaponData.MagazineSize : 0;
 
                 // Update Ammo Text and Color

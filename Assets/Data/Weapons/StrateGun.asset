@@ -75,18 +75,6 @@ MonoBehaviour:
         y: 1281348821
         z: 1858994575
         w: 47192505
-  - <GhostPrefab>k__BackingField:
-      m_AssetGUID: 5c70b425b07041b4382bec59851df1c5
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    m_GhostGuid:
-      Value:
-        x: 1380648901
-        y: 1259603723
-        z: 2513351299
-        w: 1545589080
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7
