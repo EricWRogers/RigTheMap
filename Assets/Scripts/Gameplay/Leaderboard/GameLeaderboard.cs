@@ -13,7 +13,23 @@ namespace Gameplay.Leaderboard
     [ResetOnPlayMode(resetMethod: "ResetStaticState")]
     public class LeaderboardManager : GhostMonoBehaviour, IUpdateServer, IUpdateClient
     {
+        public int CurrentRound => _currentRound;
+        public float BuildTimer => _buildTimer;
+        public RoundPhase CurrentPhase => _roundPhase;
         public static LeaderboardManager Instance { get; private set; }
+        public enum RoundPhase
+        {
+            Fighting,
+            BuildMode,
+            MatchOver
+        }
+
+        private RoundPhase _roundPhase = RoundPhase.Fighting;
+
+        private int _currentRound = 1;
+        private float _buildTimer = 30f;
+
+        private Dictionary<int, int> _roundWins = new Dictionary<int, int>();
 
         private struct KillInfo
         {
@@ -105,7 +121,12 @@ namespace Gameplay.Leaderboard
                     var entry = buffer[i];
                     entry.Kills++;
                     buffer[i] = entry;
+                    if (entry.Kills >= 3 && _roundPhase == RoundPhase.Fighting)
+                    {
+                        WinRound(killer);
+                    }
                     break;
+                    
                 }
             }
 
@@ -121,6 +142,81 @@ namespace Gameplay.Leaderboard
             }
 
             AnnounceKillFeed(killer, victim);
+        }
+        private void WinRound(int winningPlayerId)
+        {
+            if (Role != MultiplayerRole.Server)
+                return;
+
+            if (!_roundWins.ContainsKey(winningPlayerId))
+            {
+                _roundWins[winningPlayerId] = 0;
+            }
+
+            _roundWins[winningPlayerId]++;
+
+            Debug.Log(
+                $"[ROUND] Player {winningPlayerId} won Round {_currentRound}. " +
+                $"Total round wins: {_roundWins[winningPlayerId]}"
+            );
+
+            
+            if (_roundWins[winningPlayerId] >= 2)
+            {
+                _roundPhase = RoundPhase.MatchOver;
+
+                Debug.Log(
+                    $"[MATCH] Player {winningPlayerId} won the match!"
+                );
+
+                return;
+            }
+
+           
+            _roundPhase = RoundPhase.BuildMode;
+            _buildTimer = 30f;
+        }
+        private void StartNextRound()
+        {
+            if (Role != MultiplayerRole.Server)
+                return;
+
+            _currentRound++;
+
+            if (_currentRound > 3)
+            {
+                _roundPhase = RoundPhase.MatchOver;
+                Debug.Log("[MATCH] All three rounds have been completed.");
+                return;
+            }
+
+            _roundPhase = RoundPhase.Fighting;
+            _buildTimer = 30f;
+
+            if (GhostGameObject == null ||
+                !GhostGameObject.IsGhostLinked() ||
+                !GhostGameObject.World.IsCreated)
+            {
+                return;
+            }
+
+            var buffer =
+                GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
+            
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                var entry = buffer[i];
+
+                entry.Kills = 0;
+                entry.Deaths = 0;
+
+                buffer[i] = entry;
+            }
+
+            Debug.Log(
+                $"[ROUND] Starting Round {_currentRound}"
+            );
         }
 
         public void AnnouncePlayerJoined(FixedString64Bytes playerName)
@@ -175,6 +271,15 @@ namespace Gameplay.Leaderboard
 
         public void UpdateServer(float deltaTime)
         {
+            if (_roundPhase == RoundPhase.BuildMode)
+            {
+                _buildTimer -= deltaTime;
+
+                if (_buildTimer <= 0f)
+                {
+                    StartNextRound();
+                }
+            }
             if (!GhostGameObject.IsGhostLinked())
             {
                 Debug.Log("[Server] LeaderboardManager not linked yet.");
