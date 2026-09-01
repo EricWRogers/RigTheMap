@@ -122,8 +122,8 @@ namespace Unity.MP_FPS
                 }
                 else
                 {
-                    m_SelectedBuildingLabel.text = "ERROR";
-                    m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
+                    m_SelectedBuildingLabel.text = "";
+                    m_SelectedBuildingLabel.style.display = DisplayStyle.None;
                 }
             }
 
