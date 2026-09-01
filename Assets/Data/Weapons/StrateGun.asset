@@ -22,7 +22,7 @@ MonoBehaviour:
   PlacementLayerMask:
     serializedVersion: 2
     m_Bits: 129
-  PlacementOffset: 0.25
+  PlacementOffset: 0.1
   MagazineSize: 1000
   ReloadTime: 0.01
   ProjectileGhostPrefab:
@@ -118,7 +118,7 @@ MonoBehaviour:
   Behavior: 0
   AoeRadius: 0
   ProjectileSpeed: 30
-  HammerRadius: 5
-  HammerUpForce: 12
-  HammerOutwardForce: 6
+  HammerLaunchForce: 12
+  HammerImpactRadius: 2
   HammerDamage: 10
+  HammerGroundRange: 3

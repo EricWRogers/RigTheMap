@@ -257,12 +257,15 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                             weaponData.HitscanRange, placementMask))
                                     {
                                         var placementPos = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
-                                        var placementRot = Quaternion.LookRotation(placementHit.normal, Vector3.up);
+                                        var surfaceRotation = Quaternion.FromToRotation(Vector3.up, placementHit.normal);
+                                        var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
+                                        var placementRotation = surfaceRotation * modelCorrection;
+
                                         Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
 
                                         if (weaponData.ProjectileGhostPrefab.GhostPrefab != null && weaponData.ProjectileGhostPrefab.GhostGuid.IsValid)
                                         {
-                                            placementSpawns.Add((placementPos, placementRot, weaponData.ProjectileGhostPrefab));
+                                            placementSpawns.Add((placementPos, placementRotation, weaponData.ProjectileGhostPrefab));
                                         }
                                     }
 
