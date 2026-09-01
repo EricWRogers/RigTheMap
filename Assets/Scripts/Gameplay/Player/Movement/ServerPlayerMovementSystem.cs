@@ -60,6 +60,12 @@ namespace Unity.MP_FPS
         public PlayerMovementHistory MovementHistory { get; private set; } =
             new PlayerMovementHistory(k_NumHistoryTicks);
 
+        private const uint BuildGunWeaponID = 2;
+
+        private Dictionary<Entity, uint> m_OriginalWeapons = new Dictionary<Entity, uint>();
+
+        private bool m_WasBuildMode = false;
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -91,10 +97,75 @@ namespace Unity.MP_FPS
 
             base.OnDestroy();
         }
+        private void UpdateBuildModeWeapons(bool buildMode)
+        {
+            foreach (var (predictedPlayer, entity) in
+                    SystemAPI.Query<RefRW<PredictedPlayerGhost>>()
+                        .WithEntityAccess()
+                        .WithAll<Simulate>())
+            {
+                if (buildMode)
+                {
+                    if (!m_OriginalWeapons.ContainsKey(entity))
+                    {
+                        m_OriginalWeapons[entity] =
+                            predictedPlayer.ValueRO.EquippedWeaponID;
+                    }
+
+                    predictedPlayer.ValueRW.EquippedWeaponID = BuildGunWeaponID;
+
+                    var buildGunData =
+                        WeaponManager.Instance.WeaponRegistry.GetWeaponData(BuildGunWeaponID);
+
+                    if (buildGunData != null)
+                    {
+                        predictedPlayer.ValueRW.CurrentAmmo =
+                            buildGunData.MagazineSize;
+                    }
+
+                    predictedPlayer.ValueRW.WeaponCooldown = 0f;
+                }
+                else
+                {
+                    if (m_OriginalWeapons.TryGetValue(entity, out uint originalWeaponID))
+                    {
+                        predictedPlayer.ValueRW.EquippedWeaponID = originalWeaponID;
+
+                        var originalWeaponData =
+                            WeaponManager.Instance.WeaponRegistry.GetWeaponData(
+                                originalWeaponID);
+
+                        if (originalWeaponData != null)
+                        {
+                            predictedPlayer.ValueRW.CurrentAmmo =
+                                originalWeaponData.MagazineSize;
+                        }
+
+                        predictedPlayer.ValueRW.WeaponCooldown = 0f;
+                    }
+                }
+            }
+
+            if (!buildMode)
+            {
+                m_OriginalWeapons.Clear();
+            }
+        }
 
         protected override void OnUpdate()
         {
             float deltaTime = World.Time.DeltaTime;
+
+            if (LeaderboardManager.Instance != null)
+            {
+                bool isBuildMode = LeaderboardManager.Instance.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode;
+
+                if (isBuildMode != m_WasBuildMode)
+                {
+                    UpdateBuildModeWeapons(isBuildMode);
+                    m_WasBuildMode = isBuildMode;
+                }
+            }
 
             var networkTime = SystemAPI.GetSingleton<NetworkTime>();
             if (!networkTime.ServerTick.IsValid)
