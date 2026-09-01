@@ -16,7 +16,7 @@ MonoBehaviour:
   Type: 1
   ReticleType: 1
   CooldownInMs: 1
-  Damage: 15
+  Damage: 50
   HitscanRange: 100
   IsPlacementWeapon: 0
   PlacementLayerMask:
@@ -70,7 +70,7 @@ MonoBehaviour:
   Behavior: 0
   AoeRadius: 5
   ProjectileSpeed: 10
-  HammerRadius: 5
-  HammerUpForce: 12
-  HammerOutwardForce: 6
+  HammerLaunchForce: 12
+  HammerImpactRadius: 2
   HammerDamage: 10
+  HammerGroundRange: 3
