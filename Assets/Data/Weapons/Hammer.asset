@@ -15,8 +15,8 @@ MonoBehaviour:
   WeaponName: Hammer
   Type: 2
   ReticleType: 0
-  CooldownInMs: 30
-  Damage: 15
+  CooldownInMs: 10
+  Damage: 25
   HitscanRange: 100
   IsPlacementWeapon: 0
   PlacementLayerMask:
@@ -71,6 +71,6 @@ MonoBehaviour:
   AoeRadius: 5
   ProjectileSpeed: 30
   HammerLaunchForce: 12
-  HammerImpactRadius: 2
-  HammerDamage: 10
+  HammerImpactRadius: 10
+  HammerDamage: 25
   HammerGroundRange: 3
