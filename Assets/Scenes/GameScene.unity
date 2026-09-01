@@ -1235,6 +1235,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pfb_simpleFloor_2x2x0_2  (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8489471862408211365, guid: 09af51ac99a55d8429c885886d69c01b, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -74088,6 +74092,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cded085d155cde949b60f67a11dbc3bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  version: 2
+  globalVolume: 0
   mode: 2
   size: {x: 47.800003, y: 16.000002, z: 37.000008}
   overrideRendererFilters: 0
@@ -74118,8 +74124,6 @@ MonoBehaviour:
     e33: 1
   cachedHashCode: -1251407264
   fillEmptySpaces: 0
-  version: 2
-  globalVolume: 0
 --- !u!1001 &8850202040926161304
 PrefabInstance:
   m_ObjectHideFlags: 0

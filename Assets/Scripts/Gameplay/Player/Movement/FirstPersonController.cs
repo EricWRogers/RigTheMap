@@ -258,6 +258,7 @@ public class FirstPersonController : MonoBehaviour
         Debug.Assert(m_DamageVisualsController,
             "[FIRSTPERSONCONTROLLER] Player has no DamageVisualsController component");
     }
+    
 
     public void SetExcludeLayers(LayerMask excludeLayers)
     {
@@ -314,6 +315,8 @@ public class FirstPersonController : MonoBehaviour
 
     private struct GroundCollisionVariables
     {
+        
+        
         private RaycastHit m_ClosestHit;
         private RaycastHit m_FlattestHit;
 
@@ -322,7 +325,8 @@ public class FirstPersonController : MonoBehaviour
         public Vector3 FlattestHitPoint => m_FlattestHit.point;
         public Vector3 FlattestHitNormal => m_FlattestHit.normal;
         public PhysicsMaterial ClosestHitSurfaceType => m_ClosestHit.collider.sharedMaterial;
-
+   
+        
         public GroundCollisionVariables(RaycastHit closestHit, RaycastHit flattestHit, float flattestHitDot)
         {
             m_ClosestHit = closestHit;
@@ -330,7 +334,41 @@ public class FirstPersonController : MonoBehaviour
             m_FlattestHitDot = flattestHitDot;
         }
     }
+    private enum GroundSurfaceType{
+            Normal,
+            Sticky,
+            Slippery
+        }     
+        private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat){
+            if(mat == null) return GroundSurfaceType.Normal;
 
+            switch(mat.name){
+                case "Sticky":
+                    return GroundSurfaceType.Sticky;
+                case "Slippery":
+                    return GroundSurfaceType.Slippery;
+                default:
+                    return GroundSurfaceType.Normal;
+            }
+        }
+        private Vector3 ApplySurfaceModifiers(Vector3 move, Vector3 groundNormal){
+            if(GroundPhysicsMaterial == null)
+                return move;
+            var surface = GetGroundSurfaceType(GroundPhysicsMaterial);
+
+            if(surface == GroundSurfaceType.Sticky){
+                Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
+                planarMove = Vector3.Lerp(planarMove, Vector3.zero, 0.85f);
+                return planarMove + Vector3.up * move.y;
+            }
+            if(surface == GroundSurfaceType.Slippery){
+                Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
+                planarMove *= 5f;
+                planarMove = Vector3.Lerp(planarMove, Vector3.zero, 0.08f);
+                return planarMove + Vector3.up * move.y;
+            }
+            return move;
+        }
     private bool ShouldUpdateGround(MovementType movementType)
     {
         return movementType != MovementType.Jumping;
@@ -806,6 +844,7 @@ public class FirstPersonController : MonoBehaviour
         {
             // apply movement
             var movementToApply = accumulatedMovement;
+            movementToApply = ApplySurfaceModifiers(movementToApply, state.GroundNormal);
 
             // This can be called before the controller is enabled (e.g. on spawn)
             // prevents errors of moving when controller is disabled or GameObject inactive
