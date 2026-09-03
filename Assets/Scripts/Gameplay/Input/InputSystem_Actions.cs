@@ -138,7 +138,7 @@ namespace Unity.MP_FPS
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""852140f2-7766-474d-8707-702459ba45f3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false,
@@ -148,7 +148,7 @@ namespace Unity.MP_FPS
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""27c5f898-bc57-4ee1-8800-db469aca5fe3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false,
@@ -188,6 +188,26 @@ namespace Unity.MP_FPS
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""641cd816-40e6-41b4-8c3d-04687c349290"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""RotatePlacementRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""a9c9171c-cd0b-4603-a990-9880d71e3365"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""RotatePlacementLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""98522b17-1ab5-46ff-a6c0-31b5759050f9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -562,7 +582,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""1c04ea5f-b012-41d1-a6f7-02e963b52893"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -600,6 +620,28 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d8b345fb-d450-4e5e-a752-bdae9bbbd09b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotatePlacementRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c6dc36b6-24fc-49ea-8003-d320b708b12c"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotatePlacementLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1493,6 +1535,8 @@ namespace Unity.MP_FPS
             m_Player_Previous = m_Player.FindAction("Previous", throwIfNotFound: true);
             m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            m_Player_RotatePlacementRight = m_Player.FindAction("RotatePlacementRight", throwIfNotFound: true);
+            m_Player_RotatePlacementLeft = m_Player.FindAction("RotatePlacementLeft", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1607,6 +1651,8 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_Previous;
         private readonly InputAction m_Player_Next;
         private readonly InputAction m_Player_Sprint;
+        private readonly InputAction m_Player_RotatePlacementRight;
+        private readonly InputAction m_Player_RotatePlacementLeft;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1658,6 +1704,14 @@ namespace Unity.MP_FPS
             /// Provides access to the underlying input action "Player/Sprint".
             /// </summary>
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/RotatePlacementRight".
+            /// </summary>
+            public InputAction @RotatePlacementRight => m_Wrapper.m_Player_RotatePlacementRight;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/RotatePlacementLeft".
+            /// </summary>
+            public InputAction @RotatePlacementLeft => m_Wrapper.m_Player_RotatePlacementLeft;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1714,6 +1768,12 @@ namespace Unity.MP_FPS
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @RotatePlacementRight.started += instance.OnRotatePlacementRight;
+                @RotatePlacementRight.performed += instance.OnRotatePlacementRight;
+                @RotatePlacementRight.canceled += instance.OnRotatePlacementRight;
+                @RotatePlacementLeft.started += instance.OnRotatePlacementLeft;
+                @RotatePlacementLeft.performed += instance.OnRotatePlacementLeft;
+                @RotatePlacementLeft.canceled += instance.OnRotatePlacementLeft;
             }
 
             /// <summary>
@@ -1755,6 +1815,12 @@ namespace Unity.MP_FPS
                 @Sprint.started -= instance.OnSprint;
                 @Sprint.performed -= instance.OnSprint;
                 @Sprint.canceled -= instance.OnSprint;
+                @RotatePlacementRight.started -= instance.OnRotatePlacementRight;
+                @RotatePlacementRight.performed -= instance.OnRotatePlacementRight;
+                @RotatePlacementRight.canceled -= instance.OnRotatePlacementRight;
+                @RotatePlacementLeft.started -= instance.OnRotatePlacementLeft;
+                @RotatePlacementLeft.performed -= instance.OnRotatePlacementLeft;
+                @RotatePlacementLeft.canceled -= instance.OnRotatePlacementLeft;
             }
 
             /// <summary>
@@ -2298,6 +2364,20 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSprint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RotatePlacementRight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRotatePlacementRight(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RotatePlacementLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRotatePlacementLeft(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
