@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEditorInternal;
 
 [RequireComponent(typeof(CharacterController))]
 public class FirstPersonController : MonoBehaviour
@@ -342,7 +343,8 @@ public class FirstPersonController : MonoBehaviour
             Normal,
             Sticky,
             Slippery,
-            Bounce
+            Bounce,
+            Spikey
 
         }     
         private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat){
@@ -355,6 +357,8 @@ public class FirstPersonController : MonoBehaviour
                     return GroundSurfaceType.Slippery;
                 case "Bounce":
                     return GroundSurfaceType.Bounce;
+                case "Spikey":
+                    return GroundSurfaceType.Spikey;
                 default:
                     return GroundSurfaceType.Normal;
             }
@@ -374,6 +378,17 @@ public class FirstPersonController : MonoBehaviour
                 planarMove *= 5f;
                 planarMove = Vector3.Lerp(planarMove, Vector3.zero, 0.08f);
                 return planarMove + Vector3.up * move.y;
+            }
+            if(surface == GroundSurfaceType.Spikey)//damage player
+            {
+                var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
+                ghost.CurrentHealth = 1;// one hp
+                
+                m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
+                Vector3 knockback = groundNormal.normalized;
+                float knockStr = 12f;
+                move += knockback * knockStr; // instant upwards
+                
             }
             return move;
         }
@@ -513,10 +528,10 @@ public class FirstPersonController : MonoBehaviour
             state.GroundNormal = groundCollision.FlattestHitNormal;
             GroundPhysicsMaterial = groundCollision.ClosestHitSurfaceType;
             GroundSurfaceType surfaceType = GetGroundSurfaceType(GroundPhysicsMaterial);
-            if (surfaceType == GroundSurfaceType.Bounce)
-            {// Launch player
+            if (surfaceType == GroundSurfaceType.Bounce)// Launch player
+            {
                 float BounceHeight = consts.BounceHeight;
-                float launchSpeed = math.sqrt(BounceHeight * -2f * consts.Gravity);
+                float launchSpeed = math.sqrt(BounceHeight * -2f * consts.Gravity);//how high the player can go
                 float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);
                 float3 bounceVelocity = launchDir + launchSpeed;
                 state.BounceVelocity = bounceVelocity;
@@ -524,12 +539,8 @@ public class FirstPersonController : MonoBehaviour
                 SetMovementType(ref state, MovementType.Jumping);
                 state.Jump = true;
                 state.Fall = false;
-
-                
-                
-
-                
-            }
+                }
+            
         
         }
         else
@@ -538,7 +549,6 @@ public class FirstPersonController : MonoBehaviour
             GroundPhysicsMaterial = null;
         }
     }
-
     public void ApplyInterpolatedClientState(ref ControllerState state,
         in ControllerConsts consts, in LocalTransform localTransform, float deltaTime, bool applyAnimation = false)
     {
