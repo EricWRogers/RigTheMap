@@ -237,7 +237,10 @@ MonoBehaviour:
   m_CameraRotation: {x: 0, y: 0, z: 0}
   m_OwnerVisuals: {fileID: 5736986264473589180}
   m_OtherPlayerVisuals: {fileID: 2363139590035842310}
+  m_FirstPersonVisuals: {fileID: 5736986264473589180}
   m_SpawnSFX: {fileID: 11400000, guid: bfec68d58a412fa4fb63e149caa5b3e5, type: 2}
+  m_Team0Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Team1Color: {r: 0, g: 1, b: 0, a: 1}
   <CameraTarget>k__BackingField: {fileID: 1666222585322407308}
   <ReticlePoint>k__BackingField: {fileID: 912756953968078347}
   <ShotOrigin>k__BackingField: {fileID: 429955562769033583}
@@ -267,6 +270,7 @@ MonoBehaviour:
   <SprintLandingSpeedMultiplier>k__BackingField: 10
   <SprintAnimationMotionScale>k__BackingField: 0.25
   <JumpHeight>k__BackingField: 1.2
+  <BounceHeight>k__BackingField: 25
   <Gravity>k__BackingField: -18
   <TerminalVelocity>k__BackingField: -53
   <StandingFallSpeed>k__BackingField: -3.75
