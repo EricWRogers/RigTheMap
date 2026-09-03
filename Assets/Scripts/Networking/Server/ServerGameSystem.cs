@@ -212,15 +212,26 @@ namespace Unity.MP_FPS
             ecb.AddBuffer<ClientCommandInput>(clientInputEntity);
             ecb.SetComponent(clientInputEntity, new PlayerCommandTarget { NetworkId = ownerNetworkId.Value });
 
-            // Instantiate the player entity
-            var playerEntityPrefab = characterIndex switch
+            bool isBuildMode = LeaderboardManager.Instance != null &&
+                               LeaderboardManager.Instance.CurrentPhase ==
+                               LeaderboardManager.RoundPhase.BuildMode;
+
+            var weaponId = isBuildMode
+                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+            characterIndex = (int)weaponId;
+
+            // Instantiate the player entity for the current round phase.
+            var playerEntityPrefab = isBuildMode &&
+                                     playerEntityPrefabs.PlayerBuildEntityPrefab != Entity.Null
+                ? playerEntityPrefabs.PlayerBuildEntityPrefab
+                : characterIndex switch
             {
-                0 => playerEntityPrefabs.PlayerRifleEntityPrefab,
-                1 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
-                2 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
-                3 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
-                4 => playerEntityPrefabs.PlayerHammerEntityPrefab,
-                _ => playerEntityPrefabs.PlayerShotgunEntityPrefab
+                0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
+                1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
+                2 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
+                3 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
+                _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
 
@@ -229,7 +240,7 @@ namespace Unity.MP_FPS
                 TeamId = teamId
             });
 
-            var weaponId = WeaponManager.Instance.WeaponRegistry.GetWeaponIdForCharacter(characterIndex);
+
 
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found

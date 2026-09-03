@@ -249,6 +249,12 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 if (weaponData.IsPlacementWeapon)
                                 {
+                                    if (weaponData.PlacementGhostPrefabs == null ||
+                                        weaponData.PlacementGhostPrefabs.Count == 0)
+                                    {
+                                        continue;
+                                    }
+
                                     int placementMask = weaponData.PlacementLayerMask.value != 0
                                         ? weaponData.PlacementLayerMask.value
                                         : LayerMask.GetMask("Ground", "Default");
@@ -263,9 +269,15 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                         Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
 
-                                        if (weaponData.ProjectileGhostPrefab.GhostPrefab != null && weaponData.ProjectileGhostPrefab.GhostGuid.IsValid)
+                                        int selectedIndex = math.clamp(
+                                            predictedPlayer.ValueRO.SelectedPlacementPrefabIndex,
+                                            0,
+                                            weaponData.PlacementGhostPrefabs.Count - 1);
+                                        var placementPrefab = weaponData.PlacementGhostPrefabs[selectedIndex];
+
+                                        if (placementPrefab.GhostPrefab != null && placementPrefab.GhostGuid.IsValid)
                                         {
-                                            placementSpawns.Add((placementPos, placementRotation, weaponData.ProjectileGhostPrefab));
+                                            placementSpawns.Add((placementPos, placementRotation, placementPrefab));
                                         }
                                     }
 

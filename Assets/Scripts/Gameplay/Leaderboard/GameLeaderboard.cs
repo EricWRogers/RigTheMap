@@ -17,6 +17,7 @@ namespace Gameplay.Leaderboard
         public float BuildTimer => _buildTimer;
         public RoundPhase CurrentPhase => _roundPhase;
         public static LeaderboardManager Instance { get; private set; }
+        public static event System.Action<bool> BuildModeChanged;
         public enum RoundPhase
         {
             Fighting,
@@ -121,7 +122,7 @@ namespace Gameplay.Leaderboard
                     var entry = buffer[i];
                     entry.Kills++;
                     buffer[i] = entry;
-                    if (entry.Kills >= 3 && _roundPhase == RoundPhase.Fighting)
+                    if (entry.Kills >= 2 && _roundPhase == RoundPhase.Fighting)
                     {
                         WinRound(killer);
                     }
@@ -175,6 +176,7 @@ namespace Gameplay.Leaderboard
            
             _roundPhase = RoundPhase.BuildMode;
             _buildTimer = 30f;
+            GhostGameObject.BroadcastRPC(new RoundPhaseChangedRpc { IsBuildMode = true });
         }
         private void StartNextRound()
         {
@@ -192,6 +194,7 @@ namespace Gameplay.Leaderboard
 
             _roundPhase = RoundPhase.Fighting;
             _buildTimer = 30f;
+            GhostGameObject.BroadcastRPC(new RoundPhaseChangedRpc { IsBuildMode = false });
 
             if (GhostGameObject == null ||
                 !GhostGameObject.IsGhostLinked() ||
@@ -368,6 +371,11 @@ namespace Gameplay.Leaderboard
         {
             if (!GhostGameObject.IsGhostLinked()) return;
 
+            while (GhostGameObject.ConsumeRPC(out RoundPhaseChangedRpc phaseRpc))
+            {
+                BuildModeChanged?.Invoke(phaseRpc.IsBuildMode);
+            }
+
             // Consume any kill feed RPCs received this frame
             while (GhostGameObject.ConsumeRPC(out KillFeedEntryRpc killFeedRpc))
             {
@@ -392,5 +400,10 @@ namespace Gameplay.Leaderboard
     public struct PlayerJoinedEntryRpc : IRpcCommand
     {
         public FixedString64Bytes PlayerName;
+    }
+
+    public struct RoundPhaseChangedRpc : IRpcCommand
+    {
+        public bool IsBuildMode;
     }
 }

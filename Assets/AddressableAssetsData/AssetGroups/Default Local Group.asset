@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5edb95f5485955843a2edf75c2b7d879
+    m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_Strategun.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63934da2ab499aa479387455c5ccfd99
     m_Address: Assets/Prefabs/Effects/MachineGunBulletHit.prefab
     m_ReadOnly: 0
@@ -42,6 +47,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 83a79bf5320972c46ae675e08e77534b
     m_Address: Assets/Prefabs/ActorGhosts/Projectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abafff61a81489c498a20e4811aeae1e
+    m_Address: Assets/Prefabs/ActorGhosts/TrenchBarricade.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abdf45bd23d9a4c458ba972b8772a0d9
+    m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_Shark.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

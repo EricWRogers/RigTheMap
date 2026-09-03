@@ -167,7 +167,9 @@ MonoBehaviour:
   <ClientInputEntityPrefab>k__BackingField: {fileID: -872636517575754594, guid: a5f7e89c673676445a6ea2905e239be0, type: 3}
   <PlayerRifleEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: d66bf1c0cf4a94990815a86b3d55b686, type: 3}
   <PlayerShotgunEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: f4bc4302cb16c4e29aaa203772f1461c, type: 3}
+  <PlayerSharkEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: abdf45bd23d9a4c458ba972b8772a0d9, type: 3}
   <PlayerHammerEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 3bdee9dcdb7731f4ea3bd5754b5ea8f8, type: 3}
+  <PlayerBuildEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 5edb95f5485955843a2edf75c2b7d879, type: 3}
 --- !u!114 &1105370251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,6 +249,11 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   - m_AssetGUID: 270b54e7b6714d049a29a8621caba037
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: abafff61a81489c498a20e4811aeae1e
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 

@@ -2,6 +2,7 @@
 using Unity.NetCode;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Gameplay.Leaderboard;
 
 namespace Unity.MP_FPS.UI
 {
@@ -18,6 +19,7 @@ namespace Unity.MP_FPS.UI
 
         private float m_RespawnCountdown;
         private const float RESPAWN_DURATION = 5.0f;
+        private bool m_ShowBuildModeMessage;
 
         private void Awake()
         {
@@ -28,6 +30,17 @@ namespace Unity.MP_FPS.UI
         {
             m_RespawnScreen = GetComponent<UIDocument>().rootVisualElement;
             m_RespawnTimerLabel = m_RespawnScreen.Q<Label>("RespawnMessage");
+            LeaderboardManager.BuildModeChanged += OnBuildModeChanged;
+        }
+
+        private void OnDisable()
+        {
+            LeaderboardManager.BuildModeChanged -= OnBuildModeChanged;
+        }
+
+        private void OnBuildModeChanged(bool isBuildMode)
+        {
+            m_ShowBuildModeMessage = isBuildMode;
         }
 
         private void InitializeEcs()
@@ -93,7 +106,11 @@ namespace Unity.MP_FPS.UI
                     m_RespawnCountdown = 0;
                 }
 
-                m_RespawnTimerLabel.text = $"RESPAWNING IN {Mathf.CeilToInt(m_RespawnCountdown).ToString()}";
+                string message = m_ShowBuildModeMessage
+                    ? $"BUILD MODE START IN {Mathf.CeilToInt(m_RespawnCountdown)}"
+                    : $"RESPAWNING IN {Mathf.CeilToInt(m_RespawnCountdown)}";
+
+                m_RespawnTimerLabel.text = message;            
             }
         }
     }

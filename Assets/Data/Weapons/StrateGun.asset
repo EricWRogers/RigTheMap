@@ -27,17 +27,17 @@ MonoBehaviour:
   ReloadTime: 0.01
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 
+      m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     m_GhostGuid:
       Value:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
+        x: 2795305235
+        y: 1247169446
+        z: 1873977756
+        w: 2117713470
   PlacementGhostPrefabs:
   - <GhostPrefab>k__BackingField:
       m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
@@ -75,6 +75,18 @@ MonoBehaviour:
         y: 1281348821
         z: 1858994575
         w: 47192505
+  - <GhostPrefab>k__BackingField:
+      m_AssetGUID: abafff61a81489c498a20e4811aeae1e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    m_GhostGuid:
+      Value:
+        x: 385874618
+        y: 1285046666
+        z: 2229283465
+        w: 3790268945
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7

@@ -60,10 +60,6 @@ namespace Unity.MP_FPS
         public PlayerMovementHistory MovementHistory { get; private set; } =
             new PlayerMovementHistory(k_NumHistoryTicks);
 
-        private const uint BuildGunWeaponID = 2;
-
-        private Dictionary<Entity, uint> m_OriginalWeapons = new Dictionary<Entity, uint>();
-
         private bool m_WasBuildMode = false;
 
         private HashSet<Entity> m_HammerLaunchers = new HashSet<Entity>();
@@ -100,58 +96,12 @@ namespace Unity.MP_FPS
             base.OnDestroy();
         }
 
-        private void UpdateBuildModeWeapons(bool buildMode)
+        private void KillPlayersOnModeChange()
         {
-            foreach (var (predictedPlayer, entity) in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>>()
-                         .WithEntityAccess()
-                         .WithAll<Simulate>())
+            foreach (var predictedPlayer in
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>>().WithAll<Simulate>())
             {
-                if (buildMode)
-                {
-                    if (!m_OriginalWeapons.ContainsKey(entity))
-                    {
-                        m_OriginalWeapons[entity] =
-                            predictedPlayer.ValueRO.EquippedWeaponID;
-                    }
-
-                    predictedPlayer.ValueRW.EquippedWeaponID = BuildGunWeaponID;
-
-                    var buildGunData =
-                        WeaponManager.Instance.WeaponRegistry.GetWeaponData(BuildGunWeaponID);
-
-                    if (buildGunData != null)
-                    {
-                        predictedPlayer.ValueRW.CurrentAmmo =
-                            buildGunData.MagazineSize;
-                    }
-
-                    predictedPlayer.ValueRW.WeaponCooldown = 0f;
-                }
-                else
-                {
-                    if (m_OriginalWeapons.TryGetValue(entity, out uint originalWeaponID))
-                    {
-                        predictedPlayer.ValueRW.EquippedWeaponID = originalWeaponID;
-
-                        var originalWeaponData =
-                            WeaponManager.Instance.WeaponRegistry.GetWeaponData(
-                                originalWeaponID);
-
-                        if (originalWeaponData != null)
-                        {
-                            predictedPlayer.ValueRW.CurrentAmmo =
-                                originalWeaponData.MagazineSize;
-                        }
-
-                        predictedPlayer.ValueRW.WeaponCooldown = 0f;
-                    }
-                }
-            }
-
-            if (!buildMode)
-            {
-                m_OriginalWeapons.Clear();
+                predictedPlayer.ValueRW.CurrentHealth = 0;
             }
         }
 
@@ -263,7 +213,7 @@ namespace Unity.MP_FPS
 
                 if (isBuildMode != m_WasBuildMode)
                 {
-                    UpdateBuildModeWeapons(isBuildMode);
+                    KillPlayersOnModeChange();
                     m_WasBuildMode = isBuildMode;
                 }
             }
@@ -546,6 +496,12 @@ namespace Unity.MP_FPS
 
                             if (weaponData.IsPlacementWeapon)
                             {
+                                if (weaponData.PlacementGhostPrefabs == null ||
+                                    weaponData.PlacementGhostPrefabs.Count == 0)
+                                {
+                                    continue;
+                                }
+
                                 int placementMask = weaponData.PlacementLayerMask.value != 0
                                     ? weaponData.PlacementLayerMask.value
                                     : LayerMask.GetMask("Ground", "Default");
