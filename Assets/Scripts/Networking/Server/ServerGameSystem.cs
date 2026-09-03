@@ -239,6 +239,10 @@ namespace Unity.MP_FPS
             {
                 TeamId = teamId
             });
+            Debug.Log(
+                $"[TEAM ASSIGNMENT] Player NetworkId={ownerNetworkId.Value} " +
+                $"Character={characterIndex} TeamId={teamId}"
+            );
 
 
 

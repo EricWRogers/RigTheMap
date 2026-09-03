@@ -20,13 +20,10 @@ public class GhostGameObjectLink : ICleanupComponentData
     public GhostGameObject LinkedInstance;
 }
 
-// added to a ghost when it's activation is deferred until conditions are met
 public class GhostGameObjectDeferredActivation : ICleanupComponentData
 {
 }
 
-// added to all active ghosts. It is automatically removed when a ghost is marked as destroyed
-// (but potentially before the gameobject has been destroyed)
 public class GhostGameObjectActive : IComponentData
 {
 }
@@ -40,7 +37,6 @@ public enum ComponentStripBehaviour
 
 public interface IStripComponent
 {
-    // native MonoBehaviour overrides
     GameObject gameObject { get; }
     bool enabled { get; set; }
 
@@ -108,6 +104,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         }
 
         m_GhostEntityList.Dispose();
+
         if (m_TransformAccessArray.isCreated)
         {
             m_TransformAccessArray.Dispose();
@@ -125,14 +122,16 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
         if (!prefabSystem.PrefabsLoaded || ManagerGhostsSpawner.Instance == null)
         {
-            return; // other systems not ready yet
+            return;
         }
 
         var ecb = new EntityCommandBuffer(Allocator.Temp);
+
         foreach (var (ghostGuid,
                      ghostPrefabReference,
                      ghost,
-                     localTransform, entity)
+                     localTransform,
+                     entity)
                  in SystemAPI
                      .Query<RefRW<GhostGameObjectGuid>, RefRO<GhostGameObjectPrefabReference>, RefRO<GhostInstance>,
                          RefRO<LocalTransform>>()
@@ -149,46 +148,65 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                 if (ghostGameObjectPrefab != null)
                 {
                     var ghostPrefab = ghostGameObjectPrefab.Asset as GameObject;
-                    var instance = Object.Instantiate(ghostPrefab, localTransform.ValueRO.Position,
+                    var instance = Object.Instantiate(
+                        ghostPrefab,
+                        localTransform.ValueRO.Position,
                         localTransform.ValueRO.Rotation);
 
 #if UNITY_EDITOR || DEBUG
                     instance.name = $"{(isClient ? "[Client]" : "[Server]")} {ghostPrefab.name}";
 #endif
+
                     instance.transform.parent = isClient
                         ? GhostBridgeBootstrap.Instance.ClientGameObjectHierarchy.transform
                         : GhostBridgeBootstrap.Instance.ServerGameObjectHierarchy.transform;
 
                     if (localTransform.ValueRO.Scale != 1.0f)
                     {
-                        instance.transform.localScale = new Vector3(localTransform.ValueRO.Scale,
-                            localTransform.ValueRO.Scale, localTransform.ValueRO.Scale);
+                        instance.transform.localScale = new Vector3(
+                            localTransform.ValueRO.Scale,
+                            localTransform.ValueRO.Scale,
+                            localTransform.ValueRO.Scale);
                     }
 
                     var ghostGameObject = instance.GetComponent<GhostGameObject>();
 
+                    if (ghostGameObject == null)
+                    {
+                        Debug.LogError(
+                            $"[GHOSTGAMEOBJECTLIFETIMESYSTEM]: Prefab {ghostPrefab.name} does not contain a GhostGameObject component.");
+
+                        Object.DestroyImmediate(instance);
+                        continue;
+                    }
+
                     ghostGameObject.SetPrefabAssetGuid(ghostPrefabGuid, ghostRootPrefabGuid);
                     ghostGameObject.SetGuid(ghostGuid.ValueRO.Guid);
+
+                    if (m_GhostGameObjects.TryGetValue(ghostGuid.ValueRO.Guid, out var matchingGhost))
+                    {
+#if UNITY_EDITOR || DEBUG
+                        Debug.LogError(
+                            $"DUPLICATE GHOST GUID!\n" +
+                            $"New: {ghostGameObject.gameObject.name}\n" +
+                            $"Existing: {(matchingGhost != null ? matchingGhost.gameObject.name : "NULL")}\n" +
+                            $"GUID: {ghostGuid.ValueRO.Guid}\n" +
+                            $"Prefab Asset GUID: {ghostPrefabGuid}\n" +
+                            $"Root Prefab GUID: {ghostRootPrefabGuid}");
+#endif
+
+                        Object.DestroyImmediate(instance);
+                        continue;
+                    }
 
                     ghostGuid.ValueRW.LocalGhostIndex = m_GhostGameObjectList.Count;
 
 #if UNITY_EDITOR || DEBUG
                     instance.name += $" [{ghostGuid.ValueRO.Guid}]";
-
-                    if (m_GhostGameObjects.TryGetValue(ghostGuid.ValueRO.Guid, out var matchingGhost))
-                    {
-                         Debug.LogError(
-                            $"DUPLICATE GHOST GUID!\n" +
-                            $"New: {ghostGameObject.gameObject.name}\n" +
-                            $"Existing: {matchingGhost.gameObject.name}\n" +
-                            $"GUID: {ghostGuid.ValueRO.Guid}\n" +
-                            $"Prefab Asset GUID: {ghostPrefabGuid}\n" +
-                            $"Root Prefab GUID: {ghostRootPrefabGuid}");
-                    }
 #endif
 
 #if VERBOSE_GHOST_LIFETIME_EVENTS
-                        Debug.Log($"Spawning {instance.name} with local index {ghostGuid.ValueRO.LocalGhostIndex}");
+                    Debug.Log($"Spawning {instance.name} with local index {ghostGuid.ValueRO.LocalGhostIndex}");
 #endif
 
                     m_GhostGameObjects.Add(ghostGuid.ValueRO.Guid, ghostGameObject);
@@ -200,49 +218,64 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                     if (isServer)
                     {
                         instance.GetComponentsInChildren(true, m_RetrievedRenderers);
+
                         foreach (var renderer in m_RetrievedRenderers)
                         {
                             renderer.enabled = false;
                         }
 
                         instance.GetComponentsInChildren(m_RetrievedAnimators);
+
                         foreach (var animator in m_RetrievedAnimators)
                         {
                             animator.enabled = false;
                         }
 
 #if WWISE_AUDIO_SUPPORTED
-                            instance.GetComponentsInChildren(m_RetrievedAkGameObjs);
-                            foreach (var akGameObj in m_RetrievedAkGameObjs)
-                            {
-                                GameObject.Destroy(akGameObj);
-                            }
+                        instance.GetComponentsInChildren(m_RetrievedAkGameObjs);
+
+                        foreach (var akGameObj in m_RetrievedAkGameObjs)
+                        {
+                            GameObject.Destroy(akGameObj);
+                        }
 #endif
 
                         instance.GetComponentsInChildren(m_RetrievedClientOnlyComponents);
+
                         foreach (var clientOnlyComponent in m_RetrievedClientOnlyComponents)
                         {
                             if (clientOnlyComponent != null)
                             {
-                                StripComponent(clientOnlyComponent, (MonoBehaviour)clientOnlyComponent);
+                                StripComponent(
+                                    clientOnlyComponent,
+                                    (MonoBehaviour)clientOnlyComponent);
                             }
                         }
                     }
                     else
                     {
                         instance.GetComponentsInChildren(m_RetrievedServerOnlyComponents);
+
                         foreach (var serverOnlyComponent in m_RetrievedServerOnlyComponents)
                         {
                             if (serverOnlyComponent != null)
                             {
-                                StripComponent(serverOnlyComponent, (MonoBehaviour)serverOnlyComponent);
+                                StripComponent(
+                                    serverOnlyComponent,
+                                    (MonoBehaviour)serverOnlyComponent);
                             }
                         }
                     }
 
-                    ecb.AddComponent(entity, new GhostGameObjectLink { LinkedInstance = ghostGameObject });
+                    ecb.AddComponent(
+                        entity,
+                        new GhostGameObjectLink
+                        {
+                            LinkedInstance = ghostGameObject
+                        });
 
-                    ecb.AddComponent(entity, new GhostGameObjectDeferredActivation());
+                    ecb.AddComponent<GhostGameObjectDeferredActivation>(entity);
+
                     m_NumDeferredGhosts++;
 
                     instance.SetActive(false);
@@ -254,7 +287,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                 }
                 else
                 {
-                    Debug.Log($"[GHOSTGAMEOBJECTLIFETIMESYSTEM]: Prefab {ghostPrefabGuid.ToString()} is still loading");
+                    Debug.Log(
+                        $"[GHOSTGAMEOBJECTLIFETIMESYSTEM]: Prefab {ghostPrefabGuid.ToString()} is still loading");
                 }
             }
             else
@@ -264,40 +298,40 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             }
         }
 
-        // process all deferred ghosts in order
-        // on the server:
-        // 1. Managers
-        // 2. Non-managers
-        // on the client:
-        // 1. Managers
-        // 2. Local player ghosts
-        // 3. Everything else
         if (m_NumDeferredGhosts > 0)
         {
-            int numExpectedManagers = ManagerGhostsSpawner.TryGetInstance(out var managerSpawner) ? managerSpawner.ManagersToSpawn.Count : 0;
+            int numExpectedManagers =
+                ManagerGhostsSpawner.TryGetInstance(out var managerSpawner)
+                    ? managerSpawner.ManagersToSpawn.Count
+                    : 0;
+
             int numExpectedLocalPlayers = isClient ? 1 : 0;
 
             var deferredGhostsQuery = SystemAPI.QueryBuilder()
-                .WithAll<GhostGameObjectGuid, GhostGameObjectLink, GhostGameObjectDeferredActivation>().Build();
+                .WithAll<GhostGameObjectGuid, GhostGameObjectLink, GhostGameObjectDeferredActivation>()
+                .Build();
 
-            // This loop now correctly processes the currently available deferred ghosts.
-            // Dependencies are resolved frame-by-frame as managers and players are linked.
             foreach (var entity in deferredGhostsQuery.ToEntityArray(Allocator.Temp))
             {
                 var ghostGuid = SystemAPI.GetComponent<GhostGameObjectGuid>(entity);
                 var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
                 var ghostGameObject = link.LinkedInstance;
 
-                // This check is crucial. If the GameObject was destroyed by another system this frame, skip it.
                 if (ghostGameObject == null)
                 {
                     m_NumDeferredGhosts--;
-                    ecb.RemoveComponent<GhostGameObjectDeferredActivation>(entity); // Clean up the component
+
+                    ecb.RemoveComponent<GhostGameObjectDeferredActivation>(entity);
+
                     continue;
                 }
 
                 bool isManager = ghostGameObject.TryGetComponent<IGhostManager>(out _);
-                var role = isServer ? MultiplayerRole.Server : MultiplayerRole.ClientProxy;
+
+                var role = isServer
+                    ? MultiplayerRole.Server
+                    : MultiplayerRole.ClientProxy;
+
                 if (isClient && SystemAPI.HasComponent<GhostOwner>(entity))
                 {
                     if (SystemAPI.GetComponent<GhostOwner>(entity).NetworkId == networkId)
@@ -307,14 +341,26 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                 }
 
                 bool allowedToActivate = false;
-                if (isServer) {
-                    allowedToActivate = isManager || (m_NumManagersCreated >= numExpectedManagers);
-                } else { // isClient
-                    if (ghostGuid.ServerLinked) {
-                        bool isLocalPlayer = role == MultiplayerRole.ClientOwned && SystemAPI.HasComponent<PredictedPlayerGhost>(entity);
-                        allowedToActivate = isManager || 
-                                            (m_NumManagersCreated >= numExpectedManagers && isLocalPlayer) || 
-                                            (m_NumManagersCreated >= numExpectedManagers && m_NumLocalPlayersCreated >= numExpectedLocalPlayers);
+
+                if (isServer)
+                {
+                    allowedToActivate =
+                        isManager ||
+                        m_NumManagersCreated >= numExpectedManagers;
+                }
+                else
+                {
+                    if (ghostGuid.ServerLinked)
+                    {
+                        bool isLocalPlayer =
+                            role == MultiplayerRole.ClientOwned &&
+                            SystemAPI.HasComponent<PredictedPlayerGhost>(entity);
+
+                        allowedToActivate =
+                            isManager ||
+                            (m_NumManagersCreated >= numExpectedManagers && isLocalPlayer) ||
+                            (m_NumManagersCreated >= numExpectedManagers &&
+                             m_NumLocalPlayersCreated >= numExpectedLocalPlayers);
                     }
                 }
 
@@ -322,12 +368,28 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                 {
                     try
                     {
-                        if (isManager) m_NumManagersCreated++;
-                        else if (role == MultiplayerRole.ClientOwned && SystemAPI.HasComponent<PredictedPlayerGhost>(entity)) m_NumLocalPlayersCreated++;
-                            
-                        ghostGameObject.LinkGhost(World, entity, role);
+                        if (isManager)
+                        {
+                            m_NumManagersCreated++;
+                        }
+                        else if (
+                            role == MultiplayerRole.ClientOwned &&
+                            SystemAPI.HasComponent<PredictedPlayerGhost>(entity))
+                        {
+                            m_NumLocalPlayersCreated++;
+                        }
+
+                        ghostGameObject.LinkGhost(
+                            World,
+                            entity,
+                            role);
+
                         m_NumDeferredGhosts--;
-                        OnGhostPrefabSpawned?.Invoke(ghostGameObject.Guid, ghostGameObject, this);
+
+                        OnGhostPrefabSpawned?.Invoke(
+                            ghostGameObject.Guid,
+                            ghostGameObject,
+                            this);
 
                         ecb.RemoveComponent<GhostGameObjectDeferredActivation>(entity);
                         ecb.AddComponent<GhostGameObjectActive>(entity);
@@ -339,8 +401,10 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError($"[GHOSTGAMEOBJECTLIFETIMESYSTEM] Link And Activate Ghost failed on '{ghostGameObject.name}'. Destroying entity. Exception: {e.Message}\\r\\n{e.StackTrace}");
-                        ecb.DestroyEntity(entity); // Destroy the problematic entity to prevent repeated errors.
+                        Debug.LogError(
+                            $"[GHOSTGAMEOBJECTLIFETIMESYSTEM] Link And Activate Ghost failed on '{ghostGameObject.name}'. Destroying entity. Exception: {e.Message}\r\n{e.StackTrace}");
+
+                        ecb.DestroyEntity(entity);
                         m_NumDeferredGhosts--;
                     }
                 }
@@ -348,21 +412,20 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         }
 
         var parentSetupQuery = SystemAPI.QueryBuilder()
-            .WithAll<GhostGameObjectParentSetup, GhostGameObjectLink, GhostGameObjectActive>().Build();
+            .WithAll<GhostGameObjectParentSetup, GhostGameObjectLink, GhostGameObjectActive>()
+            .Build();
 
         foreach (var entity in parentSetupQuery.ToEntityArray(Allocator.Temp))
         {
             var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
 
-            // This robust check prevents the MissingReferenceException.
-            // We check both the C# wrapper and the underlying Unity GameObject.
-            if (link.LinkedInstance != null && link.LinkedInstance.gameObject != null)
+            if (link.LinkedInstance != null &&
+                link.LinkedInstance.gameObject != null)
             {
                 link.LinkedInstance.UpdateParentReference();
             }
             else
             {
-                // The GameObject was destroyed before it could be parented. Just clean up the component.
                 ecb.RemoveComponent<GhostGameObjectParentSetup>(entity);
             }
         }
@@ -380,6 +443,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
     {
         var transforms = new Transform[m_GhostGameObjectList.Count];
         int transformCount = 0;
+
         for (int i = 0; i < m_GhostGameObjectList.Count; i++)
         {
             if (m_GhostGameObjectList[i] != null)
@@ -405,7 +469,9 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         m_RebuildGhostGameObjectTransformAccessArray = false;
     }
 
-    private void StripComponent<T>(T componentInterface, MonoBehaviour component)
+    private void StripComponent<T>(
+        T componentInterface,
+        MonoBehaviour component)
         where T : IStripComponent
     {
         switch (componentInterface.StripBehaviour)
@@ -444,8 +510,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
     {
         foreach (var ghost in m_GhostGameObjects.Values)
         {
-            if (ghost != null
-                && ghost.PrefabAssetGuid == prefabType.GhostGuid)
+            if (ghost != null &&
+                ghost.PrefabAssetGuid == prefabType.GhostGuid)
             {
                 return true;
             }
@@ -454,14 +520,16 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         return false;
     }
 
-    public bool TryFindGhostByPartialName(string partialName, out GhostGameObject ghostGameObject)
+    public bool TryFindGhostByPartialName(
+        string partialName,
+        out GhostGameObject ghostGameObject)
     {
         ghostGameObject = null;
 
         foreach (var ghost in m_GhostGameObjects.Values)
         {
-            if (ghost != null
-                && ghost.name.Contains(partialName))
+            if (ghost != null &&
+                ghost.name.Contains(partialName))
             {
                 if (ghostGameObject == null)
                 {
@@ -469,9 +537,9 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                 }
                 else
                 {
-                    // we already have a matching ghost
-                    // let's fire a warning and not select it
-                    Debug.LogWarning($"Detected multiple ghosts when looking for partial name '{partialName}'. Not returning a match");
+                    Debug.LogWarning(
+                        $"Detected multiple ghosts when looking for partial name '{partialName}'. Not returning a match");
+
                     ghostGameObject = null;
                     return false;
                 }
@@ -481,7 +549,9 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         return ghostGameObject != null;
     }
 
-    public bool TryGetGhostGameObjectByGuid(Hash128 guid, out GhostGameObject ghostGameObject)
+    public bool TryGetGhostGameObjectByGuid(
+        Hash128 guid,
+        out GhostGameObject ghostGameObject)
     {
         if (m_GhostGameObjects.TryGetValue(guid, out ghostGameObject))
         {
@@ -498,9 +568,11 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 #endif
 
         m_GhostGameObjects.Remove(guid);
+
         for (int i = 0; i < m_GhostGameObjectList.Count; i++)
         {
-            if (m_GhostGameObjectList[i] != null && m_GhostGameObjectList[i].Guid == guid)
+            if (m_GhostGameObjectList[i] != null &&
+                m_GhostGameObjectList[i].Guid == guid)
             {
                 m_GhostGameObjectList[i] = null;
                 m_GhostEntityList[i] = Entity.Null;
@@ -515,32 +587,30 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
     {
         if (m_GhostGameObjects.Count == m_GhostGameObjectList.Count)
         {
-            // the list is not dirty
-            // no work to do
             return;
         }
 
-        // 1. Clear the old, potentially out-of-sync lists.
         m_GhostGameObjectList.Clear();
         m_GhostEntityList.Clear();
 
-        // 2. Repopulate the lists from the authoritative dictionary.
-        // This guarantees the order and indices are always correct.
         foreach (var ghost in m_GhostGameObjects.Values)
         {
-            if (ghost != null && ghost.GhostEntityExists())
+            if (ghost != null &&
+                ghost.GhostEntityExists())
             {
                 m_GhostGameObjectList.Add(ghost);
                 m_GhostEntityList.Add(ghost.LinkedEntity);
 
-                // 3. Update the local index stored on the ghost's entity component.
-                var ghostGuidComponent = ghost.ReadGhostComponentData<GhostGameObjectGuid>();
-                ghostGuidComponent.LocalGhostIndex = m_GhostGameObjectList.Count - 1;
+                var ghostGuidComponent =
+                    ghost.ReadGhostComponentData<GhostGameObjectGuid>();
+
+                ghostGuidComponent.LocalGhostIndex =
+                    m_GhostGameObjectList.Count - 1;
+
                 ghost.WriteGhostComponentData(ghostGuidComponent);
             }
         }
 
-        // 4. Mark the TransformAccessArray to be rebuilt with the new, correct data.
         m_RebuildGhostGameObjectTransformAccessArray = true;
     }
 
@@ -551,9 +621,13 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         Console.Write(msg);
     }
 
-    private static void LogDormacy(List<GhostGameObject> ghostList, World world, bool logAwakeGhosts = false)
+    private static void LogDormacy(
+        List<GhostGameObject> ghostList,
+        World world,
+        bool logAwakeGhosts = false)
     {
         Type[] types;
+
         if (world == ClientServerBootstrap.ServerWorld)
         {
             types = new Type[]
@@ -572,20 +646,18 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         }
 
         var numDormant = 0;
+
         foreach (var ghost in ghostList)
         {
             if (ghost == null || ghost.Dormant)
             {
-                // for the purpose of logging
-                // we'll consider pending deleted ghosts
-                // to be dormant too
                 numDormant++;
             }
             else
             {
                 var detailsLog = "";
-                // our ghost is awake, but does it have any updates registered?
                 var willUpdate = false;
+
                 foreach (var type in types)
                 {
                     if (ghost.IsUpdateRegisteredForBehaviour(type, out var updates))
@@ -594,24 +666,13 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                         {
                             if (!willUpdate)
                             {
-                                // first update, gather details
                                 detailsLog += $"<b>{ghost.name}</b>\n";
-                                // if (DormancyManager.TryGetInstanceFromWorld(world, out var dormanyManager))
-                                // {
-                                //     if (dormanyManager.IsGhostRegisteredForDormancy(ghost, out var registeredType))
-                                //     {
-                                //         detailsLog += $" -- Dormancy check: <color=\"#8EBDFF\">{registeredType}</color> but currently AWAKE\n";
-                                //     }
-                                //     else
-                                //     {
-                                //         detailsLog += $" -- <color=\"red\">NOT registered for dormancy</color>\n";
-                                //     }
-                                // }
                             }
 
                             foreach (var update in updates)
                             {
-                                detailsLog += $"   -- {update.GetType().Name}.{type.Name}\n";
+                                detailsLog +=
+                                    $"   -- {update.GetType().Name}.{type.Name}\n";
                             }
                         }
 
@@ -637,13 +698,15 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
     [UnityEngine.Scripting.Preserve]
     public static void LogGhostStats(string[] args)
     {
-        if (args.Length == 0 || (args.Length == 1 && args[0] == "details"))
+        if (args.Length == 0 ||
+            (args.Length == 1 && args[0] == "details"))
         {
             LogGhostStats(new string[]
             {
                 "server",
                 args.Length == 1 ? args[0] : ""
             });
+
             LogGhostStats(new string[]
             {
                 "client",
@@ -653,6 +716,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         else
         {
             var world = ClientServerBootstrap.ServerWorld;
+
             if (args[0] == "client")
             {
                 world = ClientServerBootstrap.ClientWorld;
@@ -662,8 +726,15 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             {
                 var lifetimeSystem = Instance(world);
                 var ghostList = lifetimeSystem.GhostGameObjectList;
-                LogToConsoleAndDebug($"{world.Name} has {ghostList.Count} ghosts");
-                LogDormacy(ghostList, world, logAwakeGhosts: args.Length == 2 && args[1] == "details");
+
+                LogToConsoleAndDebug(
+                    $"{world.Name} has {ghostList.Count} ghosts");
+
+                LogDormacy(
+                    ghostList,
+                    world,
+                    logAwakeGhosts: args.Length == 2 &&
+                                    args[1] == "details");
             }
         }
     }
@@ -678,52 +749,28 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
         if (ClientServerBootstrap.ServerWorld == null)
         {
-            Debug.LogWarning("The command 'spawn' is only valid on the host");
+            Debug.LogWarning(
+                "The command 'spawn' is only valid on the host");
+
             return;
         }
 
-        if (args.Length <= 2) // spawn <object> [optional <count>]
+        if (args.Length <= 2)
         {
-            // if (PlayerGhostManager.TryGetServerInstance(out var playerGhostManager))
-            // {
-            //     const float forwardOffset = 0.5f;
-            //
-            //     var players = playerGhostManager.GetPlayersByRole(MultiplayerRole.Server);
-            //     if (players.Count > 0)
-            //     {
-            //         var spawnPos = players[0].transform.position;
-            //
-            //         // add an offset so things fall down nicely
-            //         float heightOffset = 1f;
-            //         spawnPos += heightOffset * Vector3.up;
-            //
-            //         // and a slight forward offset
-            //         spawnPos += forwardOffset * players[0].transform.forward;
-            //
-            //         int count = 1;
-            //         if (args.Length == 2 && Int32.TryParse(args[1], out var parsedCount))
-            //         {
-            //             count = parsedCount;
-            //         }
-            //         SpawnGhostAtPosition(args[0], spawnPos, count);
-            //     }
-            // }
         }
-
-        // spawn with positions. This could be
-        // 3 args: spawn wood 10 23,45,65,90
         else if (args.Length >= 3)
         {
             var spawnObject = args[0];
+
             int count = 1;
+
             if (Int32.TryParse(args[1], out var parsedCount))
             {
                 count = parsedCount;
             }
 
-            // combine remaining arguments together
-            // this is so we can effectively strip out any white space
             string wholeString = "";
+
             for (int i = 0; i < args.Length - 2; i++)
             {
                 wholeString += args[2 + i];
@@ -732,32 +779,53 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             var stringParams = wholeString.Split(',');
             float[] spawnParams = new float[4];
 
-            var spawnPos = new Vector3(spawnParams[0], spawnParams[1], spawnParams[2]);
+            var spawnPos = new Vector3(
+                spawnParams[0],
+                spawnParams[1],
+                spawnParams[2]);
+
             float yaw = 0f;
+
             if (spawnParams.Length == 4)
             {
                 yaw = spawnParams[3];
             }
 
-            SpawnGhostAtPosition(spawnObject, spawnPos, count, yaw);
+            SpawnGhostAtPosition(
+                spawnObject,
+                spawnPos,
+                count,
+                yaw);
         }
     }
 
-    private static void SpawnGhostAtPosition(string spawnObjectName, Vector3 spawnPos, int count, float yaw = 0f)
+    private static void SpawnGhostAtPosition(
+        string spawnObjectName,
+        Vector3 spawnPos,
+        int count,
+        float yaw = 0f)
     {
-        if (GhostEntityPrefabSystem.ServerInstance.TryFindPrefabByPartialName(spawnObjectName, out var prefab))
+        if (GhostEntityPrefabSystem.ServerInstance.TryFindPrefabByPartialName(
+                spawnObjectName,
+                out var prefab))
         {
             var spawnRot = Quaternion.Euler(0f, yaw, 0f);
 
             const float stackOffset = 0.2f;
+
             for (int i = 0; i < count; i++)
             {
-                GhostSpawner.SpawnGhostPrefab(prefab, spawnPos + (Vector3.up * i * stackOffset), spawnRot, GhostGameObject.GenerateRandomHash());
+                GhostSpawner.SpawnGhostPrefab(
+                    prefab,
+                    spawnPos + (Vector3.up * i * stackOffset),
+                    spawnRot,
+                    GhostGameObject.GenerateRandomHash());
             }
         }
         else
         {
-            Debug.LogWarning($"Could not find ghost prefab from the string {spawnObjectName}");
+            Debug.LogWarning(
+                $"Could not find ghost prefab from the string {spawnObjectName}");
         }
     }
 #endif
