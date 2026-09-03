@@ -1,20 +1,31 @@
 using Unity.Entities;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-public class PredictedPlayerGhostAuthoring : MonoBehaviour
+namespace Unity.MP_FPS
 {
-    public float DisabledPredictionLerpFactor = 10f;
-}
-
-public class PredictedPlayerGhostBaker : Baker<PredictedPlayerGhostAuthoring>
-{
-    public override void Bake(PredictedPlayerGhostAuthoring authoring)
+    [DisallowMultipleComponent]
+    public class PredictedPlayerGhostAuthoring : MonoBehaviour
     {
-        var entity = GetEntity(TransformUsageFlags.None);
-        AddComponent(entity, new PredictedPlayerGhost { DisabledPredictionLerpFactor = authoring.DisabledPredictionLerpFactor });
-        AddBuffer<PredictedPlayerGhostState>(entity);
+        public float DisabledPredictionLerpFactor = 10f;
+    }
 
-        AddComponent<PlayerInputComponent>(entity);
+    public class PredictedPlayerGhostBaker : Baker<PredictedPlayerGhostAuthoring>
+    {
+        public override void Bake(PredictedPlayerGhostAuthoring authoring)
+        {
+            var entity = GetEntity(TransformUsageFlags.None);
+
+            AddComponent(entity, new PredictedPlayerGhost
+            {
+                DisabledPredictionLerpFactor = authoring.DisabledPredictionLerpFactor
+            });
+
+            AddBuffer<PredictedPlayerGhostState>(entity);
+
+            AddComponent<PlayerInputComponent>(entity);
+
+            // Add the team component to the player entity.
+            AddComponent<PlayerTeam>(entity);
+        }
     }
 }

@@ -188,14 +188,26 @@ namespace Unity.MP_FPS
             LeaderboardManager.Instance.RemovePlayer(networkId);
         }
 
-        private void SpawnPlayerCharacter(ref SystemState state, EntityCommandBuffer ecb, Entity connectionEntity, FixedString64Bytes playerName, int characterIndex)
+        private void SpawnPlayerCharacter(
+            ref SystemState state,
+            EntityCommandBuffer ecb,
+            Entity connectionEntity,
+            FixedString64Bytes playerName,
+            int characterIndex,
+            int teamId = -1)
         {
             var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
             var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
-            
+
+            if (teamId < 0)
+            {
+                teamId = GetTeamForNewPlayer(ref state);
+            }
+
             // Instantiate the client input entity
             var clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
             ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
+            
             ecb.SetComponent(connectionEntity, new CommandTarget { targetEntity = clientInputEntity });
             ecb.AddBuffer<ClientCommandInput>(clientInputEntity);
             ecb.SetComponent(clientInputEntity, new PlayerCommandTarget { NetworkId = ownerNetworkId.Value });
@@ -212,6 +224,11 @@ namespace Unity.MP_FPS
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
 
+            ecb.SetComponent(playerEntity, new PlayerTeam
+            {
+                TeamId = teamId
+            });
+
             var weaponId = WeaponManager.Instance.WeaponRegistry.GetWeaponIdForCharacter(characterIndex);
 
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
@@ -219,6 +236,7 @@ namespace Unity.MP_FPS
 
             ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
             ecb.AddComponent(playerEntity, new PlayerClientCommandInputLookup { ClientCommandInputEntity = clientInputEntity });
+            
             ecb.SetComponent(playerEntity, new PredictedPlayerGhost
             {
                 InputIndex = 0,
@@ -235,7 +253,10 @@ namespace Unity.MP_FPS
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
 
-            ecb.SetComponent(playerEntity, new GhostGameObjectGuid { Guid = GhostGameObject.GenerateRandomHash() });
+            ecb.SetComponent(playerEntity, new GhostGameObjectGuid
+            {
+                Guid = GhostGameObject.GenerateRandomHash()
+            });
             ecb.SetComponent(playerEntity, new PlayerGhost.PlayerData { Name = playerName });
 
             // Update the clients map
@@ -247,7 +268,22 @@ namespace Unity.MP_FPS
                 // Update the connection's JoinedClient component with the new player entity
                 ecb.AddComponent(connectionEntity, new JoinedClient
                 {
-                    PlayerEntity = playerEntity, PlayerName = playerName, CharacterIndex = characterIndex
+                    PlayerEntity = playerEntity,
+                    PlayerName = playerName,
+                    CharacterIndex = characterIndex,
+                    TeamId = teamId
+                });
+            }
+            else
+            {
+                var joinedClient = SystemAPI.GetComponent<JoinedClient>(connectionEntity);
+
+                ecb.SetComponent(connectionEntity, new JoinedClient
+                {
+                    PlayerEntity = playerEntity,
+                    PlayerName = joinedClient.PlayerName,
+                    CharacterIndex = joinedClient.CharacterIndex,
+                    TeamId = joinedClient.TeamId
                 });
             }
 
@@ -303,8 +339,13 @@ namespace Unity.MP_FPS
                     {
                         var joinedClientData = _joinedClientLookup[entity];
 
-                        // Call the spawn function again
-                        SpawnPlayerCharacter(ref state, ecb, entity, joinedClientData.PlayerName, joinedClientData.CharacterIndex);
+                        SpawnPlayerCharacter(
+                            ref state,
+                            ecb,
+                            entity,
+                            joinedClientData.PlayerName,
+                            joinedClientData.CharacterIndex,
+                            joinedClientData.TeamId);
 
                         // Remove the timer component
                         ecb.RemoveComponent<PendingRespawn>(entity);
@@ -351,8 +392,7 @@ namespace Unity.MP_FPS
                 return false;
             }
 
-            // Shuffle the list to ensure that if multiple points have the same low number
-            // of players, the choice among them is still random.
+            // Shuffle the list to ensure that if multiple points have the same low number of players, the choice among them is still random.
             for (int i = spawnPoints.Length - 1; i > 0; i--)
             {
                 int k = random.Random.NextInt(0, i + 1);
@@ -364,8 +404,11 @@ namespace Unity.MP_FPS
 
             for (int i = 0; i < spawnPoints.Length; i++)
             {
-                int numColliders = UnityEngine.Physics.OverlapSphereNonAlloc(spawnPoints[i].Position, 2f,
-                    _overlapColliders, LayerMask.GetMask("ServerPlayer"));
+                int numColliders = UnityEngine.Physics.OverlapSphereNonAlloc(
+                    spawnPoints[i].Position,
+                    2f,
+                    _overlapColliders,
+                    LayerMask.GetMask("ServerPlayer"));
 
                 if (numColliders == 0)
                 {
@@ -383,6 +426,32 @@ namespace Unity.MP_FPS
             spawnPoint = spawnPoints[bestSpawnPointIndex];
             spawnPoints.Dispose();
             return true;
+        }
+
+        private int GetTeamForNewPlayer(ref SystemState state)
+        {
+            int redPlayers = 0;
+            int bluePlayers = 0;
+
+            foreach (var playerTeam in
+                     SystemAPI.Query<RefRO<PlayerTeam>>())
+            {
+                if (playerTeam.ValueRO.TeamId == 0)
+                {
+                    redPlayers++;
+                }
+                else if (playerTeam.ValueRO.TeamId == 1)
+                {
+                    bluePlayers++;
+                }
+            }
+
+            if (redPlayers <= bluePlayers)
+            {
+                return 0;
+            }
+
+            return 1;
         }
     }
 }

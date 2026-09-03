@@ -15,7 +15,7 @@ MonoBehaviour:
   WeaponName: Shark Gun
   Type: 1
   ReticleType: 1
-  CooldownInMs: 1
+  CooldownInMs: 0.3
   Damage: 50
   HitscanRange: 100
   IsPlacementWeapon: 0
@@ -69,7 +69,7 @@ MonoBehaviour:
   WeaponReloadSfx: {fileID: 11400000, guid: 787dd818efa43da4f969b63e44de56b7, type: 2}
   Behavior: 0
   AoeRadius: 5
-  ProjectileSpeed: 10
+  ProjectileSpeed: 30
   HammerLaunchForce: 12
   HammerImpactRadius: 2
   HammerDamage: 10

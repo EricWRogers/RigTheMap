@@ -24,7 +24,7 @@ namespace Gameplay.Leaderboard
             MatchOver
         }
 
-        private RoundPhase _roundPhase = RoundPhase.Fighting;
+        private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
         private int _currentRound = 1;
         private float _buildTimer = 30f;

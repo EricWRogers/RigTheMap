@@ -13,6 +13,7 @@ namespace Unity.MP_FPS
         public Entity PlayerEntity;
         public FixedString64Bytes PlayerName;
         public int CharacterIndex;
+        public int TeamId;
     }
     
     /// <summary>
