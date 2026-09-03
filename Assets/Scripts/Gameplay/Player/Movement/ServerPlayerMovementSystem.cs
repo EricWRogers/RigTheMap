@@ -645,6 +645,10 @@ namespace Unity.MP_FPS
 
                                     var placementRotation =
                                         surfaceRotation *
+                                        Quaternion.Euler(
+                                            0f,
+                                            commandInput.PlayerInput.PlacementRotationDegrees,
+                                            0f) *
                                         modelCorrection;
 
                                     selectedIndex =

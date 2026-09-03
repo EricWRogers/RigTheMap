@@ -755,7 +755,7 @@ public class FirstPersonController : MonoBehaviour
                 case MovementType.Standing:
                 case MovementType.Jumping:
                 case MovementType.Falling:
-                    stateConsts = consts.Walk;
+                    stateConsts = input.Sprint ? consts.Sprint : consts.Walk;
                     break;
                 default:
                     Debug.LogError(
