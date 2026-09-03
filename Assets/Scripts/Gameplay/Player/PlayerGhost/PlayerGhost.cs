@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using Unity.Collections;
 using Unity.Entities;
@@ -5,6 +6,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.Util;
 using UnityEngine.Serialization;
 using static FirstPersonController;
 
@@ -16,7 +18,13 @@ namespace Unity.MP_FPS
         [SerializeField] private Vector3 m_CameraRotation;
         [SerializeField] private GameObject m_OwnerVisuals;
         [SerializeField] private GameObject m_OtherPlayerVisuals;
+        [SerializeField] private GameObject m_FirstPersonVisuals;
         [SerializeField] private SoundDef m_SpawnSFX;
+        [SerializeField] private Color m_Team0Color = Color.blue;
+        [SerializeField] private Color m_Team1Color = Color.green;
+        private List<Renderer> m_Renderers = new();
+        private MaterialPropertyBlock m_TeamMaterialBlock;
+        private int m_LastTeamId = -1;
         [field: SerializeField] public Transform CameraTarget { get; private set; }
         [field: SerializeField] public Transform ReticlePoint { get; private set; }
         [field: SerializeField] public Transform ShotOrigin { get; private set; }
@@ -113,6 +121,8 @@ namespace Unity.MP_FPS
             m_OwnerVisuals.SetActive(isClientOwned);
             m_OtherPlayerVisuals.SetActive(!isClientOwned);
 
+            ApplyTeamColor();
+
             if (Role != MultiplayerRole.Server)
             {
                 _animatorCharacter = GetComponent<Animator>();
@@ -153,6 +163,49 @@ namespace Unity.MP_FPS
 
             PlayerGhostManager.TryGetInstanceByRole(Role, out var playerManager);
             playerManager.Register(this);
+        }
+
+        private void ApplyTeamColor()
+        {
+            if(GhostGameObject == null || !GhostGameObject.IsGhostLinked())
+                return;
+
+            var team = ReadGhostComponentData<PlayerTeam>();
+
+            if(m_TeamMaterialBlock == null)
+                m_TeamMaterialBlock = new MaterialPropertyBlock();
+
+            m_Renderers.Clear();
+
+            if(m_OwnerVisuals != null)
+                m_OwnerVisuals.GetComponentsInChildren(true, m_Renderers);
+
+            if(m_OtherPlayerVisuals != null)
+                m_OtherPlayerVisuals.GetComponentsInChildren(true, m_Renderers);
+
+            if(m_FirstPersonVisuals != null)
+                m_FirstPersonVisuals.GetComponentsInChildren(true, m_Renderers);
+
+            // Make Dang sure
+            foreach (var renderer in GetComponentsInChildren<Renderer>(true))
+            {
+                if (!m_Renderers.Contains(renderer))
+                {
+                    m_Renderers.Add(renderer);
+                }
+            }
+
+            Color teamColor = team.TeamId == 0 ? m_Team0Color : m_Team1Color;
+
+            foreach(var renderer in m_Renderers)
+            {
+                renderer.GetPropertyBlock(m_TeamMaterialBlock);
+                m_TeamMaterialBlock.SetColor("_BaseColor", teamColor);
+                m_TeamMaterialBlock.SetColor("_Color", teamColor);
+                renderer.SetPropertyBlock(m_TeamMaterialBlock);
+            }
+
+            m_LastTeamId = team.TeamId;
         }
 
         public override void OnGhostPreDestroy()

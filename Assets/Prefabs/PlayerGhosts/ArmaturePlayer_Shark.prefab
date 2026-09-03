@@ -237,7 +237,10 @@ MonoBehaviour:
   m_CameraRotation: {x: 0, y: 0, z: 0}
   m_OwnerVisuals: {fileID: 5736986264473589180}
   m_OtherPlayerVisuals: {fileID: 2363139590035842310}
+  m_FirstPersonVisuals: {fileID: 5736986264473589180}
   m_SpawnSFX: {fileID: 11400000, guid: bfec68d58a412fa4fb63e149caa5b3e5, type: 2}
+  m_Team0Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Team1Color: {r: 0, g: 1, b: 0, a: 1}
   <CameraTarget>k__BackingField: {fileID: 1666222585322407308}
   <ReticlePoint>k__BackingField: {fileID: 912756953968078347}
   <ShotOrigin>k__BackingField: {fileID: 6355405324223741531}
@@ -878,15 +881,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.145
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.064
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.025
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalRotation.w
