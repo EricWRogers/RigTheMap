@@ -38,6 +38,9 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
     [field: SerializeField, Tooltip("The height the player can jump")]
     public float JumpHeight { get; private set; } = 1.2f;
 
+    [field: SerializeField, Tooltip("The height the player bounces when hitting a bounce surface")]
+    public float BounceHeight { get; private set; } = 25.0f;
+
     [field: SerializeField, Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
     public float Gravity { get; private set; } = -15.0f;
 
@@ -83,6 +86,7 @@ public class PredictedPlayerControllerConstsBaker : Baker<PredictedPlayerControl
             ControllerConsts = new FirstPersonController.ControllerConsts
             {
                 JumpHeight = authoring.JumpHeight,
+                BounceHeight = authoring.BounceHeight,
                 Gravity = authoring.Gravity,
                 StandingFallSpeed = authoring.StandingFallSpeed,
                 JumpTimeout = math.max(authoring.JumpTimeout, math.EPSILON), //set a minimum delay to force the jump timeout to wait 1 frame

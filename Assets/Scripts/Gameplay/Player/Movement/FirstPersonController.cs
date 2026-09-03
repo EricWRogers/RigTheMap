@@ -130,6 +130,7 @@ public class FirstPersonController : MonoBehaviour
         public float PitchDegrees;
         public float MovementSpeed;
         public float JumpFallSpeed;
+        public float3 BounceVelocity;
         public float AnimatorTargetSpeed; // _animIDSpeed
         public float AnimatorTargetSpeedChangeRate;
         public float JumpTimeoutDelta;
@@ -184,6 +185,7 @@ public class FirstPersonController : MonoBehaviour
         public StateConsts Sprint;
 
         public float JumpHeight;
+        public float BounceHeight;
         public float Gravity;
         public float StandingFallSpeed;
         public float JumpTimeout;
@@ -268,6 +270,7 @@ public class FirstPersonController : MonoBehaviour
     public void ApplyMovementUpdate(ref ControllerState state, in ControllerConsts consts,
         in float3 accumulatedMovement, float deltaTime)
     {
+        
         ApplyMove(ref state, consts, accumulatedMovement, deltaTime);
         GroundedCheck(ref state, consts);
 
@@ -324,6 +327,7 @@ public class FirstPersonController : MonoBehaviour
 
         public Vector3 FlattestHitPoint => m_FlattestHit.point;
         public Vector3 FlattestHitNormal => m_FlattestHit.normal;
+        public Vector3 ClosestHitNormal => m_ClosestHit.normal;
         public PhysicsMaterial ClosestHitSurfaceType => m_ClosestHit.collider.sharedMaterial;
    
         
@@ -337,7 +341,9 @@ public class FirstPersonController : MonoBehaviour
     private enum GroundSurfaceType{
             Normal,
             Sticky,
-            Slippery
+            Slippery,
+            Bounce
+
         }     
         private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat){
             if(mat == null) return GroundSurfaceType.Normal;
@@ -347,6 +353,8 @@ public class FirstPersonController : MonoBehaviour
                     return GroundSurfaceType.Sticky;
                 case "Slippery":
                     return GroundSurfaceType.Slippery;
+                case "Bounce":
+                    return GroundSurfaceType.Bounce;
                 default:
                     return GroundSurfaceType.Normal;
             }
@@ -504,6 +512,25 @@ public class FirstPersonController : MonoBehaviour
         {
             state.GroundNormal = groundCollision.FlattestHitNormal;
             GroundPhysicsMaterial = groundCollision.ClosestHitSurfaceType;
+            GroundSurfaceType surfaceType = GetGroundSurfaceType(GroundPhysicsMaterial);
+            if (surfaceType == GroundSurfaceType.Bounce)
+            {// Launch player
+                float BounceHeight = consts.BounceHeight;
+                float launchSpeed = math.sqrt(BounceHeight * -2f * consts.Gravity);
+                float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);
+                float3 bounceVelocity = launchDir + launchSpeed;
+                state.BounceVelocity = bounceVelocity;
+                state.JumpFallSpeed = bounceVelocity.y;
+                SetMovementType(ref state, MovementType.Jumping);
+                state.Jump = true;
+                state.Fall = false;
+
+                
+                
+
+                
+            }
+        
         }
         else
         {
@@ -752,9 +779,11 @@ public class FirstPersonController : MonoBehaviour
         return worldDir * state.MovementSpeed;
     }
 
-    private static void AddMovementFromJumpFall(ref float3 moveDelta, in ControllerState state)
+    private static void AddMovementFromJumpFall(ref float3 moveDelta, ref ControllerState state)
     {
         moveDelta.y += state.JumpFallSpeed;
+        moveDelta.xz += state.BounceVelocity.xz;
+        state.BounceVelocity = float3.zero;
     }
 
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)
@@ -815,7 +844,7 @@ public class FirstPersonController : MonoBehaviour
             case MovementType.Standing:
                 {
                     moveDelta = CalculateMovementFromInput(ref state, consts, stateConsts, input, true, deltaTime);
-                    AddMovementFromJumpFall(ref moveDelta, state);
+                    AddMovementFromJumpFall(ref moveDelta, ref state);
                 }
                 break;
 
@@ -823,7 +852,7 @@ public class FirstPersonController : MonoBehaviour
             case MovementType.Falling:
                 {
                     moveDelta = CalculateMovementFromInput(ref state, consts, stateConsts, input, true, deltaTime);
-                    AddMovementFromJumpFall(ref moveDelta, state);
+                    AddMovementFromJumpFall(ref moveDelta, ref state);
                 }
                 break;
 
