@@ -8,7 +8,10 @@ using UnityEngine;
 [UpdateInGroup(typeof(GhostInputSystemGroup))]
 public partial class ClientInputReaderSystem : SystemBase
 {
+    public static float PlacementRotationDegrees { get; private set; }
+
     private float2 _accumulatedLook;
+    private float _placementRotationDegrees;
 
     private Entity _lastKnownPlayerEntity = Entity.Null;
 
@@ -42,6 +45,8 @@ public partial class ClientInputReaderSystem : SystemBase
 
                 // RESET LOOK: Yaw to face center, Pitch to 0 (Horizontal)
                 _accumulatedLook = new float2(math.degrees(yawRadians), 0f);
+                _placementRotationDegrees = 0f;
+                PlacementRotationDegrees = 0f;
 
                 // Update tracker so we don't reset again while this character is alive
                 _lastKnownPlayerEntity = currentLocalPlayer;
@@ -107,5 +112,15 @@ public partial class ClientInputReaderSystem : SystemBase
 
         var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
         playerInput.WeaponScrollDelta = scrollValue.y;
+
+        if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())
+            _placementRotationDegrees -= 15f;
+        if(controls.Player.RotatePlacementRight.WasPressedThisFrame())
+            _placementRotationDegrees += 15f;
+
+        _placementRotationDegrees = Mathf.Repeat(_placementRotationDegrees, 360f);
+        PlacementRotationDegrees = _placementRotationDegrees;
+
+        playerInput.PlacementRotationDegrees = _placementRotationDegrees;
     }
 }

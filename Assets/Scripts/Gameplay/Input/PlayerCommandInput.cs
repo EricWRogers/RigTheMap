@@ -24,6 +24,7 @@ public struct PlayerInput
     public bool Sprint => (InputFlags & (uint)InputFlag.Sprint) != 0;
     
     public float WeaponScrollDelta;
+    public float PlacementRotationDegrees;
 
     public void SetFlag(InputFlag flag, bool set)
     {
@@ -45,6 +46,8 @@ public struct PlayerInput
         {
             WeaponScrollDelta = input.WeaponScrollDelta;
         }
+
+        PlacementRotationDegrees = input.PlacementRotationDegrees;
     }
 }
 

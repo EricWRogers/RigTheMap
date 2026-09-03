@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
 
 namespace Unity.MP_FPS
 {
@@ -42,6 +43,9 @@ namespace Unity.MP_FPS
 
         [Tooltip("Layers that a placement weapon is allowed to place on. Leave at default to use Ground/Default.")]
         public LayerMask PlacementLayerMask = default;
+        [field: Header("Placement Preview")]
+        [field: SerializeField]
+        public AssetReferenceGameObject PlacementPreviewPrefab { get; private set;}
 
         [Tooltip("Distance to offset the placed prefab from the surface normal.")]
         public float PlacementOffset = 0.25f;

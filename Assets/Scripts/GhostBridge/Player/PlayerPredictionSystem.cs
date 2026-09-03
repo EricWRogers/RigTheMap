@@ -265,7 +265,13 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         var placementPos = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
                                         var surfaceRotation = Quaternion.FromToRotation(Vector3.up, placementHit.normal);
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
-                                        var placementRotation = surfaceRotation * modelCorrection;
+                                        var placementRotation =
+                                            surfaceRotation *
+                                            Quaternion.Euler(
+                                                0f,
+                                                input.PlacementRotationDegrees,
+                                                0f) *
+                                            modelCorrection;
 
                                         Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
 

@@ -135,10 +135,18 @@ namespace Unity.MP_FPS
 
             if (isClientOwned)
             {
+                // give PlacementPreviewController
+                var placementPreview = GetComponent<PlacementPreviewController>();
+                if (placementPreview == null)
+                {
+                    placementPreview = gameObject.AddComponent<PlacementPreviewController>();
+                }
+
                 var predictedPlayer = ReadGhostComponentData<PredictedPlayerGhost>();
                 PlayerIndex = predictedPlayer.InputIndex;
                 // create camera
                 CreateClientCamera();
+                placementPreview.Initialize(this);
 
                 // Add AudioListener to client position and ensure all other AudioListeners are disabled
                 var audioListeners = Resources.FindObjectsOfTypeAll<AudioListener>();
@@ -210,6 +218,12 @@ namespace Unity.MP_FPS
 
         public override void OnGhostPreDestroy()
         {
+            var placementPreview = GetComponent<PlacementPreviewController>();
+            if (placementPreview != null)
+            {
+                Destroy(placementPreview);
+            }
+
             if (PlayerGhostManager.TryGetInstanceByRole(Role, out var playerManager))
             {
                 playerManager.Unregister(this);
