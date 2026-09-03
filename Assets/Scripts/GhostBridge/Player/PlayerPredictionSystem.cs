@@ -376,6 +376,26 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                         predictedPlayer.ValueRO.AccumulatedMovement,
                         applyDT);
 
+                    if (predictedPlayer.ValueRW.ControllerState.CurrentPosition.y < -20f)
+                    {
+                        float3 spawnPosition = new float3(0f, 2f, 0f); // fall back...
+                        var spawnQuery = SystemAPI.QueryBuilder().WithAll<SpawnPoint, LocalToWorld>().Build();
+                        var spawnEntities = spawnQuery.ToEntityArray(Allocator.Temp);
+                        if (spawnEntities.Length > 0)
+                        {
+                            var spawnTransform = SystemAPI.GetComponent<LocalToWorld>(spawnEntities[0]);
+                            spawnPosition = spawnTransform.Position;
+                        }
+                        spawnEntities.Dispose();
+
+                        predictedPlayer.ValueRW.ControllerState.CurrentPosition = spawnPosition;
+                        predictedPlayer.ValueRW.AccumulatedMovement = float3.zero;
+                        
+                        controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRW.ControllerState);
+
+                        Debug.LogWarning($"[PlayerPredictionSystem] Player fell out of world, resetting position to {predictedPlayer.ValueRW.ControllerState.CurrentPosition}");
+                    }
+
                     if (checkForPredictionErrors && !isFinalPredictionTick)
                     {
                         // check for prediction accuracy

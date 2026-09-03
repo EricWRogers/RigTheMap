@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Building
+  - DeathPlane
   layers:
   - Default
   - TransparentFX
