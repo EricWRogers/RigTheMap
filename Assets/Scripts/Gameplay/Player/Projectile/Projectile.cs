@@ -177,6 +177,46 @@ namespace Unity.MP_FPS
                             continue; // Skip self-damage
                         }
 
+                        var shooterEntity = hitGhostObject.LinkedEntity;
+
+                        if (!ghostOwnerLookup.HasComponent(hitGhostObject.LinkedEntity))
+                        {
+                            continue;
+                        }
+
+                        Entity shooterEntityFromProjectile = Entity.Null;
+
+                        foreach (var entity in world.EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
+                        {
+                            if (ghostOwnerLookup.HasComponent(entity) &&
+                                ghostOwnerLookup[entity].NetworkId == shooterNetworkId)
+                            {
+                                shooterEntityFromProjectile = entity;
+                                break;
+                            }
+                        }
+
+                        if (shooterEntityFromProjectile != Entity.Null &&
+                            world.EntityManager.HasComponent<PlayerTeam>(shooterEntityFromProjectile) &&
+                            world.EntityManager.HasComponent<PlayerTeam>(hitGhostObject.LinkedEntity))
+                        {
+                            var shooterTeam = world.EntityManager.GetComponentData<PlayerTeam>(
+                                shooterEntityFromProjectile);
+
+                            var targetTeam = world.EntityManager.GetComponentData<PlayerTeam>(
+                                hitGhostObject.LinkedEntity);
+
+                            if (shooterTeam.TeamId == targetTeam.TeamId)
+                            {
+                                Debug.Log(
+                                    $"[Team Damage] Friendly fire prevented. " +
+                                    $"Player {shooterNetworkId} and target {targetNetworkId} are on the same team."
+                                );
+
+                                continue;
+                            }
+                        }
+
                         var targetPredictedPlayer = playerGhostLookup.GetRefRW(hitGhostObject.LinkedEntity);
 
                         var healthBeforeDamage = targetPredictedPlayer.ValueRO.CurrentHealth;
@@ -228,6 +268,37 @@ namespace Unity.MP_FPS
 
                     if (targetNetworkId != shooterNetworkId)
                     {
+                        Entity shooterEntity = Entity.Null;
+
+                        foreach (var entity in world.EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
+                        {
+                            if (ghostOwnerLookup.HasComponent(entity) &&
+                                ghostOwnerLookup[entity].NetworkId == shooterNetworkId)
+                            {
+                                shooterEntity = entity;
+                                break;
+                            }
+                        }
+
+                        if (shooterEntity != Entity.Null &&
+                            world.EntityManager.HasComponent<PlayerTeam>(shooterEntity) &&
+                            world.EntityManager.HasComponent<PlayerTeam>(hitGhostObject.LinkedEntity))
+                        {
+                            var shooterTeam = world.EntityManager.GetComponentData<PlayerTeam>(shooterEntity);
+                            var targetTeam = world.EntityManager.GetComponentData<PlayerTeam>(
+                                hitGhostObject.LinkedEntity);
+
+                            if (shooterTeam.TeamId == targetTeam.TeamId)
+                            {
+                                Debug.Log(
+                                    $"[Team Damage] Friendly fire prevented. " +
+                                    $"Player {shooterNetworkId} and target {targetNetworkId} are on the same team."
+                                );
+
+                                return;
+                            }
+                        }
+
                         Debug.Log(
                             $"2 hitPlayerOwner.NetworkId: {hitPlayerOwner.NetworkId.ToString()}, projectileData.OwnerNetworkId: {projectileData.OwnerNetworkId.ToString()}");
                         var targetPredictedPlayer = playerGhostLookup.GetRefRW(hitGhostObject.LinkedEntity);
