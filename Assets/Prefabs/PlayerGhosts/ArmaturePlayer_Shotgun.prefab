@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PredictedPlayerControllerConstsAuthoring
   <WalkSpeed>k__BackingField: 4.7
-  <SprintSpeed>k__BackingField: 4.7
+  <SprintSpeed>k__BackingField: 9.4
   <WalkRotationSmoothTime>k__BackingField: 0.1
   <WalkAnimationMotionScale>k__BackingField: 0.4
   <SprintRotationSmoothTime>k__BackingField: 0.08
