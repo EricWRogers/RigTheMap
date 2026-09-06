@@ -5,6 +5,7 @@ using Unity.NetCode;
 using Unity.MP_FPS;
 
 using static FirstPersonController;
+using System.Numerics;
 
 public struct PredictedPlayerGhostState : IPredictedState
 {
@@ -50,6 +51,8 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int InputIndex;
 
     [GhostField] public ControllerState ControllerState;
+    
+    
     [GhostField] public float CurrentHealth;
     [GhostField] public float MaxHealth;
     
