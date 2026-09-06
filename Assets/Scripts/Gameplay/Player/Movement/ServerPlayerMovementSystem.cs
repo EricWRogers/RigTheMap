@@ -107,6 +107,18 @@ namespace Unity.MP_FPS
             }
         }
 
+        private void KillPlayersBelowY(float killYThreshold = -50f)
+        {
+            foreach (var (predictedPlayer, transform) in
+                    SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<LocalTransform>>().WithAll<Simulate>())
+            {
+                if (transform.ValueRO.Position.y < killYThreshold)
+                {
+                    predictedPlayer.ValueRW.CurrentHealth = 0;
+                }
+            }
+        }
+
         private void ResolveHammerLanding(
             ref PredictedPlayerGhost hammerPlayer,
             Entity hammerEntity,
@@ -227,6 +239,7 @@ namespace Unity.MP_FPS
 
         protected override void OnUpdate()
         {
+
             float deltaTime = World.Time.DeltaTime;
 
             if (LeaderboardManager.Instance != null)
@@ -271,6 +284,23 @@ namespace Unity.MP_FPS
                             localTransform.ValueRO.Position,
                             localTransform.ValueRO.Rotation);
                     }
+                }
+            }
+
+            // Kill players who fall below the Y-level threshold (e.g., -50)
+            float killYThreshold = -50f;
+            foreach (var (predictedPlayer, transform) in
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<LocalTransform>>()
+                         .WithAll<Simulate>())
+            {
+                if (transform.ValueRO.Position.y < killYThreshold && predictedPlayer.ValueRO.CurrentHealth > 0)
+                {
+                    predictedPlayer.ValueRW.CurrentHealth = 0;
+                    predictedPlayer.ValueRW.ControllerState.IsHit = true;
+                    predictedPlayer.ValueRW.LastDamageAmount = 999f;
+                    predictedPlayer.ValueRW.LastHitTick = serverTick;
+
+                    Debug.Log($"[Server] Player fell out of bounds below Y={killYThreshold} and was killed.");
                 }
             }
 
