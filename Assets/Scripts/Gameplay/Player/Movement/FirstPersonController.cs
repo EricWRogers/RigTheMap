@@ -132,6 +132,7 @@ public class FirstPersonController : MonoBehaviour
         public float MovementSpeed;
         public float JumpFallSpeed;
         public float3 BounceVelocity;
+        public Vector3 slipperyVelocity;
         public float AnimatorTargetSpeed; // _animIDSpeed
         public float AnimatorTargetSpeedChangeRate;
         public float JumpTimeoutDelta;
@@ -187,6 +188,7 @@ public class FirstPersonController : MonoBehaviour
 
         public float JumpHeight;
         public float BounceHeight;
+        
         public float Gravity;
         public float StandingFallSpeed;
         public float JumpTimeout;
@@ -226,7 +228,7 @@ public class FirstPersonController : MonoBehaviour
 
     private PlayerGhost m_PlayerGhost;
     private PlayerGhost PlayerGhost => m_PlayerGhost;
-
+    
     private const int k_NumPhysicsResults = 8;
     private readonly RaycastHit[] m_GroundCheckRaycastResults = new RaycastHit[k_NumPhysicsResults];
 
@@ -248,6 +250,7 @@ public class FirstPersonController : MonoBehaviour
 
     private float footstepTriggerTimer = 0;
     private float footstepStartTimer = 0;
+    
 
     private void Awake()
     {
@@ -271,7 +274,7 @@ public class FirstPersonController : MonoBehaviour
     public void ApplyMovementUpdate(ref ControllerState state, in ControllerConsts consts,
         in float3 accumulatedMovement, float deltaTime)
     {
-        
+        UpdateGround(ref state, consts);
         ApplyMove(ref state, consts, accumulatedMovement, deltaTime);
         GroundedCheck(ref state, consts);
 
@@ -329,7 +332,7 @@ public class FirstPersonController : MonoBehaviour
         public Vector3 FlattestHitPoint => m_FlattestHit.point;
         public Vector3 FlattestHitNormal => m_FlattestHit.normal;
         public Vector3 ClosestHitNormal => m_ClosestHit.normal;
-        public PhysicsMaterial ClosestHitSurfaceType => m_ClosestHit.collider.sharedMaterial;
+        public PhysicsMaterial flattestHitSurfaceType => m_FlattestHit.collider.sharedMaterial;
    
         
         public GroundCollisionVariables(RaycastHit closestHit, RaycastHit flattestHit, float flattestHitDot)
@@ -363,9 +366,13 @@ public class FirstPersonController : MonoBehaviour
                     return GroundSurfaceType.Normal;
             }
         }
-        private Vector3 ApplySurfaceModifiers(Vector3 move, Vector3 groundNormal){
-            if(GroundPhysicsMaterial == null)
+    
+        private Vector3 ApplySurfaceModifiers(ref ControllerState state, Vector3 move, Vector3 groundNormal){
+            if(GroundPhysicsMaterial == null){
+
+                state.slipperyVelocity = Vector3.zero;
                 return move;
+                }
             var surface = GetGroundSurfaceType(GroundPhysicsMaterial);
 
             if(surface == GroundSurfaceType.Sticky){
@@ -375,10 +382,22 @@ public class FirstPersonController : MonoBehaviour
             }
             if(surface == GroundSurfaceType.Slippery){
                 Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
-                planarMove *= 5f;
-                planarMove = Vector3.Lerp(planarMove, Vector3.zero, 0.08f);
-                return planarMove + Vector3.up * move.y;
+            if(state.slipperyVelocity.sqrMagnitude < 0.0001f)
+            {
+            state.slipperyVelocity = planarMove * 1.6f;
             }
+                //momentum for sliding
+                state.slipperyVelocity = Vector3.ProjectOnPlane(state.slipperyVelocity, groundNormal);
+                state.slipperyVelocity *= 0.985f ;
+                state.slipperyVelocity += planarMove * 0.1f; //TWEAK if need to be faster
+                
+                return state.slipperyVelocity + Vector3.up * move.y;
+
+            }
+        else
+        {
+           state.slipperyVelocity = Vector3.zero;
+        }
             if(surface == GroundSurfaceType.Spikey)//damage player
             {
                 var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
@@ -485,7 +504,7 @@ public class FirstPersonController : MonoBehaviour
     {
         if (UpdateGround(state, consts, out var groundCollision))
         {
-            GroundPhysicsMaterial = groundCollision.ClosestHitSurfaceType;
+            GroundPhysicsMaterial = groundCollision.flattestHitSurfaceType;
             state.GroundNormal = groundCollision.FlattestHitNormal;
         }
         else
@@ -526,7 +545,7 @@ public class FirstPersonController : MonoBehaviour
         if (isGrounded)
         {
             state.GroundNormal = groundCollision.FlattestHitNormal;
-            GroundPhysicsMaterial = groundCollision.ClosestHitSurfaceType;
+            GroundPhysicsMaterial = groundCollision.flattestHitSurfaceType;
             GroundSurfaceType surfaceType = GetGroundSurfaceType(GroundPhysicsMaterial);
             if (surfaceType == GroundSurfaceType.Bounce)// Launch player
             {
@@ -897,7 +916,7 @@ public class FirstPersonController : MonoBehaviour
         {
             // apply movement
             var movementToApply = accumulatedMovement;
-            movementToApply = ApplySurfaceModifiers(movementToApply, state.GroundNormal);
+            movementToApply = ApplySurfaceModifiers(ref state, movementToApply, state.GroundNormal);
 
             // This can be called before the controller is enabled (e.g. on spawn)
             // prevents errors of moving when controller is disabled or GameObject inactive
