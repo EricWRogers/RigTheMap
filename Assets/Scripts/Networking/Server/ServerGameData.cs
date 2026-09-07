@@ -14,6 +14,8 @@ namespace Unity.MP_FPS
         public FixedString64Bytes PlayerName;
         public int CharacterIndex;
         public int TeamId;
+        public int Lives;
+        public bool HasSpawned;
     }
     
     /// <summary>

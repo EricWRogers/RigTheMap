@@ -72,11 +72,11 @@ namespace Unity.MP_FPS
 
                     if (playerTeam.TeamId == 0)
                     {
-                        teamText.text = "Team: RED";
+                        teamText.text = "Team: BLUE";
                     }
                     else if (playerTeam.TeamId == 1)
                     {
-                        teamText.text = "Team: BLUE";
+                        teamText.text = "Team: GREEN";
                     }
                     else
                     {

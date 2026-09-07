@@ -221,12 +221,9 @@ namespace Unity.MP_FPS
                 if (healthBeforeDamage > 0 &&
                     targetPlayer.ValueRO.CurrentHealth <= 0)
                 {
-                    if (LeaderboardManager.Instance != null)
-                    {
-                        LeaderboardManager.Instance.AddKill(
-                            hammerPlayerNetworkId,
-                            targetNetworkId);
-                    }
+                    Debug.Log(
+                        $"[Server] Player {hammerPlayerNetworkId} killed player {targetNetworkId}."
+                    );
                 }
             }
 
@@ -712,6 +709,7 @@ namespace Unity.MP_FPS
 
                             switch (weaponData.Type)
                             {
+
                                 case WeaponType.Hitscan:
                                 {
                                     if (UnityEngine.Physics.Raycast(
@@ -730,18 +728,18 @@ namespace Unity.MP_FPS
                                                 playerGhostLookup.HasComponent(
                                                     hitGhostObject.LinkedEntity))
                                             {
+                                                var targetEntity =
+                                                    hitGhostObject.LinkedEntity;
+
                                                 var targetPredictedPlayer =
-                                                    playerGhostLookup.GetRefRW(
-                                                        hitGhostObject.LinkedEntity);
+                                                    playerGhostLookup.GetRefRW(targetEntity);
 
                                                 var targetNetworkId =
-                                                    ghostOwnerLookup[
-                                                        hitGhostObject.LinkedEntity].NetworkId;
+                                                    ghostOwnerLookup[targetEntity].NetworkId;
 
-                                                if (shooterNetworkId ==
-                                                    targetNetworkId)
+                                                if (shooterNetworkId == targetNetworkId)
                                                 {
-                                                    //skip hitting self
+                                                    // skip hitting self
                                                     continue;
                                                 }
 
@@ -749,16 +747,15 @@ namespace Unity.MP_FPS
                                                     m_PlayerTeamLookup[entity];
 
                                                 var targetTeam =
-                                                    m_PlayerTeamLookup[
-                                                        hitGhostObject.LinkedEntity];
+                                                    m_PlayerTeamLookup[targetEntity];
 
                                                 if (shooterTeam.TeamId ==
                                                     targetTeam.TeamId)
                                                 {
                                                     Debug.Log(
                                                         $"[Team Damage] Friendly fire prevented. " +
-                                                        $"Player {shooterNetworkId} and target {targetNetworkId} are on the same team."
-                                                    );
+                                                        $"Player {shooterNetworkId} and target " +
+                                                        $"{targetNetworkId} are on the same team.");
 
                                                     continue;
                                                 }
@@ -780,28 +777,27 @@ namespace Unity.MP_FPS
 
                                                 Debug.Log(
                                                     $"[Team Damage] Player {shooterNetworkId} damaged " +
-                                                    $"player {targetNetworkId} for {weaponData.Damage} damage."
-                                                );
+                                                    $"player {targetNetworkId} for " +
+                                                    $"{weaponData.Damage} damage.");
 
                                                 if (healthBeforeDamage > 0 &&
                                                     targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
                                                 {
+                                                    Debug.Log(
+                                                        $"[Server] Player {shooterNetworkId} killed " +
+                                                        $"player {targetNetworkId}.");
+
                                                     if (LeaderboardManager.Instance != null)
                                                     {
                                                         LeaderboardManager.Instance.AddKill(
                                                             shooterNetworkId,
-                                                            targetNetworkId
-                                                        );
-
-                                                        Debug.Log(
-                                                            $"[Server] Player {shooterNetworkId} killed player {targetNetworkId}."
-                                                        );
+                                                            targetNetworkId);
                                                     }
                                                     else
                                                     {
                                                         Debug.LogWarning(
-                                                            "[Server] LeaderboardManager instance not found. Cannot add kill."
-                                                        );
+                                                            "[Server] LeaderboardManager instance not found. " +
+                                                            "Cannot add kill.");
                                                     }
                                                 }
                                             }
@@ -810,12 +806,11 @@ namespace Unity.MP_FPS
                                         if (weaponData.ProjectileHitVfxPrefab != null)
                                         {
                                             vfxSpawnList.Add(
-                                                new VfxSpawnData()
+                                                new VfxSpawnData
                                                 {
                                                     Position = hit.point,
                                                     Rotation =
-                                                        Quaternion.LookRotation(
-                                                            hit.normal),
+                                                        Quaternion.LookRotation(hit.normal),
                                                     Prefab =
                                                         GhostSpawner.FindGhostPrefabEntity(
                                                             weaponData.ProjectileHitVfxPrefab.GhostGuid)
@@ -825,6 +820,7 @@ namespace Unity.MP_FPS
 
                                     break;
                                 }
+
 
                                 case WeaponType.Projectile:
                                 {
