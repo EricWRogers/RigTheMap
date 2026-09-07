@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
@@ -29,7 +29,7 @@ namespace Gameplay.Leaderboard
         private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
         private int _currentRound = 1;
-        private float _buildTimer = 30f;
+        private float _buildTimer = 10f;
 
         private bool _initialBuildPhase = true;
 
