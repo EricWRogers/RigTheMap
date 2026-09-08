@@ -369,7 +369,16 @@ namespace Gameplay.Leaderboard
         {
             if (_roundPhase == RoundPhase.BuildMode)
             {
-                _buildTimer -= deltaTime;
+                var entityManager = GhostGameObject.World.EntityManager;
+                var query = entityManager.CreateEntityQuery(
+                    ComponentType.ReadOnly<JoinedClient>(),
+                    ComponentType.ReadOnly<NetworkId>());
+
+                using var connections = query.ToEntityArray(Allocator.Temp);
+
+                // sanity check for multiple players
+                if(connections.Length > 1)
+                    _buildTimer -= deltaTime;
 
                 if (_buildTimer <= 0f)
                 {

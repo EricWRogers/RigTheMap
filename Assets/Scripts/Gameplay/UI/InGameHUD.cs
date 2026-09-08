@@ -19,6 +19,7 @@ namespace Unity.MP_FPS
         private Label m_AmmoLabel;
         private Label m_ReloadingLabel;
         private Label m_SelectedBuildingLabel;
+        private Label m_LivesLabel;
         private VisualElement m_Reticle;
 
         // UI-side timer to ensure shot feedback is visible for a minimum duration.
@@ -53,6 +54,7 @@ namespace Unity.MP_FPS
             m_ReloadingLabel = m_RootElement.Q<Label>("reloading-label");
             m_Reticle = m_RootElement.Q<VisualElement>("player-reticle");
             m_SelectedBuildingLabel = m_RootElement.Q<Label>("selected-building-label");
+            m_LivesLabel = m_RootElement.Q<Label>("lives-remaining-label");
         }
 
         private void InitializeEcs()
@@ -118,7 +120,7 @@ namespace Unity.MP_FPS
                     m_SelectedBuildingLabel.text = $"Building: {selectedPrefab.GhostPrefab.editorAsset.name}";
                     m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
                     m_SelectedBuildingLabel.style.color = Color.white;
-                    m_SelectedBuildingLabel.style.fontSize = 25;
+                    m_SelectedBuildingLabel.style.fontSize = 40;
                 }
                 else
                 {
@@ -162,6 +164,14 @@ namespace Unity.MP_FPS
             {
                 m_ReloadingLabel.style.display =
                     playerData.ControllerState.IsReloadingState ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+
+            if (m_LivesLabel != null)
+            {
+                m_LivesLabel.text = $"Lives: {playerData.LivesRemaining}";
+                m_LivesLabel.style.fontSize = 40;
+                m_LivesLabel.style.color = Color.white;
+                m_LivesLabel.style.display = DisplayStyle.Flex;
             }
 
             // Update Reticle

@@ -13,11 +13,22 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   WeaponName: Shotgun
-  Type: 1
+  Type: 0
   ReticleType: 2
   CooldownInMs: 1
-  Damage: 20
-  HitscanRange: 0
+  Damage: 25
+  HitscanRange: 100
+  IsPlacementWeapon: 0
+  PlacementLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  <PlacementPreviewPrefab>k__BackingField:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  PlacementOffset: 0.25
   MagazineSize: 10
   ReloadTime: 3
   ProjectileGhostPrefab:
@@ -33,6 +44,7 @@ MonoBehaviour:
         y: 1277661219
         z: 240610982
         w: 3023402984
+  PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7
@@ -64,3 +76,7 @@ MonoBehaviour:
   Behavior: 0
   AoeRadius: 5
   ProjectileSpeed: 30
+  HammerLaunchForce: 12
+  HammerImpactRadius: 2
+  HammerDamage: 25
+  HammerGroundRange: 3

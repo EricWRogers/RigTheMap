@@ -15,9 +15,20 @@ MonoBehaviour:
   WeaponName: Assault Rifle
   Type: 0
   ReticleType: 0
-  CooldownInMs: 0.1
+  CooldownInMs: 0.3
   Damage: 10
   HitscanRange: 100
+  IsPlacementWeapon: 0
+  PlacementLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  <PlacementPreviewPrefab>k__BackingField:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  PlacementOffset: 0.25
   MagazineSize: 30
   ReloadTime: 2
   ProjectileGhostPrefab:
@@ -33,6 +44,7 @@ MonoBehaviour:
         y: 0
         z: 0
         w: 0
+  PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7
@@ -64,3 +76,7 @@ MonoBehaviour:
   Behavior: 0
   AoeRadius: 5
   ProjectileSpeed: 30
+  HammerLaunchForce: 12
+  HammerImpactRadius: 2
+  HammerDamage: 25
+  HammerGroundRange: 3
