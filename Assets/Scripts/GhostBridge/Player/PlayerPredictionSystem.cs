@@ -249,6 +249,13 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 if (weaponData.IsPlacementWeapon)
                                 {
+                                    if (predictedPlayer.ValueRO.BuildPlacementsUsed >= 3)
+                                    {
+                                        Debug.Log(
+                                            "[Build Mode] Player has used all 3 build placements.");
+
+                                        continue;
+                                    }
                                     if (weaponData.PlacementGhostPrefabs == null ||
                                         weaponData.PlacementGhostPrefabs.Count == 0)
                                     {
