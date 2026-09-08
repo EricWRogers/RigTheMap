@@ -6,12 +6,17 @@ namespace Unity.MP_FPS
 {
     public class SpawnPointAuthoring : MonoBehaviour
     {
+        [SerializeField] private int m_TeamId;
+
         public class Baker : Unity.Entities.Baker<SpawnPointAuthoring>
         {
             public override void Bake(SpawnPointAuthoring authoring)
             {
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new SpawnPoint());
+                AddComponent(entity, new SpawnPoint
+                {
+                    TeamId = authoring.m_TeamId
+                });
                 AddComponent<LocalToWorld>(entity);
             }
         }
@@ -23,5 +28,6 @@ namespace Unity.MP_FPS
     /// </summary>
     public struct SpawnPoint : IComponentData
     {
+        public int TeamId;
     }
 }

@@ -262,7 +262,7 @@ namespace Unity.MP_FPS
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (FindSpawnPoint(ref state, out var spawnPoint))
+            if (FindSpawnPoint(ref state, teamId, out var spawnPoint))
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
@@ -472,33 +472,45 @@ namespace Unity.MP_FPS
         }
 
         [BurstDiscard]
-        private bool FindSpawnPoint(ref SystemState state, out LocalToWorld spawnPoint)
+        private bool FindSpawnPoint(ref SystemState state, int teamId, out LocalToWorld spawnPoint)
         {
             var spawnPointsQuery = SystemAPI.QueryBuilder().WithAll<SpawnPoint, LocalToWorld>().Build();
-            var spawnPoints = spawnPointsQuery.ToComponentDataArray<LocalToWorld>(Allocator.Temp);
+            var spawnPointEntities = spawnPointsQuery.ToEntityArray(Allocator.Temp);
+            var teamSpawnPoints = new NativeList<LocalToWorld>(Allocator.Temp);
+
+            foreach (var spawnPointEntity in spawnPointEntities)
+            {
+                if (SystemAPI.GetComponent<SpawnPoint>(spawnPointEntity).TeamId == teamId)
+                {
+                    teamSpawnPoints.Add(SystemAPI.GetComponent<LocalToWorld>(spawnPointEntity));
+                }
+            }
+
+            spawnPointEntities.Dispose();
             ref FixedRandom random = ref SystemAPI.GetSingletonRW<FixedRandom>().ValueRW;
 
-            if (spawnPoints.Length == 0)
+            if (teamSpawnPoints.Length == 0)
             {
                 spawnPoint = default;
-                spawnPoints.Dispose();
+                teamSpawnPoints.Dispose();
+                Debug.LogError($"No spawn points configured for team {teamId}.");
                 return false;
             }
 
             // Shuffle the list to ensure that if multiple points have the same low number of players, the choice among them is still random.
-            for (int i = spawnPoints.Length - 1; i > 0; i--)
+            for (int i = teamSpawnPoints.Length - 1; i > 0; i--)
             {
                 int k = random.Random.NextInt(0, i + 1);
-                (spawnPoints[k], spawnPoints[i]) = (spawnPoints[i], spawnPoints[k]);
+                (teamSpawnPoints[k], teamSpawnPoints[i]) = (teamSpawnPoints[i], teamSpawnPoints[k]);
             }
 
             int bestSpawnPointIndex = 0;
             int minColliderCount = int.MaxValue;
 
-            for (int i = 0; i < spawnPoints.Length; i++)
+            for (int i = 0; i < teamSpawnPoints.Length; i++)
             {
                 int numColliders = UnityEngine.Physics.OverlapSphereNonAlloc(
-                    spawnPoints[i].Position,
+                    teamSpawnPoints[i].Position,
                     2f,
                     _overlapColliders,
                     LayerMask.GetMask("ServerPlayer"));
@@ -516,8 +528,8 @@ namespace Unity.MP_FPS
                 }
             }
 
-            spawnPoint = spawnPoints[bestSpawnPointIndex];
-            spawnPoints.Dispose();
+            spawnPoint = teamSpawnPoints[bestSpawnPointIndex];
+            teamSpawnPoints.Dispose();
             return true;
         }
 
