@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using Gameplay.Leaderboard;
 using Unity.Burst;
 using Unity.CharacterController;
@@ -254,6 +255,7 @@ namespace Unity.MP_FPS
                 InputIndex = 0,
                 MaxHealth = 100f,
                 CurrentHealth = 100f,
+                LivesRemaining = lives,
                 EquippedWeaponID = weaponId,
                 CurrentAmmo = magazineSize
             });
@@ -315,7 +317,7 @@ namespace Unity.MP_FPS
 
             // --- Part 1: Detect Death and Destroy Player Entity ---
             foreach (var (playerGhost, ghostOwner, entity) in
-                     SystemAPI.Query<RefRO<PredictedPlayerGhost>, RefRO<GhostOwner>>().WithEntityAccess())
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>().WithEntityAccess())
             {
                 if (playerGhost.ValueRO.CurrentHealth <= 0)
                 {
@@ -331,6 +333,8 @@ namespace Unity.MP_FPS
                         joinedClient.lives--;
                     else
                         joinedClient.lives = 3;
+
+                    playerGhost.ValueRW.LivesRemaining = joinedClient.lives;
 
                     state.EntityManager.SetComponentData(
                         connectionEntity,
@@ -420,15 +424,46 @@ namespace Unity.MP_FPS
 
         void HandleJoinRequests(ref SystemState state, Entity gameplayMapsEntity, PlayerEntityPrefabs playerEntityPrefabs, EntityCommandBuffer ecb)
         {
+            int greenPlayers = 0;
+            int bluePlayers = 0;
+
+            foreach (var joinedClient in
+                     SystemAPI.Query<RefRO<JoinedClient>>())
+            {
+                if (joinedClient.ValueRO.TeamId == 0)
+                    greenPlayers++;
+                else if (joinedClient.ValueRO.TeamId == 1)
+                    bluePlayers++;
+            }
+
+            var claimedConnections = new HashSet<Entity>();
+
             foreach (var (request, rpcReceive, entity) in
                      SystemAPI.Query<RefRO<ClientJoinRequestRpc>, RefRW<ReceiveRpcCommandRequest>>().WithEntityAccess())
             {
-                if (SystemAPI.HasComponent<NetworkId>(rpcReceive.ValueRW.SourceConnection) &&
-                    !SystemAPI.HasComponent<NetworkStreamInGame>(rpcReceive.ValueRW.SourceConnection))
+                var connectionEntity = rpcReceive.ValueRW.SourceConnection;
+
+                if (SystemAPI.HasComponent<NetworkId>(connectionEntity) &&
+                    !SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity) &&
+                    claimedConnections.Add(connectionEntity))
                 {
-                    SpawnPlayerCharacter(ref state, ecb, rpcReceive.ValueRW.SourceConnection, request.ValueRO.PlayerName, request.ValueRO.CharacterIndex);
+                    int teamId = greenPlayers <= bluePlayers ? 0 : 1;
+
+                    if (teamId == 0)
+                        greenPlayers++;
+                    else
+                        bluePlayers++;
+
+                    SpawnPlayerCharacter(
+                        ref state,
+                        ecb,
+                        connectionEntity,
+                        request.ValueRO.PlayerName,
+                        request.ValueRO.CharacterIndex,
+                        teamId,
+                        3);
                     
-                    var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(rpcReceive.ValueRW.SourceConnection);
+                    var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
                     AddPlayerToLeaderboard(ownerNetworkId.Value, request.ValueRO.PlayerName);
                 }
 
@@ -491,14 +526,14 @@ namespace Unity.MP_FPS
             int redPlayers = 0;
             int bluePlayers = 0;
 
-            foreach (var playerTeam in
-                     SystemAPI.Query<RefRO<PlayerTeam>>())
+            foreach (var joinedClient in
+                     SystemAPI.Query<RefRO<JoinedClient>>())
             {
-                if (playerTeam.ValueRO.TeamId == 0)
+                if (joinedClient.ValueRO.TeamId == 0)
                 {
                     redPlayers++;
                 }
-                else if (playerTeam.ValueRO.TeamId == 1)
+                else if (joinedClient.ValueRO.TeamId == 1)
                 {
                     bluePlayers++;
                 }

@@ -12,6 +12,7 @@
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="health-info-container" picking-mode="Ignore">
+        <ui:Label name="lives-remaining-label" text="Lives: " style="display: none;"/>
         <ui:ProgressBar value="63.8" title="HEALTH" name="player-health-bar" class="kits-progress-bar"/>
         <ui:ProgressBar name="player-stamina-bar" low-value="0" high-value="100" value="100" class="kits-progress-bar" style="display: none;"/>
     </ui:VisualElement>

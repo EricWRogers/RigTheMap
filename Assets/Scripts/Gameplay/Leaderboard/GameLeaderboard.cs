@@ -30,7 +30,7 @@ namespace Gameplay.Leaderboard
         private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
         private int _currentRound = 1;
-        private float _buildTimer = 10f;
+        private float _buildTimer = 45f;
 
         private bool _initialBuildPhase = true;
 
@@ -369,7 +369,16 @@ namespace Gameplay.Leaderboard
         {
             if (_roundPhase == RoundPhase.BuildMode)
             {
-                _buildTimer -= deltaTime;
+                var entityManager = GhostGameObject.World.EntityManager;
+                var query = entityManager.CreateEntityQuery(
+                    ComponentType.ReadOnly<JoinedClient>(),
+                    ComponentType.ReadOnly<NetworkId>());
+
+                using var connections = query.ToEntityArray(Allocator.Temp);
+
+                // sanity check for multiple players
+                if(connections.Length > 1)
+                    _buildTimer -= deltaTime;
 
                 if (_buildTimer <= 0f)
                 {
