@@ -17,7 +17,6 @@ namespace Unity.MP_FPS
     /// Processes client join requests and spawns a character for each client.
     /// </summary>
     [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
-    //[UpdateInGroup(typeof(SimulationSystemGroup))]  //Default, no explicit declaration is needed;
     [BurstCompile]
     public partial struct ServerGameSystem : ISystem
     {
@@ -26,9 +25,18 @@ namespace Unity.MP_FPS
         {
             _overlapColliders = new Collider[16];
         }
-        
+
         private static Collider[] _overlapColliders = new Collider[16];
         private ComponentLookup<JoinedClient> _joinedClientLookup;
+
+        // Phase 3: Round state
+        private bool _roundOver;
+        private int _winningTeam;
+
+        // Lives each player starts with
+        private const int StartingLives = 3;
+
+        private bool _wasBuildMode;
 
         public void OnCreate(ref SystemState state)
         {
@@ -37,15 +45,28 @@ namespace Unity.MP_FPS
             state.RequireForUpdate<NetworkStreamDriver>();
             state.RequireForUpdate<ClientsMap>();
 
-            Entity randomEntity = state.EntityManager.CreateEntity();
-            state.EntityManager.AddComponentData(randomEntity, new FixedRandom
-            {
-                Random = Random.CreateFromIndex((uint)DateTime.Now.Millisecond),
-            });
+            _roundOver = false;
+            _winningTeam = -1;
+            _wasBuildMode = true;
 
-            var mapSingleton = state.EntityManager.CreateSingletonBuffer<ClientsMap>();
-            state.EntityManager.GetBuffer<ClientsMap>(mapSingleton).Add(default); //The server NetworkId is 0
-            _joinedClientLookup = state.GetComponentLookup<JoinedClient>();
+            Entity randomEntity = state.EntityManager.CreateEntity();
+
+            state.EntityManager.AddComponentData(
+                randomEntity,
+                new FixedRandom
+                {
+                    Random = Random.CreateFromIndex(
+                        (uint)DateTime.Now.Millisecond),
+                });
+
+            var mapSingleton =
+                state.EntityManager.CreateSingletonBuffer<ClientsMap>();
+
+            state.EntityManager.GetBuffer<ClientsMap>(mapSingleton)
+                .Add(default); //The server NetworkId is 0
+
+            _joinedClientLookup =
+                state.GetComponentLookup<JoinedClient>();
         }
 
         [BurstDiscard]
@@ -53,29 +74,59 @@ namespace Unity.MP_FPS
         {
             _joinedClientLookup.Update(ref state);
 
-            var ecb = SystemAPI.GetSingletonRW<BeginSimulationEntityCommandBufferSystem.Singleton>()
-                .ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb =
+                SystemAPI.GetSingletonRW<
+                    BeginSimulationEntityCommandBufferSystem.Singleton>()
+                    .ValueRW
+                    .CreateCommandBuffer(state.WorldUnmanaged);
 
-            var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
-            var gameplayMapsEntity = SystemAPI.GetSingletonEntity<ClientsMap>();
-            var connectionEventsForTick = SystemAPI.GetSingleton<NetworkStreamDriver>().ConnectionEventsForTick;
-            RefreshClientsMap(ref state, ecb, clientsMap, connectionEventsForTick);
+            var clientsMap =
+                SystemAPI.GetSingletonBuffer<ClientsMap>();
 
-            if (!SystemAPI.TryGetSingleton(out PlayerEntityPrefabs playerEntityPrefabs))
+            var gameplayMapsEntity =
+                SystemAPI.GetSingletonEntity<ClientsMap>();
+
+            var connectionEventsForTick =
+                SystemAPI.GetSingleton<NetworkStreamDriver>()
+                    .ConnectionEventsForTick;
+
+            RefreshClientsMap(
+                ref state,
+                ecb,
+                clientsMap,
+                connectionEventsForTick);
+
+            if (!SystemAPI.TryGetSingleton(
+                    out PlayerEntityPrefabs playerEntityPrefabs))
             {
                 return;
             }
 
             if (SystemAPI.HasSingleton<DisableCharacterDynamicContacts>())
             {
-                state.EntityManager.DestroyEntity(SystemAPI.GetSingletonEntity<DisableCharacterDynamicContacts>());
+                state.EntityManager.DestroyEntity(
+                    SystemAPI.GetSingletonEntity<
+                        DisableCharacterDynamicContacts>());
             }
 
-            HandleJoinRequests(ref state, gameplayMapsEntity, playerEntityPrefabs, ecb);
-            HandlePlayerDeathAndRespawn(ref state, ecb);
+            HandleJoinRequests(
+                ref state,
+                gameplayMapsEntity,
+                playerEntityPrefabs,
+                ecb);
+
+            HandleRoundPhaseTransition(
+                ref state,
+                ecb);
+
+            HandlePlayerDeathAndRespawn(
+                ref state,
+                ecb);
         }
 
-        void RefreshClientsMap(ref SystemState state, EntityCommandBuffer ecb,
+        void RefreshClientsMap(
+            ref SystemState state,
+            EntityCommandBuffer ecb,
             DynamicBuffer<ClientsMap> clientsMap,
             NativeArray<NetCodeConnectionEvent>.ReadOnly connectionEventsForTick)
         {
@@ -85,42 +136,57 @@ namespace Unity.MP_FPS
                 if (evt.State == ConnectionState.State.Connected)
                 {
                     var lengthNeeded = evt.Id.Value + 1;
+
                     if (clientsMap.Length < lengthNeeded)
                     {
-                        clientsMap.Resize(lengthNeeded, NativeArrayOptions.ClearMemory);
+                        clientsMap.Resize(
+                            lengthNeeded,
+                            NativeArrayOptions.ClearMemory);
                     }
 
-                    clientsMap.ElementAt(evt.Id.Value).ConnectionEntity = evt.ConnectionEntity;
+                    clientsMap.ElementAt(evt.Id.Value)
+                        .ConnectionEntity = evt.ConnectionEntity;
                 }
 
                 if (evt.State == ConnectionState.State.Disconnected)
                 {
                     var networkId = evt.Id.Value;
-                    Debug.Log($"[Server] Client with NetworkId {networkId} has disconnected.");
+
+                    Debug.Log(
+                        $"[Server] Client with NetworkId {networkId} has disconnected.");
 
                     // Find and destroy the player character entity by querying for its GhostOwner.
-                    foreach (var (ghostOwner, entity) in SystemAPI.Query<RefRO<GhostOwner>>().WithEntityAccess())
+                    foreach (var (ghostOwner, entity) in
+                             SystemAPI.Query<RefRO<GhostOwner>>()
+                                 .WithEntityAccess())
                     {
                         if (ghostOwner.ValueRO.NetworkId == networkId)
                         {
-                            Debug.Log($"[Server] Found and destroying PlayerEntity {entity} for disconnected client {networkId}.");
+                            Debug.Log(
+                                $"[Server] Found and destroying PlayerEntity {entity} for disconnected client {networkId}.");
+
                             ecb.DestroyEntity(entity);
                             break;
                         }
                     }
 
                     // Find and destroy the clientInputEntity by querying for its PlayerCommandTarget.
-                    foreach (var (commandTarget, entity) in SystemAPI.Query<RefRO<PlayerCommandTarget>>().WithEntityAccess())
+                    foreach (var (commandTarget, entity) in
+                             SystemAPI.Query<RefRO<PlayerCommandTarget>>()
+                                 .WithEntityAccess())
                     {
                         if (commandTarget.ValueRO.NetworkId == networkId)
                         {
-                            Debug.Log($"[Server] Found and destroying ClientInputEntity {entity} for disconnected client {networkId}.");
+                            Debug.Log(
+                                $"[Server] Found and destroying ClientInputEntity {entity} for disconnected client {networkId}.");
+
                             ecb.DestroyEntity(entity);
                             break;
                         }
                     }
 
                     RemovePlayerFromLeaderboard(networkId);
+
                     clientsMap.ElementAt(networkId) = default;
                 }
             }
@@ -129,17 +195,29 @@ namespace Unity.MP_FPS
             for (var i = clientsMap.Length - 1; i >= 0; --i)
             {
                 ref var map = ref clientsMap.ElementAt(i);
+
                 if (map.OwnerNetworkId.Value == default)
                 {
                     break;
                 }
 
-                ref var dest = ref clientsMap.ElementAt(map.OwnerNetworkId.Value);
-                Patch(map.PlayerEntity, ref dest.PlayerEntity);
-                Patch(map.CharacterControllerEntity, ref dest.CharacterControllerEntity);
+                ref var dest =
+                    ref clientsMap.ElementAt(
+                        map.OwnerNetworkId.Value);
+
+                Patch(
+                    map.PlayerEntity,
+                    ref dest.PlayerEntity);
+
+                Patch(
+                    map.CharacterControllerEntity,
+                    ref dest.CharacterControllerEntity);
+
                 map = default;
 
-                static void Patch(Entity possibleRemapValue, ref Entity destination)
+                static void Patch(
+                    Entity possibleRemapValue,
+                    ref Entity destination)
                 {
                     if (possibleRemapValue != Entity.Null)
                     {
@@ -151,7 +229,9 @@ namespace Unity.MP_FPS
             }
         }
 
-        Entity GetChildWithComponent<T>(EntityManager em, Entity parentEntity)
+        Entity GetChildWithComponent<T>(
+            EntityManager em,
+            Entity parentEntity)
             where T : unmanaged, IComponentData
         {
             if (!em.HasComponent<Child>(parentEntity))
@@ -159,33 +239,129 @@ namespace Unity.MP_FPS
                 return Entity.Null;
             }
 
-            var children = em.GetBuffer<Child>(parentEntity);
+            var children =
+                em.GetBuffer<Child>(parentEntity);
+
             foreach (var child in children)
             {
                 if (em.HasComponent<T>(child.Value))
+                {
                     return child.Value;
+                }
             }
 
             return Entity.Null;
         }
-        
+
         [BurstDiscard]
         private void AddDeathToLeaderboard(int networkId)
         {
             LeaderboardManager.Instance.AddDeath(networkId);
         }
-        
-        // Add near the top of the struct/class:
+
         [BurstDiscard]
-        private void AddPlayerToLeaderboard(int networkId, FixedString64Bytes playerName)
+        private void AddPlayerToLeaderboard(
+            int networkId,
+            FixedString64Bytes playerName)
         {
-            LeaderboardManager.AddPlayer(networkId, playerName);
+            LeaderboardManager.AddPlayer(
+                networkId,
+                playerName);
         }
-        
+
         [BurstDiscard]
         private void RemovePlayerFromLeaderboard(int networkId)
         {
             LeaderboardManager.Instance.RemovePlayer(networkId);
+        }
+
+        private void HandleRoundPhaseTransition(
+            ref SystemState state,
+            EntityCommandBuffer ecb)
+        {
+            if (LeaderboardManager.Instance == null)
+            {
+                return;
+            }
+
+            bool isBuildMode =
+                LeaderboardManager.Instance.CurrentPhase ==
+                LeaderboardManager.RoundPhase.BuildMode;
+
+            if (_wasBuildMode && !isBuildMode)
+            {
+                _roundOver = false;
+                _winningTeam = -1;
+
+                var connections =
+                    SystemAPI.QueryBuilder()
+                        .WithAll<NetworkId, JoinedClient>()
+                        .Build();
+
+                using var connectionEntities =
+                    connections.ToEntityArray(Allocator.Temp);
+
+                foreach (var connectionEntity in connectionEntities)
+                {
+                    if (!SystemAPI.Exists(connectionEntity))
+                    {
+                        continue;
+                    }
+
+                    var networkId =
+                        SystemAPI.GetComponent<NetworkId>(
+                            connectionEntity);
+
+                    var joinedClient =
+                        SystemAPI.GetComponent<JoinedClient>(
+                            connectionEntity);
+
+                    if (!joinedClient.HasSpawned)
+                    {
+                        continue;
+                    }
+
+                    if (joinedClient.PlayerEntity != Entity.Null &&
+                        SystemAPI.Exists(joinedClient.PlayerEntity))
+                    {
+                        if (SystemAPI.HasComponent<
+                                PlayerClientCommandInputLookup>(
+                                joinedClient.PlayerEntity))
+                        {
+                            var inputLookup =
+                                SystemAPI.GetComponent<
+                                    PlayerClientCommandInputLookup>(
+                                    joinedClient.PlayerEntity);
+
+                            if (inputLookup.ClientCommandInputEntity !=
+                                Entity.Null &&
+                                SystemAPI.Exists(
+                                    inputLookup.ClientCommandInputEntity))
+                            {
+                                ecb.DestroyEntity(
+                                    inputLookup.ClientCommandInputEntity);
+                            }
+                        }
+
+                        ecb.DestroyEntity(
+                            joinedClient.PlayerEntity);
+                    }
+
+                    SpawnPlayerCharacter(
+                        ref state,
+                        ecb,
+                        connectionEntity,
+                        joinedClient.PlayerName,
+                        joinedClient.CharacterIndex,
+                        joinedClient.TeamId,
+                        true);
+
+                    Debug.Log(
+                        $"[Round] Player {networkId.Value} switched from Build Mode to Fighting.");
+                }
+            }
+
+            _wasBuildMode = isBuildMode;
         }
 
         private void SpawnPlayerCharacter(
@@ -197,8 +373,12 @@ namespace Unity.MP_FPS
             int teamId = -1,
             int lives = 3)
         {
-            var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
-            var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
+            var playerEntityPrefabs =
+                SystemAPI.GetSingleton<PlayerEntityPrefabs>();
+
+            var ownerNetworkId =
+                SystemAPI.GetComponent<NetworkId>(
+                    connectionEntity);
 
             if (teamId < 0)
             {
@@ -206,76 +386,155 @@ namespace Unity.MP_FPS
             }
 
             // Instantiate the client input entity
-            var clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
-            ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
-            
-            ecb.SetComponent(connectionEntity, new CommandTarget { targetEntity = clientInputEntity });
-            ecb.AddBuffer<ClientCommandInput>(clientInputEntity);
-            ecb.SetComponent(clientInputEntity, new PlayerCommandTarget { NetworkId = ownerNetworkId.Value });
+            var clientInputEntity =
+                ecb.Instantiate(
+                    playerEntityPrefabs.ClientInputEntityPrefab);
 
-            bool isBuildMode = LeaderboardManager.Instance != null &&
-                               LeaderboardManager.Instance.CurrentPhase ==
-                               LeaderboardManager.RoundPhase.BuildMode;
+            ecb.SetComponent(
+                clientInputEntity,
+                new GhostOwner
+                {
+                    NetworkId = ownerNetworkId.Value
+                });
+
+            ecb.SetComponent(
+                connectionEntity,
+                new CommandTarget
+                {
+                    targetEntity = clientInputEntity
+                });
+
+            ecb.AddBuffer<ClientCommandInput>(
+                clientInputEntity);
+
+            ecb.SetComponent(
+                clientInputEntity,
+                new PlayerCommandTarget
+                {
+                    NetworkId = ownerNetworkId.Value
+                });
+
+            bool isBuildMode =
+                LeaderboardManager.Instance != null &&
+                LeaderboardManager.Instance.CurrentPhase ==
+                LeaderboardManager.RoundPhase.BuildMode;
 
             var weaponId = isBuildMode
-                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+                ? (uint)(
+                    WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                : (uint)UnityEngine.Random.Range(
+                    0,
+                    WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+
             characterIndex = (int)weaponId;
 
             // Instantiate the player entity for the current round phase.
-            var playerEntityPrefab = isBuildMode &&
-                                     playerEntityPrefabs.PlayerBuildEntityPrefab != Entity.Null
-                ? playerEntityPrefabs.PlayerBuildEntityPrefab
-                : characterIndex switch
+            var playerEntityPrefab =
+                isBuildMode &&
+                playerEntityPrefabs.PlayerBuildEntityPrefab != Entity.Null
+                    ? playerEntityPrefabs.PlayerBuildEntityPrefab
+                    : characterIndex switch
+                    {
+                        0 => playerEntityPrefabs.PlayerRifleEntityPrefab,
+                        1 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                        //2 => playerEntityPrefabs.PlayerSharkEntityPrefab,
+                        2 => playerEntityPrefabs.PlayerHammerEntityPrefab,
+                        _ => playerEntityPrefabs.PlayerShotgunEntityPrefab
+                    };
+
+            var playerEntity =
+                ecb.Instantiate(playerEntityPrefab);
+
+            // Keep the working team assignment.
+            ecb.SetComponent(
+                playerEntity,
+                new PlayerTeam
+                {
+                    TeamId = teamId
+                });
+
+            var weaponData =
+                WeaponManager.Instance.WeaponRegistry.GetWeaponData(
+                    weaponId);
+
+            var magazineSize =
+                weaponData != null
+                    ? weaponData.MagazineSize
+                    : 30;
+
+            ecb.SetComponent(
+                playerEntity,
+                new GhostOwner
+                {
+                    NetworkId = ownerNetworkId.Value
+                });
+
+            ecb.AddComponent(
+                playerEntity,
+                new PlayerClientCommandInputLookup
+                {
+                    ClientCommandInputEntity =
+                        clientInputEntity
+                });
+
+            ecb.SetComponent(
+                playerEntity,
+                new PredictedPlayerGhost
+                {
+                    InputIndex = 0,
+                    MaxHealth = 100f,
+                    CurrentHealth = 100f,
+                    EquippedWeaponID = weaponId,
+                    CurrentAmmo = magazineSize
+                });
+
+            ecb.AddComponent(
+                playerEntity,
+                new PlayerCharacterInitialized());
+
+            ecb.SetComponentEnabled<PlayerCharacterInitialized>(
+                playerEntity,
+                false);
+
+            if (FindSpawnPoint(
+                    ref state,
+                    out var spawnPoint))
             {
-                0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
-                1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
-                2 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
-                3 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
-                _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
-            };
-            var playerEntity = ecb.Instantiate(playerEntityPrefab);
-
-            ecb.SetComponent(playerEntity, new PlayerTeam
-            {
-                TeamId = teamId
-            });
-
-
-
-            var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
-            var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
-
-            ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
-            ecb.AddComponent(playerEntity, new PlayerClientCommandInputLookup { ClientCommandInputEntity = clientInputEntity });
-            
-            ecb.SetComponent(playerEntity, new PredictedPlayerGhost
-            {
-                InputIndex = 0,
-                MaxHealth = 100f,
-                CurrentHealth = 100f,
-                EquippedWeaponID = weaponId,
-                CurrentAmmo = magazineSize
-            });
-            ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
-            ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
-
-            if (FindSpawnPoint(ref state, out var spawnPoint))
-            {
-                ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
+                ecb.SetComponent(
+                    playerEntity,
+                    new LocalTransform
+                    {
+                        Position = spawnPoint.Position,
+                        Rotation = spawnPoint.Rotation,
+                        Scale = 1.0f
+                    });
             }
 
-            ecb.SetComponent(playerEntity, new GhostGameObjectGuid
-            {
-                Guid = GhostGameObject.GenerateRandomHash()
-            });
-            ecb.SetComponent(playerEntity, new PlayerGhost.PlayerData { Name = playerName });
+            ecb.SetComponent(
+                playerEntity,
+                new GhostGameObjectGuid
+                {
+                    Guid =
+                        GhostGameObject.GenerateRandomHash()
+                });
+
+            ecb.SetComponent(
+                playerEntity,
+                new PlayerGhost.PlayerData
+                {
+                    Name = playerName
+                });
 
             // Update the clients map
-            var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
-            clientsMap.ElementAt(ownerNetworkId.Value).PlayerEntity = playerEntity;
+            var clientsMap =
+                SystemAPI.GetSingletonBuffer<ClientsMap>();
 
-            if (!SystemAPI.HasComponent<JoinedClient>(connectionEntity))
+            clientsMap.ElementAt(
+                    ownerNetworkId.Value)
+                .PlayerEntity = playerEntity;
+
+            if (!SystemAPI.HasComponent<JoinedClient>(
+                    connectionEntity))
             {
                 // Update the connection's JoinedClient component with the new player entity
                 ecb.AddComponent(connectionEntity, new JoinedClient
@@ -289,9 +548,34 @@ namespace Unity.MP_FPS
             }
             else
             {
-                var joinedClient = SystemAPI.GetComponent<JoinedClient>(connectionEntity);
+                var joinedClient =
+                    SystemAPI.GetComponent<JoinedClient>(
+                        connectionEntity);
 
-                ecb.SetComponent(connectionEntity, new JoinedClient
+                int lives =
+                    resetLives
+                        ? StartingLives
+                        : joinedClient.Lives;
+
+                ecb.SetComponent(
+                    connectionEntity,
+                    new JoinedClient
+                    {
+                        PlayerEntity = playerEntity,
+                        PlayerName = joinedClient.PlayerName,
+                        CharacterIndex = characterIndex,
+                        TeamId = joinedClient.TeamId,
+                        Lives = lives,
+                        HasSpawned = true
+                    });
+
+                Debug.Log(
+                    $"[Lives] Player {ownerNetworkId.Value} spawned with {lives} lives remaining.");
+            }
+
+            ecb.AppendToBuffer(
+                connectionEntity,
+                new LinkedEntityGroup
                 {
                     PlayerEntity = playerEntity,
                     PlayerName = joinedClient.PlayerName,
@@ -299,6 +583,12 @@ namespace Unity.MP_FPS
                     TeamId = joinedClient.TeamId,
                     lives = joinedClient.lives
                 });
+
+            if (!SystemAPI.HasComponent<NetworkStreamInGame>(
+                    connectionEntity))
+            {
+                ecb.AddComponent<NetworkStreamInGame>(
+                    connectionEntity);
             }
 
             ecb.AppendToBuffer(connectionEntity, new LinkedEntityGroup { Value = playerEntity });
@@ -309,15 +599,21 @@ namespace Unity.MP_FPS
             }
         }
 
-        void HandlePlayerDeathAndRespawn(ref SystemState state, EntityCommandBuffer ecb)
+        void HandlePlayerDeathAndRespawn(
+            ref SystemState state,
+            EntityCommandBuffer ecb)
         {
-            var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
+            var clientsMap =
+                SystemAPI.GetSingletonBuffer<ClientsMap>();
 
-            // --- Part 1: Detect Death and Destroy Player Entity ---
-            foreach (var (playerGhost, ghostOwner, entity) in
-                     SystemAPI.Query<RefRO<PredictedPlayerGhost>, RefRO<GhostOwner>>().WithEntityAccess())
+            foreach (var (playerGhost, ghostOwner, initialized, entity) in
+                     SystemAPI.Query<
+                         RefRO<PredictedPlayerGhost>,
+                         RefRO<GhostOwner>,
+                         EnabledRefRO<PlayerCharacterInitialized>>()
+                         .WithEntityAccess())
             {
-                if (playerGhost.ValueRO.CurrentHealth <= 0)
+                if (!initialized.ValueRO)
                 {
                     var networkId = ghostOwner.ValueRO.NetworkId;
                     var connectionEntity = clientsMap[ghostOwner.ValueRO.NetworkId].ConnectionEntity;
@@ -350,34 +646,52 @@ namespace Unity.MP_FPS
                                 RespawnTimer = 5f
                             });
                     }
-                    
-                    if (SystemAPI.HasComponent<PlayerClientCommandInputLookup>(entity))
+                    else
                     {
-                        var inputLookup = SystemAPI.GetComponent<PlayerClientCommandInputLookup>(entity);
-                        if (SystemAPI.Exists(inputLookup.ClientCommandInputEntity))
-                        {
-                            ecb.DestroyEntity(inputLookup.ClientCommandInputEntity);
-                        }
+                        Debug.Log(
+                            $"[Lives] Player {networkId} has been eliminated.");
                     }
-
-                    // Destroy the player character entity
-                    ecb.DestroyEntity(entity);
                 }
+
+                if (SystemAPI.HasComponent<
+                        PlayerClientCommandInputLookup>(
+                        entity))
+                {
+                    var inputLookup =
+                        SystemAPI.GetComponent<
+                            PlayerClientCommandInputLookup>(
+                            entity);
+
+                    if (SystemAPI.Exists(
+                            inputLookup.ClientCommandInputEntity))
+                    {
+                        ecb.DestroyEntity(
+                            inputLookup.ClientCommandInputEntity);
+                    }
+                }
+
+                ecb.DestroyEntity(entity);
             }
 
+            // Phase 3: Check whether an entire team has been eliminated.
+            CheckForRoundEnd(ref state, ecb);
+
             // --- Part 2: Countdown Timers and Respawn Players ---
-            foreach (var (pendingRespawn, connection, entity) in
-                     SystemAPI.Query<RefRW<PendingRespawn>, RefRO<NetworkId>>().WithEntityAccess())
+            if (!_roundOver)
             {
-                pendingRespawn.ValueRW.RespawnTimer -= SystemAPI.Time.DeltaTime;
-
-                if (pendingRespawn.ValueRO.RespawnTimer <= 0f)
+                foreach (var (pendingRespawn, connection, entity) in
+                         SystemAPI.Query<
+                             RefRW<PendingRespawn>,
+                             RefRO<NetworkId>>()
+                             .WithEntityAccess())
                 {
-                    Debug.Log($"[Server] Respawning player for connection {entity}.");
+                    pendingRespawn.ValueRW.RespawnTimer -=
+                        SystemAPI.Time.DeltaTime;
 
-                    if (_joinedClientLookup.HasComponent(entity))
+                    if (pendingRespawn.ValueRO.RespawnTimer <= 0f)
                     {
-                        var joinedClientData = _joinedClientLookup[entity];
+                        Debug.Log(
+                            $"[Server] Respawning player for connection {entity}.");
 
                         bool isBuildMode = LeaderboardManager.Instance != null &&
                                            LeaderboardManager.Instance.CurrentPhase ==
@@ -408,28 +722,151 @@ namespace Unity.MP_FPS
                             ecb.RemoveComponent<PendingRespawn>(entity);
                         }
                     }
-                    else
-                    {
-                        // This would indicate a problem, but we handle it safely.
-                        Debug.LogError($"Connection entity {entity} is pending respawn but has no JoinedClient data!");
-                        ecb.RemoveComponent<PendingRespawn>(entity);
-                    }
+                }
+            }
+            else
+            {
+                // Round is over, so remove any pending respawn timers.
+                foreach (var (pendingRespawn, entity) in
+                         SystemAPI.Query<
+                             RefRO<PendingRespawn>>()
+                             .WithEntityAccess())
+                {
+                    ecb.RemoveComponent<PendingRespawn>(
+                        entity);
                 }
             }
         }
 
-        void HandleJoinRequests(ref SystemState state, Entity gameplayMapsEntity, PlayerEntityPrefabs playerEntityPrefabs, EntityCommandBuffer ecb)
+        private void CheckForRoundEnd(
+            ref SystemState state,
+            EntityCommandBuffer ecb)
+        {
+            if (_roundOver)
+            {
+                return;
+            }
+
+            bool team0HasLives = false;
+            bool team1HasLives = false;
+
+            bool team0Exists = false;
+            bool team1Exists = false;
+
+            foreach (var joinedClient in
+                     SystemAPI.Query<RefRO<JoinedClient>>())
+            {
+                int teamId =
+                    joinedClient.ValueRO.TeamId;
+
+                int lives =
+                    joinedClient.ValueRO.Lives;
+
+                if (teamId == 0)
+                {
+                    team0Exists = true;
+
+                    if (lives > 0)
+                    {
+                        team0HasLives = true;
+                    }
+                }
+                else if (teamId == 1)
+                {
+                    team1Exists = true;
+
+                    if (lives > 0)
+                    {
+                        team1HasLives = true;
+                    }
+                }
+            }
+
+            if (!team0Exists || !team1Exists)
+            {
+                return;
+            }
+
+            if (!team0HasLives && team1HasLives)
+            {
+                EndRound(
+                    ref state,
+                    ecb,
+                    1);
+            }
+            else if (!team1HasLives && team0HasLives)
+            {
+                EndRound(
+                    ref state,
+                    ecb,
+                    0);
+            }
+        }
+
+        private void EndRound(
+            ref SystemState state,
+            EntityCommandBuffer ecb,
+            int winningTeam)
+        {
+            if (_roundOver)
+            {
+                return;
+            }
+
+            _roundOver = true;
+            _winningTeam = winningTeam;
+
+            string winnerName =
+                winningTeam == 0
+                    ? "RED"
+                    : "BLUE";
+
+            Debug.Log("========================================");
+            Debug.Log("[ROUND] ROUND OVER!");
+            Debug.Log($"[ROUND] WINNING TEAM: {winnerName}");
+            Debug.Log("========================================");
+
+            foreach (var (pendingRespawn, entity) in
+                     SystemAPI.Query<
+                         RefRO<PendingRespawn>>()
+                         .WithEntityAccess())
+            {
+                ecb.RemoveComponent<PendingRespawn>(
+                    entity);
+            }
+        }
+
+        void HandleJoinRequests(
+            ref SystemState state,
+            Entity gameplayMapsEntity,
+            PlayerEntityPrefabs playerEntityPrefabs,
+            EntityCommandBuffer ecb)
         {
             foreach (var (request, rpcReceive, entity) in
-                     SystemAPI.Query<RefRO<ClientJoinRequestRpc>, RefRW<ReceiveRpcCommandRequest>>().WithEntityAccess())
+                     SystemAPI.Query<
+                         RefRO<ClientJoinRequestRpc>,
+                         RefRW<ReceiveRpcCommandRequest>>()
+                         .WithEntityAccess())
             {
-                if (SystemAPI.HasComponent<NetworkId>(rpcReceive.ValueRW.SourceConnection) &&
-                    !SystemAPI.HasComponent<NetworkStreamInGame>(rpcReceive.ValueRW.SourceConnection))
+                if (SystemAPI.HasComponent<NetworkId>(
+                        rpcReceive.ValueRW.SourceConnection) &&
+                    !SystemAPI.HasComponent<NetworkStreamInGame>(
+                        rpcReceive.ValueRW.SourceConnection))
                 {
-                    SpawnPlayerCharacter(ref state, ecb, rpcReceive.ValueRW.SourceConnection, request.ValueRO.PlayerName, request.ValueRO.CharacterIndex);
-                    
-                    var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(rpcReceive.ValueRW.SourceConnection);
-                    AddPlayerToLeaderboard(ownerNetworkId.Value, request.ValueRO.PlayerName);
+                    SpawnPlayerCharacter(
+                        ref state,
+                        ecb,
+                        rpcReceive.ValueRW.SourceConnection,
+                        request.ValueRO.PlayerName,
+                        request.ValueRO.CharacterIndex);
+
+                    var ownerNetworkId =
+                        SystemAPI.GetComponent<NetworkId>(
+                            rpcReceive.ValueRW.SourceConnection);
+
+                    AddPlayerToLeaderboard(
+                        ownerNetworkId.Value,
+                        request.ValueRO.PlayerName);
                 }
 
                 ecb.DestroyEntity(entity);
@@ -437,11 +874,22 @@ namespace Unity.MP_FPS
         }
 
         [BurstDiscard]
-        private bool FindSpawnPoint(ref SystemState state, out LocalToWorld spawnPoint)
+        private bool FindSpawnPoint(
+            ref SystemState state,
+            out LocalToWorld spawnPoint)
         {
-            var spawnPointsQuery = SystemAPI.QueryBuilder().WithAll<SpawnPoint, LocalToWorld>().Build();
-            var spawnPoints = spawnPointsQuery.ToComponentDataArray<LocalToWorld>(Allocator.Temp);
-            ref FixedRandom random = ref SystemAPI.GetSingletonRW<FixedRandom>().ValueRW;
+            var spawnPointsQuery =
+                SystemAPI.QueryBuilder()
+                    .WithAll<SpawnPoint, LocalToWorld>()
+                    .Build();
+
+            var spawnPoints =
+                spawnPointsQuery.ToComponentDataArray<LocalToWorld>(
+                    Allocator.Temp);
+
+            ref FixedRandom random =
+                ref SystemAPI.GetSingletonRW<FixedRandom>()
+                    .ValueRW;
 
             if (spawnPoints.Length == 0)
             {
@@ -453,8 +901,13 @@ namespace Unity.MP_FPS
             // Shuffle the list to ensure that if multiple points have the same low number of players, the choice among them is still random.
             for (int i = spawnPoints.Length - 1; i > 0; i--)
             {
-                int k = random.Random.NextInt(0, i + 1);
-                (spawnPoints[k], spawnPoints[i]) = (spawnPoints[i], spawnPoints[k]);
+                int k =
+                    random.Random.NextInt(
+                        0,
+                        i + 1);
+
+                (spawnPoints[k], spawnPoints[i]) =
+                    (spawnPoints[i], spawnPoints[k]);
             }
 
             int bestSpawnPointIndex = 0;
@@ -462,11 +915,12 @@ namespace Unity.MP_FPS
 
             for (int i = 0; i < spawnPoints.Length; i++)
             {
-                int numColliders = UnityEngine.Physics.OverlapSphereNonAlloc(
-                    spawnPoints[i].Position,
-                    2f,
-                    _overlapColliders,
-                    LayerMask.GetMask("ServerPlayer"));
+                int numColliders =
+                    UnityEngine.Physics.OverlapSphereNonAlloc(
+                        spawnPoints[i].Position,
+                        2f,
+                        _overlapColliders,
+                        LayerMask.GetMask("ServerPlayer"));
 
                 if (numColliders == 0)
                 {
@@ -481,12 +935,16 @@ namespace Unity.MP_FPS
                 }
             }
 
-            spawnPoint = spawnPoints[bestSpawnPointIndex];
+            spawnPoint =
+                spawnPoints[bestSpawnPointIndex];
+
             spawnPoints.Dispose();
+
             return true;
         }
 
-        private int GetTeamForNewPlayer(ref SystemState state)
+        private int GetTeamForNewPlayer(
+            ref SystemState state)
         {
             int redPlayers = 0;
             int bluePlayers = 0;

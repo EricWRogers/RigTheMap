@@ -36,8 +36,14 @@ namespace Unity.MP_FPS
     public partial class ServerPlayerMovementSystem : SingletonSystem<ServerPlayerMovementSystem>
     {
         private const int k_NumHistoryTicks = 20;
-        private static readonly int s_ShootableLayerMask = LayerMask.GetMask("Ground", "Default");
-        private static readonly int s_HitscanLayerMask = LayerMask.GetMask("ServerPlayer", "Default", "Ground");
+        private const int k_BuildItemsPerPlayer = 3;
+
+        private static readonly int s_ShootableLayerMask =
+            LayerMask.GetMask("Ground", "Default");
+
+        private static readonly int s_HitscanLayerMask =
+            LayerMask.GetMask("ServerPlayer", "Default", "Ground");
+
         private NativeList<ClientCommandInput> m_ProcessedClientInputCommands;
         private ComponentLookup<PredictedClientInput> m_PredictedClientInputComponentLookup;
         private ComponentLookup<PredictedPlayerGhost> m_PlayerGhostLookup;
@@ -50,9 +56,9 @@ namespace Unity.MP_FPS
             s_PlayerMovementTick = 0;
         }
 
-        // logging and diagnostics
         private static bool s_PlayerMovementActive = false;
         private static uint s_PlayerMovementTick;
+
         public static bool PlayerMovementActive => s_PlayerMovementActive;
         public static uint PlayerMovementTick => s_PlayerMovementTick;
 
@@ -72,27 +78,45 @@ namespace Unity.MP_FPS
             RequireForUpdate<NetworkStreamInGame>();
             RequireForUpdate<NetworkTime>();
 
-            m_PredictedClientInputComponentLookup = GetComponentLookup<PredictedClientInput>(true);
-            m_PlayerGhostLookup = GetComponentLookup<PredictedPlayerGhost>();
-            m_PlayerTeamLookup = GetComponentLookup<PlayerTeam>(true);
+            m_PredictedClientInputComponentLookup =
+                GetComponentLookup<PredictedClientInput>(true);
+
+            m_PlayerGhostLookup =
+                GetComponentLookup<PredictedPlayerGhost>();
+
+            m_PlayerTeamLookup =
+                GetComponentLookup<PlayerTeam>(true);
 
             const int maxLocalPlayers = 4; //PlayerGhostManager.k_MaxLocalPlayers
-            m_ProcessedClientInputCommands =
-                new NativeList<ClientCommandInput>(maxLocalPlayers * 32, Allocator.Persistent);
 
-            ghostOwnerLookup = GetComponentLookup<GhostOwner>(true);
+            m_ProcessedClientInputCommands =
+                new NativeList<ClientCommandInput>(
+                    maxLocalPlayers * 32,
+                    Allocator.Persistent);
+
+            ghostOwnerLookup =
+                GetComponentLookup<GhostOwner>(true);
         }
 
         protected override void OnDestroy()
         {
             m_ProcessedClientInputCommands.Dispose();
 
-            var query = GetEntityQuery(typeof(PlayerControllerLink));
-            foreach (var entity in query.ToEntityArray(Allocator.Temp))
+            var query =
+                GetEntityQuery(typeof(PlayerControllerLink));
+
+            foreach (var entity in
+                     query.ToEntityArray(Allocator.Temp))
             {
-                var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
+                var controllerLink =
+                    SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(
+                        entity);
+
                 controllerLink.Controller = null;
-                EntityManager.SetComponentData(entity, controllerLink);
+
+                EntityManager.SetComponentData(
+                    entity,
+                    controllerLink);
             }
 
             base.OnDestroy();
@@ -101,7 +125,8 @@ namespace Unity.MP_FPS
         private void KillPlayersOnModeChange()
         {
             foreach (var predictedPlayer in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>>().WithAll<Simulate>())
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>>()
+                         .WithAll<Simulate>())
             {
                 predictedPlayer.ValueRW.CurrentHealth = 0;
             }
@@ -110,13 +135,195 @@ namespace Unity.MP_FPS
         private void KillPlayersBelowY(float killYThreshold = -50f)
         {
             foreach (var (predictedPlayer, transform) in
-                    SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<LocalTransform>>().WithAll<Simulate>())
+                     SystemAPI.Query<
+                         RefRW<PredictedPlayerGhost>,
+                         RefRO<LocalTransform>>()
+                         .WithAll<Simulate>())
             {
                 if (transform.ValueRO.Position.y < killYThreshold)
                 {
                     predictedPlayer.ValueRW.CurrentHealth = 0;
                 }
             }
+        }
+
+        private void GiveRandomBuildItems(
+            ref PredictedPlayerGhost predictedPlayer,
+            int networkId)
+        {
+            if (WeaponManager.Instance == null ||
+                WeaponManager.Instance.WeaponRegistry == null)
+            {
+                return;
+            }
+
+            var buildGunData =
+                WeaponManager.Instance.WeaponRegistry.GetWeaponData(4);
+
+                Debug.Log(
+                    $"[BUILD DEBUG] Weapon ID 2 = " +
+                    $"{buildGunData?.WeaponName}");
+
+                Debug.Log(
+                    $"[BUILD DEBUG] IsPlacementWeapon = " +
+                    $"{buildGunData?.IsPlacementWeapon}");
+
+                Debug.Log(
+                    $"[BUILD DEBUG] Placement Prefab Count = " +
+                    $"{buildGunData?.PlacementGhostPrefabs?.Count ?? 0}");
+
+            if (buildGunData == null ||
+                !buildGunData.IsPlacementWeapon ||
+                buildGunData.PlacementGhostPrefabs == null ||
+                buildGunData.PlacementGhostPrefabs.Count < k_BuildItemsPerPlayer)
+            {
+                Debug.LogWarning(
+                    "[Build Mode] Build weapon needs at least 3 placement prefabs.");
+
+                return;
+            }
+
+            int prefabCount =
+                buildGunData.PlacementGhostPrefabs.Count;
+
+            System.Random random =
+                new System.Random(
+                    networkId * 1009 +
+                    (LeaderboardManager.Instance != null
+                        ? LeaderboardManager.Instance.CurrentRound * 9176
+                        : 1));
+
+            List<int> availableIndices =
+                new List<int>();
+
+            for (int i = 0; i < prefabCount; i++)
+            {
+                availableIndices.Add(i);
+            }
+
+            // Shuffle the prefab indices.
+            for (int i = availableIndices.Count - 1; i > 0; i--)
+            {
+                int randomIndex =
+                    random.Next(i + 1);
+
+                int temp =
+                    availableIndices[i];
+
+                availableIndices[i] =
+                    availableIndices[randomIndex];
+
+                availableIndices[randomIndex] =
+                    temp;
+            }
+
+            int item0 = availableIndices[0];
+            int item1 = availableIndices[1];
+            int item2 = availableIndices[2];
+
+            predictedPlayer.BuildItem0 = item0;
+            predictedPlayer.BuildItem1 = item1;
+            predictedPlayer.BuildItem2 = item2;
+
+            predictedPlayer.BuildItemsUsedMask = 0;
+
+            // Start with the first randomly selected item.
+            predictedPlayer.SelectedPlacementPrefabIndex = item0;
+
+            Debug.Log(
+                $"[Build Mode] Player {networkId} received build items: " +
+                $"{item0}, {item1}, {item2}");
+
+            Debug.Log(
+                $"[Build Mode] Item names: " +
+                $"{buildGunData.PlacementGhostPrefabs[item0].GhostPrefab.editorAsset?.name}, " +
+                $"{buildGunData.PlacementGhostPrefabs[item1].GhostPrefab.editorAsset?.name}, " +
+                $"{buildGunData.PlacementGhostPrefabs[item2].GhostPrefab.editorAsset?.name}");
+        }
+
+        private bool IsBuildItemUsed(
+            in PredictedPlayerGhost player,
+            int slot)
+        {
+            return
+                (player.BuildItemsUsedMask & (1 << slot)) != 0;
+        }
+
+        private void MarkBuildItemUsed(
+            ref PredictedPlayerGhost player,
+            int slot)
+        {
+            player.BuildItemsUsedMask |=
+                (byte)(1 << slot);
+        }
+
+        private int GetBuildItemIndex(
+            in PredictedPlayerGhost player,
+            int slot)
+        {
+            switch (slot)
+            {
+                case 0:
+                    return player.BuildItem0;
+
+                case 1:
+                    return player.BuildItem1;
+
+                case 2:
+                    return player.BuildItem2;
+
+                default:
+                    return -1;
+            }
+        }
+
+        private int FindNextAvailableBuildItemSlot(
+            in PredictedPlayerGhost player,
+            int currentSlot,
+            int direction)
+        {
+            for (int i = 1;
+                i <= k_BuildItemsPerPlayer;
+                i++)
+            {
+                int slot =
+                    (currentSlot +
+                    direction * i +
+                    k_BuildItemsPerPlayer) %
+                    k_BuildItemsPerPlayer;
+
+                if (!IsBuildItemUsed(player, slot))
+                {
+                    return slot;
+                }
+            }
+
+            return -1;
+        }
+
+        private int FindBuildItemSlotForPrefab(
+            in PredictedPlayerGhost player,
+            int prefabIndex)
+        {
+            if (!IsBuildItemUsed(player, 0) &&
+                player.BuildItem0 == prefabIndex)
+            {
+                return 0;
+            }
+
+            if (!IsBuildItemUsed(player, 1) &&
+                player.BuildItem1 == prefabIndex)
+            {
+                return 1;
+            }
+
+            if (!IsBuildItemUsed(player, 2) &&
+                player.BuildItem2 == prefabIndex)
+            {
+                return 2;
+            }
+
+            return -1;
         }
 
         private void ResolveHammerLanding(
@@ -131,13 +338,15 @@ namespace Unity.MP_FPS
             Vector3 landingPosition =
                 hammerPlayer.ControllerState.CurrentPosition;
 
-            Collider[] hits = UnityEngine.Physics.OverlapSphere(
-                landingPosition,
-                weaponData.HammerImpactRadius,
-                LayerMask.GetMask("ServerPlayer"),
-                QueryTriggerInteraction.Ignore);
+            Collider[] hits =
+                UnityEngine.Physics.OverlapSphere(
+                    landingPosition,
+                    weaponData.HammerImpactRadius,
+                    LayerMask.GetMask("ServerPlayer"),
+                    QueryTriggerInteraction.Ignore);
 
-            HashSet<Entity> alreadyHit = new HashSet<Entity>();
+            HashSet<Entity> alreadyHit =
+                new HashSet<Entity>();
 
             foreach (var hitCollider in hits)
             {
@@ -148,7 +357,8 @@ namespace Unity.MP_FPS
                     continue;
                 }
 
-                Entity targetEntity = hitGhostObject.LinkedEntity;
+                Entity targetEntity =
+                    hitGhostObject.LinkedEntity;
 
                 if (targetEntity == hammerEntity)
                     continue;
@@ -192,8 +402,7 @@ namespace Unity.MP_FPS
                 {
                     Debug.Log(
                         $"[Team Damage] Friendly fire prevented. " +
-                        $"Player {hammerPlayerNetworkId} and target {targetNetworkId} are on the same team."
-                    );
+                        $"Player {hammerPlayerNetworkId} and target {targetNetworkId} are on the same team.");
 
                     continue;
                 }
@@ -204,7 +413,8 @@ namespace Unity.MP_FPS
                 targetPlayer.ValueRW.CurrentHealth -=
                     weaponData.HammerDamage;
 
-                targetPlayer.ValueRW.ControllerState.IsHit = true;
+                targetPlayer.ValueRW.ControllerState.IsHit =
+                    true;
 
                 targetPlayer.ValueRW.LastDamageAmount =
                     weaponData.HammerDamage;
@@ -215,18 +425,14 @@ namespace Unity.MP_FPS
                 Debug.Log(
                     $"[Hammer] Player {hammerPlayerNetworkId} landed on " +
                     $"Player {targetNetworkId} for " +
-                    $"{weaponData.HammerDamage} damage."
-                );
+                    $"{weaponData.HammerDamage} damage.");
 
                 if (healthBeforeDamage > 0 &&
                     targetPlayer.ValueRO.CurrentHealth <= 0)
                 {
-                    if (LeaderboardManager.Instance != null)
-                    {
-                        LeaderboardManager.Instance.AddKill(
-                            hammerPlayerNetworkId,
-                            targetNetworkId);
-                    }
+                    Debug.Log(
+                        $"[Server] Player {hammerPlayerNetworkId} killed player {targetNetworkId}."
+                    );
                 }
             }
 
@@ -239,8 +445,10 @@ namespace Unity.MP_FPS
 
         protected override void OnUpdate()
         {
+            float deltaTime =
+                World.Time.DeltaTime;
 
-            float deltaTime = World.Time.DeltaTime;
+            ghostOwnerLookup.Update(this);
 
             if (LeaderboardManager.Instance != null)
             {
@@ -251,35 +459,73 @@ namespace Unity.MP_FPS
                 if (isBuildMode != m_WasBuildMode)
                 {
                     KillPlayersOnModeChange();
+
+                    if (isBuildMode)
+                    {
+                        foreach (var (predictedPlayer, entity) in
+                                 SystemAPI.Query<
+                                     RefRW<PredictedPlayerGhost>>()
+                                     .WithAll<GhostOwner>()
+                                     .WithEntityAccess())
+                        {
+                            int networkId =
+                                ghostOwnerLookup.HasComponent(entity)
+                                    ? ghostOwnerLookup[entity].NetworkId
+                                    : entity.Index;
+
+                            GiveRandomBuildItems(
+                                ref predictedPlayer.ValueRW,
+                                networkId);
+                        }
+                    }
+
                     m_WasBuildMode = isBuildMode;
                 }
             }
 
-            var networkTime = SystemAPI.GetSingleton<NetworkTime>();
+            var networkTime =
+                SystemAPI.GetSingleton<NetworkTime>();
+
             if (!networkTime.ServerTick.IsValid)
             {
                 return;
             }
 
-            uint serverTick = networkTime.ServerTick.TickIndexForValidTick;
+            uint serverTick =
+                networkTime.ServerTick.TickIndexForValidTick;
 
             s_PlayerMovementActive = true;
             s_PlayerMovementTick = serverTick;
 
-            var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+            var ecb =
+                new EntityCommandBuffer(
+                    Unity.Collections.Allocator.Temp);
 
             foreach (var (predictedPlayer, localTransform, entity) in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<LocalTransform>>()
+                     SystemAPI.Query<
+                         RefRW<PredictedPlayerGhost>,
+                         RefRO<LocalTransform>>()
                          .WithEntityAccess()
                          .WithAll<PlayerInputComponent, GhostGameObjectLink>()
                          .WithNone<PlayerControllerLink>())
             {
-                var gameObjectLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
+                var gameObjectLink =
+                    SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(
+                        entity);
+
                 if (gameObjectLink.LinkedInstance != null)
                 {
-                    if (gameObjectLink.LinkedInstance.TryGetComponent<FirstPersonController>(out var controller))
+                    if (gameObjectLink.LinkedInstance.TryGetComponent<
+                            FirstPersonController>(
+                            out var controller))
                     {
-                        ecb.AddComponent(entity, new PlayerControllerLink { Controller = controller });
+                        ecb.AddComponent(
+                            entity,
+                            new PlayerControllerLink
+                            {
+                                Controller = controller
+                            });
+
                         predictedPlayer.ValueRW.ControllerState.Init(
                             localTransform.ValueRO.Position,
                             localTransform.ValueRO.Rotation);
@@ -289,18 +535,29 @@ namespace Unity.MP_FPS
 
             // Kill players who fall below the Y-level threshold (e.g., -50)
             float killYThreshold = -50f;
+
             foreach (var (predictedPlayer, transform) in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<LocalTransform>>()
+                     SystemAPI.Query<
+                         RefRW<PredictedPlayerGhost>,
+                         RefRO<LocalTransform>>()
                          .WithAll<Simulate>())
             {
-                if (transform.ValueRO.Position.y < killYThreshold && predictedPlayer.ValueRO.CurrentHealth > 0)
+                if (transform.ValueRO.Position.y < killYThreshold &&
+                    predictedPlayer.ValueRO.CurrentHealth > 0)
                 {
                     predictedPlayer.ValueRW.CurrentHealth = 0;
-                    predictedPlayer.ValueRW.ControllerState.IsHit = true;
-                    predictedPlayer.ValueRW.LastDamageAmount = 999f;
-                    predictedPlayer.ValueRW.LastHitTick = serverTick;
 
-                    Debug.Log($"[Server] Player fell out of bounds below Y={killYThreshold} and was killed.");
+                    predictedPlayer.ValueRW.ControllerState.IsHit =
+                        true;
+
+                    predictedPlayer.ValueRW.LastDamageAmount =
+                        999f;
+
+                    predictedPlayer.ValueRW.LastHitTick =
+                        serverTick;
+
+                    Debug.Log(
+                        $"[Server] Player fell out of bounds below Y={killYThreshold} and was killed.");
                 }
             }
 
@@ -308,31 +565,48 @@ namespace Unity.MP_FPS
             // we process the input and create a list of commandInputs that need to be processed by the movement code
             // the movement code processes the inputs in order
             m_ProcessedClientInputCommands.Clear();
-            var commands = m_ProcessedClientInputCommands;
-            var unityFrameCount = UnityEngine.Time.frameCount;
 
-            var logPredictionWarnings = PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
-            var clientCommandInputBufferLookup = SystemAPI.GetBufferLookup<ClientCommandInput>(true);
+            var commands =
+                m_ProcessedClientInputCommands;
+
+            var unityFrameCount =
+                UnityEngine.Time.frameCount;
+
+            var logPredictionWarnings =
+                PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
+
+            var clientCommandInputBufferLookup =
+                SystemAPI.GetBufferLookup<ClientCommandInput>(true);
 
             foreach (var (predictedClient, entity)
-                     in SystemAPI.Query<RefRW<PredictedClientInput>>()
+                     in SystemAPI.Query<
+                         RefRW<PredictedClientInput>>()
                          .WithEntityAccess()
                          .WithAll<GhostOwner, Simulate>())
             {
-                if (!clientCommandInputBufferLookup.TryGetBuffer(entity, out var buffer) || buffer.Length == 0)
+                if (!clientCommandInputBufferLookup.TryGetBuffer(
+                        entity,
+                        out var buffer) ||
+                    buffer.Length == 0)
                 {
                     continue;
                 }
 
-                predictedClient.ValueRW.BeginInputIndex = commands.Length;
+                predictedClient.ValueRW.BeginInputIndex =
+                    commands.Length;
 
                 if (predictedClient.ValueRO.LastProcessedServerTick == 0)
                 {
                     // first frame, let's just get the latest data and set it
-                    if (buffer.GetDataAtTick(new NetworkTick(serverTick), out var commandInput))
+                    if (buffer.GetDataAtTick(
+                            new NetworkTick(serverTick),
+                            out var commandInput))
                     {
-                        ClientCommandInput input = commandInput;
+                        ClientCommandInput input =
+                            commandInput;
+
                         commands.Add(input);
+
                         predictedClient.ValueRW.LastProcessedServerTick =
                             commandInput.Tick.TickIndexForValidTick;
                     }
@@ -340,7 +614,9 @@ namespace Unity.MP_FPS
                 else
                 {
                     if (logPredictionWarnings &&
-                        serverTick - predictedClient.ValueRO.LastProcessedServerTick > 1)
+                        serverTick -
+                        predictedClient.ValueRO.LastProcessedServerTick >
+                        1)
                     {
                         Debug.LogWarning(
                             $"[{unityFrameCount.ToString()}] " +
@@ -351,7 +627,8 @@ namespace Unity.MP_FPS
 
                     // we need to check we aren't missing data
                     // so let's check for any data from the ticks in between
-                    for (uint tick = predictedClient.ValueRO.LastProcessedServerTick + 1;
+                    for (uint tick =
+                             predictedClient.ValueRO.LastProcessedServerTick + 1;
                          tick <= serverTick;
                          tick++)
                     {
@@ -361,20 +638,22 @@ namespace Unity.MP_FPS
                             && commandInput.Tick.TickIndexForValidTick !=
                             predictedClient.ValueRO.LastProcessedServerTick)
                         {
-                            ClientCommandInput input = commandInput;
+                            ClientCommandInput input =
+                                commandInput;
+
                             commands.Add(input);
 
                             if (commandInput.Tick.TickIndexForValidTick >
                                 predictedClient.ValueRO.LastProcessedServerTick + 1)
                             {
-                                // we are missing input from the client which means we might mispredict
+                                // if we have missing ticks here, it means the server did not (and will not) receive it.
+                                // So the best we can do is assume the input is the same and accumulate our movement based on that
                                 for (uint i =
                                          predictedClient.ValueRO.LastProcessedServerTick + 1;
-                                     i < commandInput.Tick.TickIndexForValidTick;
+                                     i <
+                                     commandInput.Tick.TickIndexForValidTick;
                                      i++)
                                 {
-                                    // if we have missing ticks here, it means the server did not (and will not) receive it.
-                                    // So the best we can do is assume the input is the same and accumulate our movement based on that
                                     if (logPredictionWarnings)
                                     {
                                         Debug.LogWarning(
@@ -394,12 +673,16 @@ namespace Unity.MP_FPS
                 }
 
                 predictedClient.ValueRW.InputCount =
-                    commands.Length - predictedClient.ValueRO.BeginInputIndex;
+                    commands.Length -
+                    predictedClient.ValueRO.BeginInputIndex;
 
                 if (logPredictionWarnings)
                 {
-                    var unityFrameCountString = unityFrameCount.ToString();
-                    var serverTickString = serverTick.ToString();
+                    var unityFrameCountString =
+                        unityFrameCount.ToString();
+
+                    var serverTickString =
+                        serverTick.ToString();
 
                     if (predictedClient.ValueRO.InputCount == 0)
                     {
@@ -407,7 +690,8 @@ namespace Unity.MP_FPS
                             $"[{unityFrameCountString}] " +
                             $"[ServerPlayerMovementSystem] No input to process for tick {serverTickString}.");
                     }
-                    else if (predictedClient.ValueRO.LastProcessedServerTick != serverTick)
+                    else if (predictedClient.ValueRO.LastProcessedServerTick !=
+                             serverTick)
                     {
                         Debug.LogWarning(
                             $"[{unityFrameCountString}] " +
@@ -430,30 +714,40 @@ namespace Unity.MP_FPS
                 m_PlayerGhostLookup;
 
             var projectileSpawnList =
-                new NativeList<ProjectileSpawnData>(Allocator.Temp);
+                new NativeList<ProjectileSpawnData>(
+                    Allocator.Temp);
 
             var vfxSpawnList =
-                new NativeList<VfxSpawnData>(Allocator.Temp);
+                new NativeList<VfxSpawnData>(
+                    Allocator.Temp);
 
             var placementSpawnList =
-                new List<(Vector3 Position, Quaternion Rotation, GhostSpawner.GhostReference Prefab)>(8);
+                new List<(
+                    Vector3 Position,
+                    Quaternion Rotation,
+                    GhostSpawner.GhostReference Prefab)>(8);
 
             foreach (var predictedPlayer in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>>()
+                     SystemAPI.Query<
+                         RefRW<PredictedPlayerGhost>>()
                          .WithAll<Simulate>())
             {
-                if (predictedPlayer.ValueRO.WeaponCooldown < float.MaxValue)
+                if (predictedPlayer.ValueRO.WeaponCooldown <
+                    float.MaxValue)
                 {
-                    predictedPlayer.ValueRW.WeaponCooldown += deltaTime;
+                    predictedPlayer.ValueRW.WeaponCooldown +=
+                        deltaTime;
                 }
 
                 if (predictedPlayer.ValueRO.ControllerState.IsReloadingState)
                 {
-                    predictedPlayer.ValueRW.ReloadTimer -= deltaTime;
+                    predictedPlayer.ValueRW.ReloadTimer -=
+                        deltaTime;
 
                     if (predictedPlayer.ValueRO.ReloadTimer <= 0f)
                     {
-                        predictedPlayer.ValueRW.ControllerState.IsReloadingState = false;
+                        predictedPlayer.ValueRW.ControllerState.IsReloadingState =
+                            false;
 
                         var weaponData =
                             WeaponManager.Instance.WeaponRegistry.GetWeaponData(
@@ -482,7 +776,8 @@ namespace Unity.MP_FPS
                          .WithAll<Simulate, GhostGameObjectLink>())
             {
                 var ghostLink =
-                    SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
+                    SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(
+                        entity);
 
                 var playerGhost =
                     ghostLink.LinkedInstance.GetComponent<PlayerGhost>();
@@ -496,24 +791,25 @@ namespace Unity.MP_FPS
                     // loop through ALL inputs in the batch to find if a scroll occurred
                     float scrollDelta = 0;
 
-                    for (int i = 0; i < predictedClient.InputCount; i++)
+                    for (int i = 0;
+                        i < predictedClient.InputCount;
+                        i++)
                     {
                         var input =
-                            commands[predictedClient.BeginInputIndex + i];
+                            commands[
+                                predictedClient.BeginInputIndex + i];
 
                         if (input.PlayerInput.WeaponScrollDelta != 0)
                         {
-                            scrollDelta =
+                            scrollDelta +=
                                 input.PlayerInput.WeaponScrollDelta;
 
                             Debug.Log(
-                                $"[Input Test] Scroll input detected! Delta: {scrollDelta}");
-
-                            break; // stop looking once we find a scroll event
+                                $"[Input Test] Scroll input detected! Delta: " +
+                                $"{input.PlayerInput.WeaponScrollDelta}");
                         }
                     }
 
-                    // aapply the scroll delta if we found one
                     if (scrollDelta != 0 &&
                         WeaponManager.Instance != null &&
                         WeaponManager.Instance.WeaponRegistry != null)
@@ -523,24 +819,75 @@ namespace Unity.MP_FPS
                                 predictedPlayer.ValueRO.EquippedWeaponID);
 
                         if (equippedWeapon != null &&
-                            equippedWeapon.IsPlacementWeapon &&
-                            equippedWeapon.PlacementGhostPrefabs.Count > 0)
+                            equippedWeapon.IsPlacementWeapon)
                         {
-                            int totalPrefabs =
-                                equippedWeapon.PlacementGhostPrefabs.Count;
+                            int currentSlot = -1;
 
-                            int currentIndex =
-                                predictedPlayer.ValueRO.SelectedPlacementPrefabIndex;
+                            if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
+                                predictedPlayer.ValueRO.BuildItem0)
+                            {
+                                currentSlot = 0;
+                            }
+                            else if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
+                                    predictedPlayer.ValueRO.BuildItem1)
+                            {
+                                currentSlot = 1;
+                            }
+                            else if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
+                                    predictedPlayer.ValueRO.BuildItem2)
+                            {
+                                currentSlot = 2;
+                            }
 
-                            // Ensures index wraps correctly when scrolling up or down
-                            int nextIndex =
-                                (currentIndex +
-                                 (scrollDelta > 0 ? 1 : -1) +
-                                 totalPrefabs) %
-                                totalPrefabs;
+                            if (currentSlot < 0)
+                            {
+                                if (!IsBuildItemUsed(
+                                        predictedPlayer.ValueRO,
+                                        0))
+                                {
+                                    currentSlot = 0;
+                                }
+                                else if (!IsBuildItemUsed(
+                                            predictedPlayer.ValueRO,
+                                            1))
+                                {
+                                    currentSlot = 1;
+                                }
+                                else if (!IsBuildItemUsed(
+                                            predictedPlayer.ValueRO,
+                                            2))
+                                {
+                                    currentSlot = 2;
+                                }
+                            }
 
-                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
-                                nextIndex;
+                            if (currentSlot >= 0)
+                            {
+                                int direction =
+                                    scrollDelta > 0 ? 1 : -1;
+
+                                int nextSlot =
+                                    FindNextAvailableBuildItemSlot(
+                                        predictedPlayer.ValueRO,
+                                        currentSlot,
+                                        direction);
+
+                                if (nextSlot >= 0)
+                                {
+                                    int nextPrefabIndex =
+                                        GetBuildItemIndex(
+                                            predictedPlayer.ValueRO,
+                                            nextSlot);
+
+                                    predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
+                                        nextPrefabIndex;
+
+                                    Debug.Log(
+                                        $"[Build Mode] Scrolled from slot " +
+                                        $"{currentSlot} to slot {nextSlot}. " +
+                                        $"Prefab index: {nextPrefabIndex}");
+                                }
+                            }
                         }
                     }
 
@@ -549,7 +896,8 @@ namespace Unity.MP_FPS
                             predictedClient.BeginInputIndex +
                             predictedClient.InputCount - 1];
 
-                    predictedPlayer.ValueRW.ControllerState.Shoot = false;
+                    predictedPlayer.ValueRW.ControllerState.Shoot =
+                        false;
 
                     var weaponData =
                         WeaponManager.Instance.WeaponRegistry.GetWeaponData(
@@ -589,8 +937,11 @@ namespace Unity.MP_FPS
                               predictedPlayer.ValueRO.WeaponCooldown >=
                               weaponData.CooldownInMs)))
                         {
-                            predictedPlayer.ValueRW.WeaponCooldown = 0f;
-                            predictedPlayer.ValueRW.LastShotTick = serverTick;
+                            predictedPlayer.ValueRW.WeaponCooldown =
+                                0f;
+
+                            predictedPlayer.ValueRW.LastShotTick =
+                                serverTick;
 
                             if (weaponData.Type != WeaponType.Melee)
                             {
@@ -605,8 +956,10 @@ namespace Unity.MP_FPS
 
                             quaternion aimRotation =
                                 quaternion.Euler(
-                                    math.radians(controllerState.PitchDegrees),
-                                    math.radians(controllerState.YawDegrees),
+                                    math.radians(
+                                        controllerState.PitchDegrees),
+                                    math.radians(
+                                        controllerState.YawDegrees),
                                     0f);
 
                             float3 eyePosition =
@@ -649,9 +1002,12 @@ namespace Unity.MP_FPS
                                     continue;
                                 }
 
-                                int placementMask = weaponData.PlacementLayerMask.value != 0
-                                    ? weaponData.PlacementLayerMask.value
-                                    : LayerMask.GetMask("Ground", "Default");
+                                int placementMask =
+                                    weaponData.PlacementLayerMask.value != 0
+                                        ? weaponData.PlacementLayerMask.value
+                                        : LayerMask.GetMask(
+                                            "Ground",
+                                            "Default");
 
                                 if (UnityEngine.Physics.Raycast(
                                         eyePosition,
@@ -660,6 +1016,16 @@ namespace Unity.MP_FPS
                                         weaponData.HitscanRange,
                                         placementMask))
                                 {
+                                    int usedSlot =
+                                        FindBuildItemSlotForPrefab(
+                                            predictedPlayer.ValueRO,
+                                            selectedIndex);
+
+                                    if (usedSlot < 0)
+                                    {
+                                        continue;
+                                    }
+
                                     var placementPosition =
                                         placementHit.point +
                                         placementHit.normal *
@@ -671,7 +1037,10 @@ namespace Unity.MP_FPS
                                             placementHit.normal);
 
                                     var modelCorrection =
-                                        Quaternion.Euler(0f, 0f, 0f);
+                                        Quaternion.Euler(
+                                            0f,
+                                            0f,
+                                            0f);
 
                                     var placementRotation =
                                         surfaceRotation *
@@ -701,9 +1070,39 @@ namespace Unity.MP_FPS
                                                 selectedPrefab
                                             ));
 
+                                        MarkBuildItemUsed(
+                                            ref predictedPlayer.ValueRW,
+                                            usedSlot);
+
                                         Debug.Log(
                                             "[Server] Purple death orb placed at " +
                                             placementPosition.ToString());
+
+                                        int nextSlot =
+                                            FindNextAvailableBuildItemSlot(
+                                                predictedPlayer.ValueRO,
+                                                usedSlot,
+                                                1);
+
+                                        if (nextSlot >= 0)
+                                        {
+                                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
+                                                GetBuildItemIndex(
+                                                    predictedPlayer.ValueRO,
+                                                    nextSlot);
+
+                                            Debug.Log(
+                                                $"[Build Mode] Next available item is slot " +
+                                                $"{nextSlot}.");
+                                        }
+                                        else
+                                        {
+                                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
+                                                -1;
+
+                                            Debug.Log(
+                                                "[Build Mode] Player has used all 3 build items.");
+                                        }
                                     }
                                 }
 
@@ -712,6 +1111,7 @@ namespace Unity.MP_FPS
 
                             switch (weaponData.Type)
                             {
+
                                 case WeaponType.Hitscan:
                                 {
                                     if (UnityEngine.Physics.Raycast(
@@ -722,7 +1122,8 @@ namespace Unity.MP_FPS
                                             s_HitscanLayerMask))
                                     {
                                         if (hit.collider.gameObject.layer ==
-                                            LayerMask.NameToLayer("ServerPlayer"))
+                                            LayerMask.NameToLayer(
+                                                "ServerPlayer"))
                                         {
                                             if (GhostGameObject.TryFindGhostGameObject(
                                                     hit.collider.gameObject,
@@ -730,18 +1131,18 @@ namespace Unity.MP_FPS
                                                 playerGhostLookup.HasComponent(
                                                     hitGhostObject.LinkedEntity))
                                             {
+                                                var targetEntity =
+                                                    hitGhostObject.LinkedEntity;
+
                                                 var targetPredictedPlayer =
-                                                    playerGhostLookup.GetRefRW(
-                                                        hitGhostObject.LinkedEntity);
+                                                    playerGhostLookup.GetRefRW(targetEntity);
 
                                                 var targetNetworkId =
-                                                    ghostOwnerLookup[
-                                                        hitGhostObject.LinkedEntity].NetworkId;
+                                                    ghostOwnerLookup[targetEntity].NetworkId;
 
-                                                if (shooterNetworkId ==
-                                                    targetNetworkId)
+                                                if (shooterNetworkId == targetNetworkId)
                                                 {
-                                                    //skip hitting self
+                                                    // skip hitting self
                                                     continue;
                                                 }
 
@@ -749,16 +1150,15 @@ namespace Unity.MP_FPS
                                                     m_PlayerTeamLookup[entity];
 
                                                 var targetTeam =
-                                                    m_PlayerTeamLookup[
-                                                        hitGhostObject.LinkedEntity];
+                                                    m_PlayerTeamLookup[targetEntity];
 
                                                 if (shooterTeam.TeamId ==
                                                     targetTeam.TeamId)
                                                 {
                                                     Debug.Log(
                                                         $"[Team Damage] Friendly fire prevented. " +
-                                                        $"Player {shooterNetworkId} and target {targetNetworkId} are on the same team."
-                                                    );
+                                                        $"Player {shooterNetworkId} and target " +
+                                                        $"{targetNetworkId} are on the same team.");
 
                                                     continue;
                                                 }
@@ -780,28 +1180,28 @@ namespace Unity.MP_FPS
 
                                                 Debug.Log(
                                                     $"[Team Damage] Player {shooterNetworkId} damaged " +
-                                                    $"player {targetNetworkId} for {weaponData.Damage} damage."
-                                                );
+                                                    $"player {targetNetworkId} for " +
+                                                    $"{weaponData.Damage} damage.");
 
                                                 if (healthBeforeDamage > 0 &&
-                                                    targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
+                                                    targetPredictedPlayer.ValueRO.CurrentHealth <=
+                                                    0)
                                                 {
+                                                    Debug.Log(
+                                                        $"[Server] Player {shooterNetworkId} killed " +
+                                                        $"player {targetNetworkId}.");
+
                                                     if (LeaderboardManager.Instance != null)
                                                     {
                                                         LeaderboardManager.Instance.AddKill(
                                                             shooterNetworkId,
-                                                            targetNetworkId
-                                                        );
-
-                                                        Debug.Log(
-                                                            $"[Server] Player {shooterNetworkId} killed player {targetNetworkId}."
-                                                        );
+                                                            targetNetworkId);
                                                     }
                                                     else
                                                     {
                                                         Debug.LogWarning(
-                                                            "[Server] LeaderboardManager instance not found. Cannot add kill."
-                                                        );
+                                                            "[Server] LeaderboardManager instance not found. " +
+                                                            "Cannot add kill.");
                                                     }
                                                 }
                                             }
@@ -810,12 +1210,11 @@ namespace Unity.MP_FPS
                                         if (weaponData.ProjectileHitVfxPrefab != null)
                                         {
                                             vfxSpawnList.Add(
-                                                new VfxSpawnData()
+                                                new VfxSpawnData
                                                 {
                                                     Position = hit.point,
                                                     Rotation =
-                                                        Quaternion.LookRotation(
-                                                            hit.normal),
+                                                        Quaternion.LookRotation(hit.normal),
                                                     Prefab =
                                                         GhostSpawner.FindGhostPrefabEntity(
                                                             weaponData.ProjectileHitVfxPrefab.GhostGuid)
@@ -825,6 +1224,7 @@ namespace Unity.MP_FPS
 
                                     break;
                                 }
+
 
                                 case WeaponType.Projectile:
                                 {

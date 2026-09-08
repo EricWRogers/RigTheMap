@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
@@ -19,6 +19,7 @@ namespace Gameplay.Leaderboard
         public RoundPhase CurrentPhase => _roundPhase;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
+
         public enum RoundPhase
         {
             Fighting,
@@ -29,7 +30,9 @@ namespace Gameplay.Leaderboard
         private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
         private int _currentRound = 1;
-        private float _buildTimer = 30f;
+        private float _buildTimer = 10f;
+
+        private bool _initialBuildPhase = true;
 
         private Dictionary<int, int> _roundWins = new Dictionary<int, int>();
 
@@ -41,6 +44,7 @@ namespace Gameplay.Leaderboard
 
         private Queue<KillInfo> _killQueue = new Queue<KillInfo>();
         private Queue<FixedString64Bytes> _joinedQueue = new Queue<FixedString64Bytes>();
+
 #pragma warning disable UDR0001
         // This is reset from ResetOnPlayMode attribute
         private static Queue<(int networkId, FixedString64Bytes playerName)> _pendingPlayers =
@@ -74,6 +78,11 @@ namespace Gameplay.Leaderboard
 
         public static void AddPlayer(int networkId, FixedString64Bytes playerName)
         {
+            if (_pendingPlayers == null)
+            {
+                _pendingPlayers = new Queue<(int, FixedString64Bytes)>();
+            }
+
             _pendingPlayers.Enqueue((networkId, playerName));
         }
 
@@ -91,6 +100,7 @@ namespace Gameplay.Leaderboard
             }
 
             var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
             for (int i = 0; i < buffer.Length; i++)
             {
                 if (buffer[i].NetworkId == networkId)
@@ -109,31 +119,22 @@ namespace Gameplay.Leaderboard
                 return;
             }
 
-            if (GhostGameObject == null || !GhostGameObject.IsGhostLinked() || !GhostGameObject.World.IsCreated)
+            if (GhostGameObject == null ||
+                !GhostGameObject.IsGhostLinked() ||
+                !GhostGameObject.World.IsCreated)
             {
                 Debug.LogWarning("[SERVER] NOT LINKED!");
                 return;
             }
 
             var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
             for (int i = 0; i < buffer.Length; i++)
             {
                 if (buffer[i].NetworkId == killer)
                 {
                     var entry = buffer[i];
                     entry.Kills++;
-                    buffer[i] = entry;
-                    break;
-                    
-                }
-            }
-
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                if (buffer[i].NetworkId == victim)
-                {
-                    var entry = buffer[i];
-                    entry.Deaths++;
                     buffer[i] = entry;
                     break;
                 }
@@ -206,28 +207,79 @@ namespace Gameplay.Leaderboard
                 return;
             }
 
-           
             _roundPhase = RoundPhase.BuildMode;
             _buildTimer = 30f;
-            GhostGameObject.BroadcastRPC(new RoundPhaseChangedRpc { IsBuildMode = true });
+
+            GhostGameObject.BroadcastRPC(
+                new RoundPhaseChangedRpc
+                {
+                    IsBuildMode = true
+                });
         }
+
         private void StartNextRound()
         {
             if (Role != MultiplayerRole.Server)
                 return;
+
+            if (_initialBuildPhase)
+            {
+                _initialBuildPhase = false;
+                _roundPhase = RoundPhase.Fighting;
+                _buildTimer = 30f;
+
+                GhostGameObject.BroadcastRPC(
+                    new RoundPhaseChangedRpc
+                    {
+                        IsBuildMode = false
+                    });
+
+                if (GhostGameObject == null ||
+                    !GhostGameObject.IsGhostLinked() ||
+                    !GhostGameObject.World.IsCreated)
+                {
+                    return;
+                }
+
+                var initialBuffer =
+                    GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
+                for (int i = 0; i < initialBuffer.Length; i++)
+                {
+                    var entry = initialBuffer[i];
+
+                    entry.Kills = 0;
+                    entry.Deaths = 0;
+
+                    initialBuffer[i] = entry;
+                }
+
+                Debug.Log(
+                    $"[ROUND] Starting Round {_currentRound}"
+                );
+
+                return;
+            }
 
             _currentRound++;
 
             if (_currentRound > 3)
             {
                 _roundPhase = RoundPhase.MatchOver;
+
                 Debug.Log("[MATCH] All three rounds have been completed.");
+
                 return;
             }
 
             _roundPhase = RoundPhase.Fighting;
             _buildTimer = 30f;
-            GhostGameObject.BroadcastRPC(new RoundPhaseChangedRpc { IsBuildMode = false });
+
+            GhostGameObject.BroadcastRPC(
+                new RoundPhaseChangedRpc
+                {
+                    IsBuildMode = false
+                });
 
             if (GhostGameObject == null ||
                 !GhostGameObject.IsGhostLinked() ||
@@ -239,7 +291,6 @@ namespace Gameplay.Leaderboard
             var buffer =
                 GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
 
-            
             for (int i = 0; i < buffer.Length; i++)
             {
                 var entry = buffer[i];
@@ -262,7 +313,12 @@ namespace Gameplay.Leaderboard
 
         private void AnnounceKillFeed(int killer, int victim)
         {
-            _killQueue.Enqueue(new KillInfo { KillerId = killer, VictimId = victim });
+            _killQueue.Enqueue(
+                new KillInfo
+                {
+                    KillerId = killer,
+                    VictimId = victim
+                });
         }
 
         public void AddDeath(int networkId)
@@ -273,9 +329,12 @@ namespace Gameplay.Leaderboard
                 return;
             }
 
-            if (!GhostGameObject.IsGhostLinked()) return;
+            if (!GhostGameObject.IsGhostLinked())
+                return;
 
-            var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+            var buffer =
+                GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
             for (int i = 0; i < buffer.Length; i++)
             {
                 if (buffer[i].NetworkId == networkId)
@@ -288,13 +347,15 @@ namespace Gameplay.Leaderboard
             }
         }
 
-
         public List<PlayerScoreEntry> GetScores()
         {
             var scores = new List<PlayerScoreEntry>();
+
             if (GhostGameObject.IsGhostLinked())
             {
-                var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+                var buffer =
+                    GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+
                 foreach (var entry in buffer)
                 {
                     scores.Add(entry);
@@ -303,7 +364,6 @@ namespace Gameplay.Leaderboard
 
             return scores;
         }
-
 
         public void UpdateServer(float deltaTime)
         {
@@ -316,40 +376,49 @@ namespace Gameplay.Leaderboard
                     StartNextRound();
                 }
             }
+
             if (!GhostGameObject.IsGhostLinked())
             {
                 Debug.Log("[Server] LeaderboardManager not linked yet.");
                 return;
             }
 
-            var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+            var buffer =
+                GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
 
-            while (_pendingPlayers.Count > 0)
+            while (_pendingPlayers != null && _pendingPlayers.Count > 0)
             {
-                var (networkId, playerName) = _pendingPlayers.Dequeue();
+                var (networkId, playerName) =
+                    _pendingPlayers.Dequeue();
 
                 bool alreadyExists = false;
+
                 for (int i = 0; i < buffer.Length; i++)
                 {
                     if (buffer[i].NetworkId == networkId)
                     {
                         alreadyExists = true;
+
                         Debug.LogWarning(
                             $"[Server] Player {networkId} already exists in leaderboard, skipping add from queue.");
+
                         break;
                     }
                 }
 
                 if (!alreadyExists)
                 {
-                    buffer.Add(new PlayerScoreEntry
-                    {
-                        NetworkId = networkId,
-                        PlayerName = playerName,
-                        Kills = 0,
-                        Deaths = 0
-                    });
-                    Debug.Log($"[Server] Added player {networkId} ({playerName}) to leaderboard from queue.");
+                    buffer.Add(
+                        new PlayerScoreEntry
+                        {
+                            NetworkId = networkId,
+                            PlayerName = playerName,
+                            Kills = 0,
+                            Deaths = 0
+                        });
+
+                    Debug.Log(
+                        $"[Server] Added player {networkId} ({playerName}) to leaderboard from queue.");
 
                     // Announce join *after* successfully adding to the buffer
                     AnnouncePlayerJoined(playerName);
@@ -358,7 +427,8 @@ namespace Gameplay.Leaderboard
 
             while (_killQueue.Count > 0)
             {
-                KillInfo kill = _killQueue.Dequeue();
+                KillInfo kill =
+                    _killQueue.Dequeue();
 
                 FixedString64Bytes killerName = "[Unknown]";
                 FixedString64Bytes victimName = "[Unknown]";
@@ -378,48 +448,65 @@ namespace Gameplay.Leaderboard
                 }
 
                 // Create and broadcast the RPC
-                var killFeedRpc = new KillFeedEntryRpc
-                {
-                    KillerName = killerName,
-                    VictimName = victimName
-                };
+                var killFeedRpc =
+                    new KillFeedEntryRpc
+                    {
+                        KillerName = killerName,
+                        VictimName = victimName
+                    };
+
                 GhostGameObject.BroadcastRPC(killFeedRpc);
-                ActionFeed.Instance.AnnounceKill(killerName.ToString(), victimName.ToString());
+
+                ActionFeed.Instance.AnnounceKill(
+                    killerName.ToString(),
+                    victimName.ToString());
             }
 
             while (_joinedQueue.Count > 0)
             {
-                var playerName = _joinedQueue.Dequeue();
+                var playerName =
+                    _joinedQueue.Dequeue();
 
-                var joinRpc = new PlayerJoinedEntryRpc
-                {
-                    PlayerName = playerName,
-                };
+                var joinRpc =
+                    new PlayerJoinedEntryRpc
+                    {
+                        PlayerName = playerName
+                    };
+
                 GhostGameObject.BroadcastRPC(joinRpc);
-                ActionFeed.Instance.AnnouncePlayerJoined(playerName.ToString());
+
+                ActionFeed.Instance.AnnouncePlayerJoined(
+                    playerName.ToString());
             }
         }
 
         public void UpdateClient(float deltaTime)
         {
-            if (!GhostGameObject.IsGhostLinked()) return;
+            if (!GhostGameObject.IsGhostLinked())
+                return;
 
-            while (GhostGameObject.ConsumeRPC(out RoundPhaseChangedRpc phaseRpc))
+            while (GhostGameObject.ConsumeRPC(
+                       out RoundPhaseChangedRpc phaseRpc))
             {
-                BuildModeChanged?.Invoke(phaseRpc.IsBuildMode);
+                BuildModeChanged?.Invoke(
+                    phaseRpc.IsBuildMode);
             }
 
             // Consume any kill feed RPCs received this frame
-            while (GhostGameObject.ConsumeRPC(out KillFeedEntryRpc killFeedRpc))
+            while (GhostGameObject.ConsumeRPC(
+                       out KillFeedEntryRpc killFeedRpc))
             {
                 // Invoke the event for the UI to handle
-                ActionFeed.Instance.AnnounceKill(killFeedRpc.KillerName.ToString(),
+                ActionFeed.Instance.AnnounceKill(
+                    killFeedRpc.KillerName.ToString(),
                     killFeedRpc.VictimName.ToString());
             }
 
-            while (GhostGameObject.ConsumeRPC(out PlayerJoinedEntryRpc joinRpc))
+            while (GhostGameObject.ConsumeRPC(
+                       out PlayerJoinedEntryRpc joinRpc))
             {
-                ActionFeed.Instance.AnnouncePlayerJoined(joinRpc.PlayerName.ToString());
+                ActionFeed.Instance.AnnouncePlayerJoined(
+                    joinRpc.PlayerName.ToString());
             }
         }
     }

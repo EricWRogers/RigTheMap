@@ -51,16 +51,15 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int InputIndex;
 
     [GhostField] public ControllerState ControllerState;
-    
-    
+
     [GhostField] public float CurrentHealth;
     [GhostField] public float MaxHealth;
-    
-    [GhostField] public uint EquippedWeaponID;
-    [GhostField] public float WeaponCooldown;   // Timer to control rate of fire
 
-    [GhostField] public int SelectedPlacementPrefabIndex; // Index of the selected placement prefab in the weapon's PlacementGhostPrefabs list
-    
+    [GhostField] public uint EquippedWeaponID;
+    [GhostField] public float WeaponCooldown;
+
+    [GhostField] public int SelectedPlacementPrefabIndex;
+
     [GhostField] public int CurrentAmmo;
     [GhostField] public float LastDamageAmount;
     [GhostField] public uint LastHitTick;
@@ -70,4 +69,10 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public uint LastReloadTick;
     [GhostField] public uint LastGrenadeShotTick;
     [GhostField] public float ReloadTimer;
+
+    [GhostField] public int BuildItem0;
+    [GhostField] public int BuildItem1;
+    [GhostField] public int BuildItem2;
+
+    [GhostField] public byte BuildItemsUsedMask;
 }
