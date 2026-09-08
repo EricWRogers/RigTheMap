@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
+using Unity.MP_FPS;
 using Unity.MP_FPS.UI;
 
 // This is a GhostMonoBehaviour that will be spawned as a singleton manager for the leaderboard.
@@ -122,10 +123,6 @@ namespace Gameplay.Leaderboard
                     var entry = buffer[i];
                     entry.Kills++;
                     buffer[i] = entry;
-                    if (entry.Kills >= 2 && _roundPhase == RoundPhase.Fighting)
-                    {
-                        WinRound(killer);
-                    }
                     break;
                     
                 }
@@ -144,30 +141,66 @@ namespace Gameplay.Leaderboard
 
             AnnounceKillFeed(killer, victim);
         }
-        private void WinRound(int winningPlayerId)
+
+        public void CheckForWinningTeam()
+        {
+            if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting)
+                return;
+
+            var entityManager = GhostGameObject.World.EntityManager;
+            var query = entityManager.CreateEntityQuery(
+                ComponentType.ReadOnly<JoinedClient>(),
+                ComponentType.ReadOnly<NetworkId>());
+
+            using var entities = query.ToEntityArray(Allocator.Temp);
+
+            bool team0HasLives = false;
+            bool team1HasLives = false;
+
+            foreach (var entity in entities)
+            {
+                var joinedClient =
+                    entityManager.GetComponentData<JoinedClient>(entity);
+
+                if (joinedClient.lives <= 0)
+                    continue;
+
+                if (joinedClient.TeamId == 0)
+                    team0HasLives = true;
+                else if (joinedClient.TeamId == 1)
+                    team1HasLives = true;
+            }
+
+            if (team0HasLives == team1HasLives)
+                return;
+
+            WinRound(team0HasLives ? 0 : 1);
+        }
+
+        private void WinRound(int winningTeamId)
         {
             if (Role != MultiplayerRole.Server)
                 return;
 
-            if (!_roundWins.ContainsKey(winningPlayerId))
+            if (!_roundWins.ContainsKey(winningTeamId))
             {
-                _roundWins[winningPlayerId] = 0;
+                _roundWins[winningTeamId] = 0;
             }
 
-            _roundWins[winningPlayerId]++;
+            _roundWins[winningTeamId]++;
 
             Debug.Log(
-                $"[ROUND] Player {winningPlayerId} won Round {_currentRound}. " +
-                $"Total round wins: {_roundWins[winningPlayerId]}"
+                $"[ROUND] Team {winningTeamId} won Round {_currentRound}. " +
+                $"Total round wins: {_roundWins[winningTeamId]}"
             );
 
             
-            if (_roundWins[winningPlayerId] >= 2)
+            if (_roundWins[winningTeamId] >= 2)
             {
                 _roundPhase = RoundPhase.MatchOver;
 
                 Debug.Log(
-                    $"[MATCH] Player {winningPlayerId} won the match!"
+                    $"[MATCH] Team {winningTeamId} won the match!"
                 );
 
                 return;

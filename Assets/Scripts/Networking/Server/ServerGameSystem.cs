@@ -194,7 +194,8 @@ namespace Unity.MP_FPS
             Entity connectionEntity,
             FixedString64Bytes playerName,
             int characterIndex,
-            int teamId = -1)
+            int teamId = -1,
+            int lives = 3)
         {
             var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
             var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
@@ -282,7 +283,8 @@ namespace Unity.MP_FPS
                     PlayerEntity = playerEntity,
                     PlayerName = playerName,
                     CharacterIndex = characterIndex,
-                    TeamId = teamId
+                    TeamId = teamId,
+                    lives = lives
                 });
             }
             else
@@ -294,12 +296,17 @@ namespace Unity.MP_FPS
                     PlayerEntity = playerEntity,
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
-                    TeamId = joinedClient.TeamId
+                    TeamId = joinedClient.TeamId,
+                    lives = joinedClient.lives
                 });
             }
 
             ecb.AppendToBuffer(connectionEntity, new LinkedEntityGroup { Value = playerEntity });
-            ecb.AddComponent(connectionEntity, new NetworkStreamInGame());
+
+            if (!SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity))
+            {
+                ecb.AddComponent(connectionEntity, new NetworkStreamInGame());
+            }
         }
 
         void HandlePlayerDeathAndRespawn(ref SystemState state, EntityCommandBuffer ecb)
@@ -314,12 +321,34 @@ namespace Unity.MP_FPS
                 {
                     var networkId = ghostOwner.ValueRO.NetworkId;
                     var connectionEntity = clientsMap[ghostOwner.ValueRO.NetworkId].ConnectionEntity;
+                    var joinedClient = _joinedClientLookup[connectionEntity];
+                    
+                    bool isBuildMode = LeaderboardManager.Instance != null &&
+                               LeaderboardManager.Instance.CurrentPhase ==
+                               LeaderboardManager.RoundPhase.BuildMode;
+
+                    if(!isBuildMode)
+                        joinedClient.lives--;
+                    else
+                        joinedClient.lives = 3;
+
+                    state.EntityManager.SetComponentData(
+                        connectionEntity,
+                        joinedClient);
+
+                    if (LeaderboardManager.Instance != null)
+                        LeaderboardManager.Instance.CheckForWinningTeam();
 
                     // Add a respawn timer to the connection
                     if (!SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
                     {
                         Debug.Log($"[Server] Player {entity} has died. Starting respawn timer for connection {connectionEntity}.");
-                        ecb.AddComponent(connectionEntity, new PendingRespawn { RespawnTimer = 5f });
+                        
+                        
+                        ecb.AddComponent(connectionEntity, new PendingRespawn
+                            {
+                                RespawnTimer = 5f
+                            });
                     }
                     
                     if (SystemAPI.HasComponent<PlayerClientCommandInputLookup>(entity))
@@ -350,16 +379,34 @@ namespace Unity.MP_FPS
                     {
                         var joinedClientData = _joinedClientLookup[entity];
 
-                        SpawnPlayerCharacter(
-                            ref state,
-                            ecb,
-                            entity,
-                            joinedClientData.PlayerName,
-                            joinedClientData.CharacterIndex,
-                            joinedClientData.TeamId);
+                        bool isBuildMode = LeaderboardManager.Instance != null &&
+                                           LeaderboardManager.Instance.CurrentPhase ==
+                                           LeaderboardManager.RoundPhase.BuildMode;
 
-                        // Remove the timer component
-                        ecb.RemoveComponent<PendingRespawn>(entity);
+                        bool shouldRespawn = joinedClientData.lives > 0 ||
+                                             isBuildMode;
+
+                        if (shouldRespawn)
+                        {
+                            if (joinedClientData.lives <= 0)
+                            {
+                                joinedClientData.lives = 3;
+                                state.EntityManager.SetComponentData(
+                                    entity,
+                                    joinedClientData);
+                            }
+
+                            SpawnPlayerCharacter(
+                                ref state,
+                                ecb,
+                                entity,
+                                joinedClientData.PlayerName,
+                                joinedClientData.CharacterIndex,
+                                joinedClientData.TeamId,
+                                joinedClientData.lives);
+
+                            ecb.RemoveComponent<PendingRespawn>(entity);
+                        }
                     }
                     else
                     {
