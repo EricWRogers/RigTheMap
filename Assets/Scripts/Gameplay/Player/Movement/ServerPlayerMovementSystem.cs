@@ -160,85 +160,25 @@ namespace Unity.MP_FPS
             var buildGunData =
                 WeaponManager.Instance.WeaponRegistry.GetWeaponData(4);
 
-                Debug.Log(
-                    $"[BUILD DEBUG] Weapon ID 2 = " +
-                    $"{buildGunData?.WeaponName}");
-
-                Debug.Log(
-                    $"[BUILD DEBUG] IsPlacementWeapon = " +
-                    $"{buildGunData?.IsPlacementWeapon}");
-
-                Debug.Log(
-                    $"[BUILD DEBUG] Placement Prefab Count = " +
-                    $"{buildGunData?.PlacementGhostPrefabs?.Count ?? 0}");
-
             if (buildGunData == null ||
                 !buildGunData.IsPlacementWeapon ||
                 buildGunData.PlacementGhostPrefabs == null ||
-                buildGunData.PlacementGhostPrefabs.Count < k_BuildItemsPerPlayer)
+                buildGunData.PlacementGhostPrefabs.Count == 0)
             {
                 Debug.LogWarning(
-                    "[Build Mode] Build weapon needs at least 3 placement prefabs.");
+                    "[Build Mode] Build weapon needs placement prefabs.");
 
                 return;
             }
 
-            int prefabCount =
-                buildGunData.PlacementGhostPrefabs.Count;
+            predictedPlayer.BuildPlacementsUsed = 0;
 
-            System.Random random =
-                new System.Random(
-                    networkId * 1009 +
-                    (LeaderboardManager.Instance != null
-                        ? LeaderboardManager.Instance.CurrentRound * 9176
-                        : 1));
-
-            List<int> availableIndices =
-                new List<int>();
-
-            for (int i = 0; i < prefabCount; i++)
-            {
-                availableIndices.Add(i);
-            }
-
-            // Shuffle the prefab indices.
-            for (int i = availableIndices.Count - 1; i > 0; i--)
-            {
-                int randomIndex =
-                    random.Next(i + 1);
-
-                int temp =
-                    availableIndices[i];
-
-                availableIndices[i] =
-                    availableIndices[randomIndex];
-
-                availableIndices[randomIndex] =
-                    temp;
-            }
-
-            int item0 = availableIndices[0];
-            int item1 = availableIndices[1];
-            int item2 = availableIndices[2];
-
-            predictedPlayer.BuildItem0 = item0;
-            predictedPlayer.BuildItem1 = item1;
-            predictedPlayer.BuildItem2 = item2;
-
-            predictedPlayer.BuildItemsUsedMask = 0;
-
-            // Start with the first randomly selected item.
-            predictedPlayer.SelectedPlacementPrefabIndex = item0;
+            // Start with the first available build item.
+            predictedPlayer.SelectedPlacementPrefabIndex = 0;
 
             Debug.Log(
-                $"[Build Mode] Player {networkId} received build items: " +
-                $"{item0}, {item1}, {item2}");
-
-            Debug.Log(
-                $"[Build Mode] Item names: " +
-                $"{buildGunData.PlacementGhostPrefabs[item0].GhostPrefab.editorAsset?.name}, " +
-                $"{buildGunData.PlacementGhostPrefabs[item1].GhostPrefab.editorAsset?.name}, " +
-                $"{buildGunData.PlacementGhostPrefabs[item2].GhostPrefab.editorAsset?.name}");
+                $"[Build Mode] Player {networkId} received access to " +
+                $"{buildGunData.PlacementGhostPrefabs.Count} build items.");
         }
 
         private bool IsBuildItemUsed(
@@ -815,80 +755,41 @@ namespace Unity.MP_FPS
                         WeaponManager.Instance != null &&
                         WeaponManager.Instance.WeaponRegistry != null)
                     {
-                        var equippedWeapon =
+                        var equippedWeapon = 
                             WeaponManager.Instance.WeaponRegistry.GetWeaponData(
                                 predictedPlayer.ValueRO.EquippedWeaponID);
-
-                        if (equippedWeapon != null &&
-                            equippedWeapon.IsPlacementWeapon)
+                         if (equippedWeapon != null &&
+                            equippedWeapon.IsPlacementWeapon &&
+                            equippedWeapon.PlacementGhostPrefabs != null &&
+                            equippedWeapon.PlacementGhostPrefabs.Count > 0)
                         {
-                            int currentSlot = -1;
+                             int prefabCount =
+                                equippedWeapon.PlacementGhostPrefabs.Count;
 
-                            if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
-                                predictedPlayer.ValueRO.BuildItem0)
+                            int currentIndex =
+                                predictedPlayer.ValueRO.SelectedPlacementPrefabIndex;
+                            
+                            if (currentIndex < 0 ||
+                               currentIndex >= prefabCount)
                             {
-                                currentSlot = 0;
-                            }
-                            else if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
-                                    predictedPlayer.ValueRO.BuildItem1)
-                            {
-                                currentSlot = 1;
-                            }
-                            else if (predictedPlayer.ValueRO.SelectedPlacementPrefabIndex ==
-                                    predictedPlayer.ValueRO.BuildItem2)
-                            {
-                                currentSlot = 2;
+                                currentIndex = 0;
                             }
 
-                            if (currentSlot < 0)
-                            {
-                                if (!IsBuildItemUsed(
-                                        predictedPlayer.ValueRO,
-                                        0))
-                                {
-                                    currentSlot = 0;
-                                }
-                                else if (!IsBuildItemUsed(
-                                            predictedPlayer.ValueRO,
-                                            1))
-                                {
-                                    currentSlot = 1;
-                                }
-                                else if (!IsBuildItemUsed(
-                                            predictedPlayer.ValueRO,
-                                            2))
-                                {
-                                    currentSlot = 2;
-                                }
-                            }
+                            int direction = 
+                                scrollDelta > 0 ? 1 : -1;
+                            
+                            int nextIndex = 
+                                (currentIndex + direction + prefabCount) % prefabCount;
+                            
+                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex = nextIndex;
 
-                            if (currentSlot >= 0)
-                            {
-                                int direction =
-                                    scrollDelta > 0 ? 1 : -1;
+                            Debug.Log(
+                                $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
+                                $"scrolled to build item index {nextIndex}.");
 
-                                int nextSlot =
-                                    FindNextAvailableBuildItemSlot(
-                                        predictedPlayer.ValueRO,
-                                        currentSlot,
-                                        direction);
+                            
 
-                                if (nextSlot >= 0)
-                                {
-                                    int nextPrefabIndex =
-                                        GetBuildItemIndex(
-                                            predictedPlayer.ValueRO,
-                                            nextSlot);
-
-                                    predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
-                                        nextPrefabIndex;
-
-                                    Debug.Log(
-                                        $"[Build Mode] Scrolled from slot " +
-                                        $"{currentSlot} to slot {nextSlot}. " +
-                                        $"Prefab index: {nextPrefabIndex}");
-                                }
-                            }
+                    
                         }
                     }
 
@@ -997,6 +898,15 @@ namespace Unity.MP_FPS
 
                             if (weaponData.IsPlacementWeapon)
                             {
+                                 if (predictedPlayer.ValueRO.BuildPlacementsUsed >= 3)
+                                {
+                                    Debug.Log(
+                                        $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
+                                        "has used all 3 placements.");
+
+                                    continue;
+                                }
+
                                 if (weaponData.PlacementGhostPrefabs == null ||
                                     weaponData.PlacementGhostPrefabs.Count == 0)
                                 {
@@ -1017,15 +927,7 @@ namespace Unity.MP_FPS
                                         weaponData.HitscanRange,
                                         placementMask))
                                 {
-                                    int usedSlot =
-                                        FindBuildItemSlotForPrefab(
-                                            predictedPlayer.ValueRO,
-                                            selectedIndex);
-
-                                    if (usedSlot < 0)
-                                    {
-                                        continue;
-                                    }
+                                    
 
                                     var placementPosition =
                                         placementHit.point +
@@ -1071,39 +973,15 @@ namespace Unity.MP_FPS
                                                 selectedPrefab
                                             ));
 
-                                        MarkBuildItemUsed(
-                                            ref predictedPlayer.ValueRW,
-                                            usedSlot);
+                                        predictedPlayer.ValueRW.BuildPlacementsUsed++;
+
+                                        Debug.Log(
+                                            $"[Build Mode] Player has used " +
+                                            $"{predictedPlayer.ValueRO.BuildPlacementsUsed}/3 placements.");
 
                                         Debug.Log(
                                             "[Server] Purple death orb placed at " +
                                             placementPosition.ToString());
-
-                                        int nextSlot =
-                                            FindNextAvailableBuildItemSlot(
-                                                predictedPlayer.ValueRO,
-                                                usedSlot,
-                                                1);
-
-                                        if (nextSlot >= 0)
-                                        {
-                                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
-                                                GetBuildItemIndex(
-                                                    predictedPlayer.ValueRO,
-                                                    nextSlot);
-
-                                            Debug.Log(
-                                                $"[Build Mode] Next available item is slot " +
-                                                $"{nextSlot}.");
-                                        }
-                                        else
-                                        {
-                                            predictedPlayer.ValueRW.SelectedPlacementPrefabIndex =
-                                                -1;
-
-                                            Debug.Log(
-                                                "[Build Mode] Player has used all 3 build items.");
-                                        }
                                     }
                                 }
 

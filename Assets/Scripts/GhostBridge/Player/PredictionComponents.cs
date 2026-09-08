@@ -73,6 +73,7 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int BuildItem0;
     [GhostField] public int BuildItem1;
     [GhostField] public int BuildItem2;
+    [GhostField] public int BuildPlacementsUsed;
 
     [GhostField] public byte BuildItemsUsedMask;
     [GhostField] public int LivesRemaining;
