@@ -16,7 +16,9 @@ namespace Gameplay.Leaderboard
     {
         public int CurrentRound => _currentRound;
         public float BuildTimer => _buildTimer;
+        private float _buildTimerSyncAccumulator;
         public RoundPhase CurrentPhase => _roundPhase;
+        public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
 
@@ -29,8 +31,13 @@ namespace Gameplay.Leaderboard
 
         private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
+        public struct BuildTimerRpc : IRpcCommand
+        {
+            public float BuildTimer;
+        }
+
         private int _currentRound = 1;
-        private float _buildTimer = 45f;
+        private float _buildTimer = 40f;
 
         private bool _initialBuildPhase = true;
 
@@ -50,6 +57,28 @@ namespace Gameplay.Leaderboard
         private static Queue<(int networkId, FixedString64Bytes playerName)> _pendingPlayers =
             new Queue<(int, FixedString64Bytes)>();
 #pragma warning restore UDR0001
+
+        private void BroadCastBuildTimer(float timer)
+        {
+            var buildTimerRpc = new BuildTimerRpc
+            {
+                BuildTimer = timer
+            };
+            GhostGameObject.BroadcastRPC(buildTimerRpc);
+        }
+
+        private void BroadcastRoundState(bool isBuildMode, bool isMatchOver, int winningTeamId = -1)
+        {
+            GhostGameObject.BroadcastRPC(
+                new RoundPhaseChangedRpc
+                {
+                    IsBuildMode = isBuildMode,
+                    IsMatchOver = isMatchOver,
+                    CurrentRound = _currentRound,
+                    BuildTimer = _buildTimer,
+                    WinningTeamId = winningTeamId
+                });
+        }
 
         protected static void ResetStaticState()
         {
@@ -183,6 +212,8 @@ namespace Gameplay.Leaderboard
             if (Role != MultiplayerRole.Server)
                 return;
 
+            LastWinningTeamId = winningTeamId;
+
             if (!_roundWins.ContainsKey(winningTeamId))
             {
                 _roundWins[winningTeamId] = 0;
@@ -199,6 +230,7 @@ namespace Gameplay.Leaderboard
             if (_roundWins[winningTeamId] >= 2)
             {
                 _roundPhase = RoundPhase.MatchOver;
+                BroadcastRoundState(false, true, winningTeamId);
 
                 Debug.Log(
                     $"[MATCH] Team {winningTeamId} won the match!"
@@ -208,13 +240,9 @@ namespace Gameplay.Leaderboard
             }
 
             _roundPhase = RoundPhase.BuildMode;
-            _buildTimer = 30f;
-
-            GhostGameObject.BroadcastRPC(
-                new RoundPhaseChangedRpc
-                {
-                    IsBuildMode = true
-                });
+            _buildTimer = 40f;
+            _buildTimerSyncAccumulator = 0f;
+            BroadcastRoundState(true, false, winningTeamId);
         }
 
         private void StartNextRound()
@@ -226,13 +254,8 @@ namespace Gameplay.Leaderboard
             {
                 _initialBuildPhase = false;
                 _roundPhase = RoundPhase.Fighting;
-                _buildTimer = 30f;
-
-                GhostGameObject.BroadcastRPC(
-                    new RoundPhaseChangedRpc
-                    {
-                        IsBuildMode = false
-                    });
+                _buildTimer = 40f;
+                BroadcastRoundState(false, false);
 
                 if (GhostGameObject == null ||
                     !GhostGameObject.IsGhostLinked() ||
@@ -273,13 +296,8 @@ namespace Gameplay.Leaderboard
             }
 
             _roundPhase = RoundPhase.Fighting;
-            _buildTimer = 30f;
-
-            GhostGameObject.BroadcastRPC(
-                new RoundPhaseChangedRpc
-                {
-                    IsBuildMode = false
-                });
+            _buildTimer = 40f;
+            BroadcastRoundState(false, false);
 
             if (GhostGameObject == null ||
                 !GhostGameObject.IsGhostLinked() ||
@@ -379,6 +397,13 @@ namespace Gameplay.Leaderboard
                 // sanity check for multiple players
                 if(connections.Length > 1)
                     _buildTimer -= deltaTime;
+
+                _buildTimerSyncAccumulator += deltaTime;
+                if(_buildTimerSyncAccumulator >= 1f)
+                {
+                    _buildTimerSyncAccumulator = 0f;
+                    BroadCastBuildTimer(_buildTimer);
+                }
 
                 if (_buildTimer <= 0f)
                 {
@@ -494,9 +519,25 @@ namespace Gameplay.Leaderboard
             if (!GhostGameObject.IsGhostLinked())
                 return;
 
+            while (GhostGameObject.ConsumeRPC(out BuildTimerRpc timerRpc))
+            {
+                _buildTimer = timerRpc.BuildTimer;
+            }
+
             while (GhostGameObject.ConsumeRPC(
                        out RoundPhaseChangedRpc phaseRpc))
             {
+                _roundPhase = phaseRpc.IsMatchOver
+                    ? RoundPhase.MatchOver
+                    : phaseRpc.IsBuildMode
+                        ? RoundPhase.BuildMode
+                        : RoundPhase.Fighting;
+                _currentRound = phaseRpc.CurrentRound;
+                _buildTimer = phaseRpc.BuildTimer;
+
+                if (phaseRpc.WinningTeamId >= 0)
+                    LastWinningTeamId = phaseRpc.WinningTeamId;
+
                 BuildModeChanged?.Invoke(
                     phaseRpc.IsBuildMode);
             }
@@ -534,5 +575,9 @@ namespace Gameplay.Leaderboard
     public struct RoundPhaseChangedRpc : IRpcCommand
     {
         public bool IsBuildMode;
+        public bool IsMatchOver;
+        public int CurrentRound;
+        public float BuildTimer;
+        public int WinningTeamId;
     }
 }
