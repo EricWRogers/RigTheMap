@@ -330,7 +330,8 @@ namespace Unity.MP_FPS
             ref PredictedPlayerGhost hammerPlayer,
             Entity hammerEntity,
             uint serverTick,
-            WeaponData weaponData)
+            WeaponData weaponData,
+            float damageAmount)
         {
             if (weaponData == null)
                 return;
@@ -1298,6 +1299,57 @@ namespace Unity.MP_FPS
 
                                 case WeaponType.Melee:
                                 {
+                                    if (UnityEngine.Physics.Raycast(
+                                        eyePosition,
+                                        aimDirection,
+                                        out RaycastHit playerHit,
+                                        weaponData.HitscanRange,
+                                        s_HitscanLayerMask))
+                                    {
+                                        if (playerHit.collider.gameObject.layer == LayerMask.NameToLayer("ServerPlayer"))
+                                        {
+                                            if (GhostGameObject.TryFindGhostGameObject(
+                                                    playerHit.collider.gameObject,
+                                                    out var hitGhostObject) &&
+                                                playerGhostLookup.HasComponent(hitGhostObject.LinkedEntity))
+                                            {
+                                                var targetEntity = hitGhostObject.LinkedEntity;
+                                                var targetPredictedPlayer = playerGhostLookup.GetRefRW(targetEntity);
+                                                var targetNetworkId = ghostOwnerLookup[targetEntity].NetworkId;
+
+                                                if (shooterNetworkId != targetNetworkId)
+                                                {
+                                                    var shooterTeam = m_PlayerTeamLookup[entity];
+                                                    var targetTeam = m_PlayerTeamLookup[targetEntity];
+
+                                                    if (shooterTeam.TeamId != targetTeam.TeamId)
+                                                    {
+                                                        float healthBeforeDamage = targetPredictedPlayer.ValueRO.CurrentHealth;
+
+                                                        //apply harley bonk bonk
+                                                        targetPredictedPlayer.ValueRW.CurrentHealth -= weaponData.HammerDamage;
+                                                        targetPredictedPlayer.ValueRW.ControllerState.IsHit = true;
+                                                        targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.HammerDamage;
+                                                        targetPredictedPlayer.ValueRW.LastHitTick = serverTick;
+
+                                                        Debug.Log($"[Hammer Swing] Player {shooterNetworkId} hit player {targetNetworkId} for {weaponData.HammerDamage} damage.");
+
+                                                        if (healthBeforeDamage > 0 && targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
+                                                        {
+                                                            Debug.Log($"[Server] Player {shooterNetworkId} killed player {targetNetworkId}.");
+                                                            if (LeaderboardManager.Instance != null)
+                                                            {
+                                                                LeaderboardManager.Instance.AddKill(shooterNetworkId, targetNetworkId);
+                                                            }
+                                                        }
+
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
                                     if (!UnityEngine.Physics.Raycast(
                                             eyePosition,
                                             aimDirection,
@@ -1521,7 +1573,8 @@ namespace Unity.MP_FPS
                         ref predictedPlayer.ValueRW,
                         entity,
                         serverTick,
-                        hammerWeaponData);
+                        hammerWeaponData, 
+                        0f);
 
                     m_HammerLaunchers.Remove(entity);
                 }
