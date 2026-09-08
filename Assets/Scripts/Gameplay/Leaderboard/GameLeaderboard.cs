@@ -30,7 +30,7 @@ namespace Gameplay.Leaderboard
         private RoundPhase _roundPhase = RoundPhase.BuildMode;
 
         private int _currentRound = 1;
-        private float _buildTimer = 10f;
+        private float _buildTimer = 45f;
 
         private bool _initialBuildPhase = true;
 
