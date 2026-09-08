@@ -127,7 +127,7 @@ namespace Unity.MP_FPS
                 && weaponData.PlacementGhostPrefabs.Count > 0)
                 {
                     var selectedPrefab = weaponData.PlacementGhostPrefabs[playerData.SelectedPlacementPrefabIndex];
-                    m_SelectedBuildingLabel.text = $"Building: {selectedPrefab.GhostPrefab.editorAsset.name}";
+                    m_SelectedBuildingLabel.text = $"Building: {selectedPrefab.GhostPrefab.Asset.name}";
                     m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
                     m_SelectedBuildingLabel.style.color = Color.white;
                     m_SelectedBuildingLabel.style.fontSize = 40;

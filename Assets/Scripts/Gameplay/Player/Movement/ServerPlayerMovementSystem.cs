@@ -1118,7 +1118,7 @@ namespace Unity.MP_FPS
                                         $"PROJECTILE TEST: {prefabEntity}");
 
                                     Debug.Log(
-                                        $"PROJECTILE NAME: {weaponData.ProjectileGhostPrefab.GhostPrefab.editorAsset?.name}");
+                                        $"PROJECTILE NAME: {weaponData.ProjectileGhostPrefab.GhostPrefab.Asset?.name}");
 
                                     Debug.Log(
                                         $"PROJECTILE GUID: {weaponData.ProjectileGhostPrefab.GhostGuid}");
