@@ -437,8 +437,8 @@ namespace Unity.MP_FPS
                     {
                         0 => playerEntityPrefabs.PlayerRifleEntityPrefab,
                         1 => playerEntityPrefabs.PlayerShotgunEntityPrefab,
-                        2 => playerEntityPrefabs.PlayerSharkEntityPrefab,
-                        3 => playerEntityPrefabs.PlayerHammerEntityPrefab,
+                        //2 => playerEntityPrefabs.PlayerSharkEntityPrefab,
+                        2 => playerEntityPrefabs.PlayerHammerEntityPrefab,
                         _ => playerEntityPrefabs.PlayerShotgunEntityPrefab
                     };
 
