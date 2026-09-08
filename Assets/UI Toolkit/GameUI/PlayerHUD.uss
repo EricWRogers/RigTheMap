@@ -118,6 +118,36 @@
     background-size: 100% 100%;
     transform-origin: center;
 }
+#hit-marker {
+    position: absolute;
+    width: 256px;
+    height: 256px;
+    display: none;
+}
+#hit-marker-bar-a,
+#hit-marker-bar-b,
+#hit-marker-bar-c,
+#hit-marker-bar-d{
+    position: absolute;
+    width: 4px;
+    height: 26px;
+    left: 120px;
+    top: 115px;
+    background-color: rgb(255, 100, 0);
+    transform-origin: center;
+}
+#hit-marker-bar-a{
+    rotate: 45deg;
+}
+#hit-marker-bar-b{
+    rotate: -45deg;
+}
+#hit-marker-bar-c{
+    rotate: 135deg;
+}
+#hit-marker-bar-d{
+    rotate: -135deg;
+}
 
 /* Low ammo warning style */
 .low-ammo {

@@ -23,7 +23,7 @@ public struct PredictedPlayerControllerConsts : IComponentData
 public struct PredictedClientInput : IComponentData
 {
     [GhostField]
-    public bool SeenNewSnapshot;
+    public bool SeenNew;
 
     [GhostField]
     public uint LastProcessedServerTick;
@@ -63,6 +63,7 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int CurrentAmmo;
     [GhostField] public float LastDamageAmount;
     [GhostField] public uint LastHitTick;
+    [GhostField] public uint LastconfirmedHitTick;
     [GhostField] public uint LastShotTick;
     [GhostField] public uint LastJumpTick;
     [GhostField] public uint LastLandTick;

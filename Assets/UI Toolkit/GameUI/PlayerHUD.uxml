@@ -18,5 +18,11 @@
     </ui:VisualElement>
     <ui:VisualElement name="reticle-container" picking-mode="Ignore">
         <ui:VisualElement name="player-reticle" picking-mode="Ignore"/>
+        <ui:VisualElement name="hit-marker" picking-mode="Ignore">
+            <ui:VisualElement name="hit-marker-bar-a" picking-mode="Ignore"/>
+            <ui:VisualElement name="hit-marker-bar-b" picking-mode="Ignore"/>
+            <ui:VisualElement name="hit-marker-bar-c" picking-mode="Ignore"/>
+            <ui:VisualElement name="hit-marker-bar-d" picking-mode="Ignore"/>
+        </ui:VisualElement>        
     </ui:VisualElement>
 </ui:UXML>

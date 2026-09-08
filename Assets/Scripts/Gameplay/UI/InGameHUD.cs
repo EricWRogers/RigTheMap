@@ -21,6 +21,7 @@ namespace Unity.MP_FPS
         private Label m_SelectedBuildingLabel;
         private Label m_LivesLabel;
         private VisualElement m_Reticle;
+        private VisualElement m_Hitmarker;
 
         // UI-side timer to ensure shot feedback is visible for a minimum duration.
         private float m_shotFeedbackTimer = 0f;
@@ -32,6 +33,11 @@ namespace Unity.MP_FPS
         private const string k_TCrossReticleClass = "kits-reticle-tcross";
         private const string k_CircularCrossClass = "kits-reticle-circularcross";
         private const string k_OpenCircularReticleClass = "kits-reticle-opencircular";
+        //the hit-marker will flash a red crosshair when hit
+        private float m_HitMarkerTimer;
+        private uint m_lastHitMarkerTick;
+
+        private const float k_HitMarkerDuration = 0.12f;
 
         // ECS query fields
         private World m_ClientWorld;
@@ -41,7 +47,11 @@ namespace Unity.MP_FPS
         void OnEnable()
         {
             m_RootElement = GetComponent<UIDocument>().rootVisualElement;
-
+            m_Hitmarker = m_RootElement.Q<VisualElement>("hit-marker");
+            if(m_Hitmarker != null)
+            {
+                m_Hitmarker.style.display = DisplayStyle.None;
+            }
             // Find the UI elements by name
             m_HealthBar = m_RootElement.Q<ProgressBar>("player-health-bar");
             if (m_HealthBar != null)
@@ -158,6 +168,17 @@ namespace Unity.MP_FPS
                 m_AmmoBar.highValue = magazineSize;
                 m_AmmoBar.value = playerData.CurrentAmmo;
             }
+            //update hit-marker when they hit target
+            if(playerData.LastconfirmedHitTick != m_lastHitMarkerTick)
+            {
+                m_lastHitMarkerTick = playerData.LastconfirmedHitTick;
+                m_HitMarkerTimer = k_HitMarkerDuration;
+
+                if(m_Hitmarker != null)
+                {
+                    m_Hitmarker.style.display = DisplayStyle.Flex;
+                }
+            }
 
             // Update Reloading Indicator
             if (m_ReloadingLabel != null)
@@ -250,10 +271,23 @@ namespace Unity.MP_FPS
             {
                 greyReticleVisual = true;
             }
-
+            //a flash of red when enemy has been hit
+            if(m_Hitmarker != null && m_HitMarkerTimer > 0f){
+            m_HitMarkerTimer -= Time.deltaTime;
+            if(m_HitMarkerTimer <= 0f)
+                {
+                    m_Hitmarker.style.display = DisplayStyle.None;
+                }
+            
+            }
+            //update hit-marker
+            if(m_Hitmarker != null){
+            m_Hitmarker.style.rotate = new Rotate(new Angle(45f, AngleUnit.Degree));
+            m_Hitmarker.style.unityBackgroundImageTintColor = new StyleColor(new Color(1f, 0.01f, 0.02f, 1f));
+            }
             // Update Reticle Color
-            m_Reticle.style.unityBackgroundImageTintColor = greyReticleVisual
-                ? new StyleColor(Color.grey)
+            m_Reticle.style.unityBackgroundImageTintColor = greyReticleVisual 
+                ? new StyleColor(Color.gray)
                 : new StyleColor(Color.white);
         }
 

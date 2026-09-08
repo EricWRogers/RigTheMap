@@ -1053,6 +1053,9 @@ namespace Unity.MP_FPS
 
                                                 targetPredictedPlayer.ValueRW.LastDamageAmount =
                                                     weaponData.Damage;
+                                                    //hit-Marker 
+                                                var shooterPlayer = playerGhostLookup.GetRefRW(entity);
+                                                shooterPlayer.ValueRW.LastconfirmedHitTick = serverTick;
 
                                                 targetPredictedPlayer.ValueRW.LastHitTick =
                                                     serverTick;

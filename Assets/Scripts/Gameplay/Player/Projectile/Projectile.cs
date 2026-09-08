@@ -188,7 +188,8 @@ namespace Unity.MP_FPS
 
                         foreach (var entity in world.EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
                         {
-                            if (ghostOwnerLookup.HasComponent(entity) &&
+                            if (playerGhostLookup.HasComponent(entity) && 
+                                ghostOwnerLookup.HasComponent(entity) &&
                                 ghostOwnerLookup[entity].NetworkId == shooterNetworkId)
                             {
                                 shooterEntityFromProjectile = entity;
@@ -228,6 +229,11 @@ namespace Unity.MP_FPS
                         // Set the detailed data for the 1P visual effect
                         targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.Damage;
                         targetPredictedPlayer.ValueRW.LastHitTick = serverCurrentTick;
+                        if(shooterEntityFromProjectile != Entity.Null && 
+                        playerGhostLookup.HasComponent(shooterEntityFromProjectile)){
+                        var shooterPlayer = playerGhostLookup.GetRefRW(shooterEntityFromProjectile);
+                        shooterPlayer.ValueRW.LastconfirmedHitTick = serverCurrentTick;
+                        }
 
                         if (healthBeforeDamage > 0 && targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
                         {
@@ -272,7 +278,7 @@ namespace Unity.MP_FPS
 
                         foreach (var entity in world.EntityManager.GetAllEntities(Unity.Collections.Allocator.Temp))
                         {
-                            if (ghostOwnerLookup.HasComponent(entity) &&
+                            if (playerGhostLookup.HasComponent(entity) && ghostOwnerLookup.HasComponent(entity) &&
                                 ghostOwnerLookup[entity].NetworkId == shooterNetworkId)
                             {
                                 shooterEntity = entity;
@@ -307,6 +313,12 @@ namespace Unity.MP_FPS
                         targetPredictedPlayer.ValueRW.ControllerState.IsHit = true;
                         targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.Damage;
                         targetPredictedPlayer.ValueRW.LastHitTick = serverCurrentTick;
+                        if(shooterEntity != Entity.Null && playerGhostLookup.HasComponent(shooterEntity))
+                        {
+                            var shooterPlayer = playerGhostLookup.GetRefRW(shooterEntity);
+                            shooterPlayer.ValueRW.LastconfirmedHitTick = serverCurrentTick;                          
+                        }
+                        
 
                         if (healthBeforeDamage > 0 && targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
                         {
