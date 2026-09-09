@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed31529030d37904b98094f985aea96e
+    m_Address: Assets/Prefabs/ActorGhosts/Buildings/SpikeTrap.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f4bc4302cb16c4e29aaa203772f1461c
     m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_Shotgun.prefab
     m_ReadOnly: 0

@@ -88,6 +88,15 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3528038108005916337}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2763498134082004809}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6147566987256501121}
     - targetCorrespondingSourceObject: {fileID: 2191750151954457832, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2313495310875188075}
@@ -239,3 +248,61 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 8616276468678558677, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+--- !u!1 &9090105462489072654 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+  m_PrefabInstance: {fileID: 8279836099186194783}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3528038108005916337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090105462489072654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6177b51816b2478b74e50d1251bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostGameObject
+  <RequireTransformSync>k__BackingField: 0
+  <UpdateGroup>k__BackingField: 0
+  logDestroyBeforeLinked: 0
+--- !u!114 &-2763498134082004809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090105462489072654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Entities.Hybrid::Unity.Entities.Hybrid.Baking.LinkedEntityGroupAuthoring
+--- !u!114 &-6147566987256501121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090105462489072654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.NetCode.Authoring.Hybrid::Unity.NetCode.GhostAuthoringComponent
+  HasOwner: 0
+  SupportAutoCommandTarget: 0
+  TrackInterpolationDelay: 0
+  GhostGroup: 0
+  UsePreSerialization: 0
+  UseSingleBaseline: 0
+  RollbackPredictedSpawnedGhostState: 1
+  RollbackPredictionOnStructuralChanges: 1
+  DefaultGhostMode: 0
+  SupportedGhostModes: 3
+  OptimizationMode: 0
+  Importance: 40
+  MaxSendRate: 0
+  prefabId: ed31529030d37904b98094f985aea96e

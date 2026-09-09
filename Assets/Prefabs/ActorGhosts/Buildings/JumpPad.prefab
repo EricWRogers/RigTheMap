@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
       propertyPath: m_Name
-      value: Pfb_jumpPad (3)
+      value: JumpPad
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -222,6 +222,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
       insertIndex: -1
       addedObject: {fileID: 318615554084100574}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6428318857745199946}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -3748510258385967906}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4396197089154246180}
     - targetCorrespondingSourceObject: {fileID: -4005871000741332443, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7623078756334251365}
@@ -373,6 +382,59 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.82868576, y: 0.7406241, z: 0.79454994}
   m_Center: {x: -0.01240021, y: -0.12968794, z: 0.0010802746}
+--- !u!114 &-6428318857745199946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3668887012150845292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a6177b51816b2478b74e50d1251bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostGameObject
+  <RequireTransformSync>k__BackingField: 0
+  <UpdateGroup>k__BackingField: 0
+  logDestroyBeforeLinked: 0
+--- !u!114 &-3748510258385967906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3668887012150845292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Entities.Hybrid::Unity.Entities.Hybrid.Baking.LinkedEntityGroupAuthoring
+--- !u!114 &4396197089154246180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3668887012150845292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.NetCode.Authoring.Hybrid::Unity.NetCode.GhostAuthoringComponent
+  HasOwner: 0
+  SupportAutoCommandTarget: 0
+  TrackInterpolationDelay: 0
+  GhostGroup: 0
+  UsePreSerialization: 0
+  UseSingleBaseline: 0
+  RollbackPredictedSpawnedGhostState: 1
+  RollbackPredictionOnStructuralChanges: 1
+  DefaultGhostMode: 0
+  SupportedGhostModes: 3
+  OptimizationMode: 0
+  Importance: 200
+  MaxSendRate: 0
+  prefabId: 250c4879b1be34d43a9780c67da32ff7
 --- !u!1 &4166555290265454927 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8648745908268520590, guid: 06e6bcb90cba1df4db8c63f62d8e1743, type: 3}

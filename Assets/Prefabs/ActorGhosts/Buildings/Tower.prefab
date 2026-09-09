@@ -166,10 +166,10 @@ MonoBehaviour:
   UseSingleBaseline: 0
   RollbackPredictedSpawnedGhostState: 1
   RollbackPredictionOnStructuralChanges: 1
-  DefaultGhostMode: 1
+  DefaultGhostMode: 0
   SupportedGhostModes: 3
   OptimizationMode: 0
-  Importance: 1
+  Importance: 40
   MaxSendRate: 0
   prefabId: 270b54e7b6714d049a29a8621caba037
 --- !u!1 &7189628270127741674
