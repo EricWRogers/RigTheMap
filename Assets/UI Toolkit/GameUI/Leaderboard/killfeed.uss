@@ -10,3 +10,25 @@
 
 #ActionFeedContainer {
 }
+
+/* Round UI */
+#RoundStatus {
+    color: white;
+    font-size: 35px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+#TeamStatus {
+    color: white;
+    font-size: 35px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+#MatchWinner {
+    color: white;
+    font-size: 50px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
