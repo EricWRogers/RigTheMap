@@ -257,7 +257,8 @@ namespace Unity.MP_FPS
                 CurrentHealth = 100f,
                 LivesRemaining = lives,
                 EquippedWeaponID = weaponId,
-                CurrentAmmo = magazineSize
+                CurrentAmmo = magazineSize,
+                SelectedPlacementPrefabIndex = 0
             });
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
@@ -329,7 +330,7 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-                    if(!isBuildMode)
+                    if(!isBuildMode) // I don't think this works right now
                         joinedClient.lives--;
                     else
                         joinedClient.lives = 3;

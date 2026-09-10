@@ -38,6 +38,7 @@ public class GhostSpawner : MonoBehaviour
     public class GhostReference : ISerializationCallbackReceiver
     {
         [field: SerializeField] public AssetReferenceGameObject GhostPrefab { get; set; }
+        [field: SerializeField] public string AssetName {get; set;}
 
         public Hash128 GhostGuid => m_GhostGuid;
         [SerializeField] [HideInInspector] private Hash128 m_GhostGuid;

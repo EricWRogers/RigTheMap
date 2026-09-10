@@ -33,17 +33,18 @@ MonoBehaviour:
   ReloadTime: 0.01
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
-        x: 2795305235
-        y: 1247169446
-        z: 1873977756
-        w: 2117713470
+        x: 0
+        y: 0
+        z: 0
+        w: 0
   PlacementGhostPrefabs:
   - <GhostPrefab>k__BackingField:
       m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
@@ -51,6 +52,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+    <AssetName>k__BackingField: Ice
     m_GhostGuid:
       Value:
         x: 2795305235
@@ -63,6 +65,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: Tower
     m_GhostGuid:
       Value:
         x: 2118496370
@@ -75,6 +78,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+    <AssetName>k__BackingField: Honey
     m_GhostGuid:
       Value:
         x: 918824684
@@ -87,6 +91,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: Barricade
     m_GhostGuid:
       Value:
         x: 385874618
@@ -99,6 +104,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: Jump-Pad
     m_GhostGuid:
       Value:
         x: 2542059602
@@ -111,6 +117,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: Spikes
     m_GhostGuid:
       Value:
         x: 153424862
@@ -124,6 +131,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
         x: 2332273166
@@ -137,6 +145,7 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
         x: 1127248733
