@@ -53,7 +53,7 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
     [field: Space(10)]
     [field: Header("Player State Timeouts")]
     [field: SerializeField, Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-    public float JumpTimeout { get; private set; } = 0.50f;
+    public float JumpTimeout { get; private set; } = 0.1f;
 
     [field: SerializeField, Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
     public float FallTimeout { get; private set; } = 0.15f;
@@ -70,7 +70,7 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
     [field: Space(10)]
     [field: Header("Player Grounded")]
     [field: SerializeField, Tooltip("Additional offset for the grounded spherecast")]
-    public float GroundedOffset { get; private set; } = -0.14f;
+    public float GroundedOffset { get; private set; } = 0.14f;
 
     [field: SerializeField, Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers { get; private set; }
