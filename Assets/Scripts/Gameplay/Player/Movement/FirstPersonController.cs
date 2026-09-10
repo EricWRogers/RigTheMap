@@ -224,6 +224,7 @@ public class FirstPersonController : MonoBehaviour
     private uint _lastAnimatedJumpTick = 0;
     private uint _lastAnimatedLandTick = 0;
     private uint _lastAnimatedReloadTick = 0;
+    
 
     private CharacterController m_Controller;
     public CharacterController CharacterController => m_Controller;
@@ -405,12 +406,13 @@ public class FirstPersonController : MonoBehaviour
             if(surface == GroundSurfaceType.Spikey)//damage player
             {
                 var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
-                ghost.CurrentHealth = 1;// one hp
+                
+                ghost.CurrentHealth -= 10;// one hp
                 
                 m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
-                Vector3 knockback = groundNormal.normalized;
-                float knockStr = 12f;
-                move += knockback * knockStr; // instant upwards
+                // Vector3 knockback = groundNormal.normalized;
+                // float knockStr = 2f;
+                // move += knockback * knockStr; // instant upwards
                 
             }
             return move;
