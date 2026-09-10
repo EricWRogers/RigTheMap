@@ -351,17 +351,17 @@ namespace Unity.MP_FPS
                 float healthBeforeDamage =
                     targetPlayer.ValueRO.CurrentHealth;
 
-                targetPlayer.ValueRW.CurrentHealth -=
-                    weaponData.HammerDamage;
+                // targetPlayer.ValueRW.CurrentHealth -=
+                //     weaponData.HammerDamage;
 
-                targetPlayer.ValueRW.ControllerState.IsHit =
-                    true;
+                // targetPlayer.ValueRW.ControllerState.IsHit = //Don't take damage anymore and don't display it
+                //     true;
 
-                targetPlayer.ValueRW.LastDamageAmount =
-                    weaponData.HammerDamage;
+                // targetPlayer.ValueRW.LastDamageAmount =
+                //     weaponData.HammerDamage;
 
-                targetPlayer.ValueRW.LastHitTick =
-                    serverTick;
+                // targetPlayer.ValueRW.LastHitTick =
+                //     serverTick;
 
                 Debug.Log(
                     $"[Hammer] Player {hammerPlayerNetworkId} landed on " +
