@@ -53,7 +53,18 @@ namespace Unity.MP_FPS
 
         void TogglePauseMenuVisibility(InputAction.CallbackContext obj)
         {
-            EventSystem.current.SetSelectedGameObject(transform.parent.GetComponentInChildren<PanelRaycaster>().gameObject);
+            if(EventSystem.current != null)
+            {
+                var panelRaycaster = transform.parent?.GetComponentInChildren<PanelRaycaster>();
+
+                if(panelRaycaster != null)
+                {
+                    EventSystem.current.SetSelectedGameObject(panelRaycaster.gameObject);
+                }
+
+            }
+
+            // EventSystem.current.SetSelectedGameObject(transform.parent.GetComponentInChildren<PanelRaycaster>().gameObject);
             GameSettings.Instance.IsPauseMenuOpen = !GameSettings.Instance.IsPauseMenuOpen;
         }
 

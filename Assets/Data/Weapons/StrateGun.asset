@@ -111,19 +111,6 @@ MonoBehaviour:
         y: 1296296731
         z: 1812494755
         w: 2146581207
-  - <GhostPrefab>k__BackingField:
-      m_AssetGUID: ed31529030d37904b98094f985aea96e
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    <AssetName>k__BackingField: Spikes
-    m_GhostGuid:
-      Value:
-        x: 153424862
-        y: 1083653379
-        z: 2672363675
-        w: 3868912216
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7
