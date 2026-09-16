@@ -440,8 +440,6 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                     // we should just apply our current state
                     controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
                     controllerLink.Controller.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
-                    // Health Pack Check goes here
-                    controllerLink.Controller.CheckForHealthPack(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
                 }
             }
 
