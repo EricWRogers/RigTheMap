@@ -528,7 +528,7 @@ public class FirstPersonController : MonoBehaviour
             GroundPhysicsMaterial = null;
             state.GroundNormal = k_UpVector;
         }
-        Debug.Log($"[GRound] isGrounded");
+        // Debug.Log($"[GRound] isGrounded");
     }
 
     public void GroundedCheck(ref ControllerState state, in ControllerConsts consts)

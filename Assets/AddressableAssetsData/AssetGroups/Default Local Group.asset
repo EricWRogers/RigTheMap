@@ -90,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfc1bf0811fd7564cb8189b2d277c092
+    m_Address: Assets/Prefabs/ActorGhosts/Buildings/Healthpack.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0aa30b8adee8b44dac442776f34f5e7
     m_Address: Assets/Shooter/Art/VFX/Prefabs/BulletImpact.prefab
     m_ReadOnly: 0
