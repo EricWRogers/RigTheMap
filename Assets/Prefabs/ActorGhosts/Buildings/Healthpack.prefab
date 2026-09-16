@@ -50,6 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d7c612b75f4414a8208fd381d0fb0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthPack
+  m_HealAmount: 60
+  m_PickupRadius: 0.8
+  m_PlayerLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &-2313451569635913678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +136,7 @@ Transform:
   m_GameObject: {fileID: 1286804716572183070}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.137, z: 0}
+  m_LocalPosition: {x: 0, y: 0.129, z: 0}
   m_LocalScale: {x: 0.03163848, y: 1, z: 0.012860734}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -356,7 +361,7 @@ Transform:
   m_GameObject: {fileID: 3471613645584448152}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.137, z: 0}
+  m_LocalPosition: {x: 0, y: 0.142, z: 0}
   m_LocalScale: {x: 0.03163848, y: 1, z: 0.012860734}
   m_ConstrainProportionsScale: 0
   m_Children: []

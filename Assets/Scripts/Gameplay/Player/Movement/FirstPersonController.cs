@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
+using Unity.Entities;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -967,12 +968,6 @@ public class FirstPersonController : MonoBehaviour
         // store position
         state.CurrentPosition = transform.position;
 
-        // check for health pack
-        if (HealthPackCheck(state, consts, out _))
-        {
-
-        }
-
 #if UNITY_EDITOR || DEBUG
         m_PrevMovementType = state.MovementType;
 #endif
@@ -1328,59 +1323,5 @@ public class FirstPersonController : MonoBehaviour
     {
         Debug.Log($"[{UnityEngine.Time.frameCount}] {message}");
     }
-    private bool HealthPackCheck(in ControllerState state, in ControllerConsts consts,
-    out GroundCollisionVariables groundCollision)
-    {
-        var currentPos = GetGroundRaycastOrigin(state, m_Controller);
-        var controllerCentre = transform.rotation * ControllerOffset;
-        var checkPos = new Vector3(currentPos.x + controllerCentre.x, currentPos.y + controllerCentre.y,
-            currentPos.z + controllerCentre.z);
 
-        float checkRadius = m_Controller.radius + 0.15f;
-
-        Collider[] overlaps = Physics.OverlapSphere(checkPos, checkRadius, ~0, QueryTriggerInteraction.Collide);
-
-        for (int i = 0; i < overlaps.Length; ++i)
-        {
-            var col = overlaps[i];
-            if (col == null) continue;
-
-            // Find HealthPack on this collider
-            var healthPack = col.GetComponentInParent<HealthPack>();
-            if (healthPack == null) continue;
-
-            // Heal on the server
-            const float healAmount = 60f;
-            if (m_PlayerGhost != null && m_PlayerGhost.GhostGameObject != null &&
-                m_PlayerGhost.Role == MultiplayerRole.Server)
-            {
-                var predicted = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
-                predicted.CurrentHealth = math.min(predicted.MaxHealth, predicted.CurrentHealth + healAmount);
-                m_PlayerGhost.GhostGameObject.WriteGhostComponentData(predicted);
-            }
-            else
-            {
-                
-            }
-
-            // Destroy the pack
-            if (GhostGameObject.TryFindGhostGameObject(col.gameObject, out var packGhost))
-            {
-                if (packGhost.Role == MultiplayerRole.Server)
-                    packGhost.DestroyEntity();
-                else
-                    Destroy(col.gameObject);
-            }
-            else
-            {
-                Destroy(col.gameObject);
-            }
-
-            groundCollision = new GroundCollisionVariables();
-            return true;
-        }
-
-        groundCollision = new GroundCollisionVariables();
-        return false;
-    }
 }
