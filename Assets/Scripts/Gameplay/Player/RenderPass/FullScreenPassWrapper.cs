@@ -8,10 +8,11 @@ namespace Unity.MP_FPS
         private FullScreenPassRendererFeature.FullScreenRenderPass _fullScreenRenderPass;
 
         public FullScreenPassWrapper(string passName, Material material, int passIndex, bool fetchActiveColor,
-            bool bindDepthStencilAttachment)
+            bool bindDepthStencilAttachment,RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing)
         {
             _fullScreenRenderPass = new FullScreenPassRendererFeature.FullScreenRenderPass(passName);
             _fullScreenRenderPass.SetupMembers(material, passIndex, fetchActiveColor, bindDepthStencilAttachment);
+            _fullScreenRenderPass.renderPassEvent = renderPassEvent;
         }
 
         public void EnqueuePass(Camera camera)

@@ -16,6 +16,10 @@ namespace Unity.MP_FPS
         [SerializeField]
         private float sharkBlindDuration = 3f;
 
+        [Tooltip("Sound player when the shark effect appears")]
+        [SerializeField]
+        private SoundDef sharkBlindSFX;
+
         [Header("Intensity Range")] [SerializeField]
         private float minIntensity = 0.4f;
 
@@ -109,6 +113,12 @@ namespace Unity.MP_FPS
                 return;
             }
             _sharkBlindTimer = sharkBlindDuration;
+
+            //play eating sounds
+            if (sharkBlindSFX != null && GameManager.Instance != null)
+            {
+                GameManager.Instance.SoundSystem.CreateEmitter(sharkBlindSFX,transform.position);
+            }
             Debug.Log($"[Shark blind] effect triggere for {sharkBlindDuration} seconds.");
         }
 

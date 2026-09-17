@@ -254,7 +254,7 @@ MonoBehaviour:
     m_Bits: 129
   <PickupLayers>k__BackingField:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
 --- !u!114 &2981078123423107296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +270,7 @@ MonoBehaviour:
   screenDamageMaterial: {fileID: 2100000, guid: 8e7ad8bce87c8734ab4f77afc0679eb1, type: 2}
   sharkBlindMaterial: {fileID: 2100000, guid: 84bd64ce10399c64f88f93ed3c7f2d93, type: 2}
   sharkBlindDuration: 3
+  sharkBlindSFX: {fileID: 11400000, guid: 3dae7d2885e871c429380c52ead52b67, type: 2}
   minIntensity: 0.4
   maxIntensity: 0.8
   fadeSpeed: 2
