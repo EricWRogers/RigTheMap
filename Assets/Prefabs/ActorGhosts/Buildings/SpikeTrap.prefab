@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpikeTrap
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
+      propertyPath: m_TagString
+      value: Building
+      objectReference: {fileID: 0}
     - target: {fileID: 1692873941516766943, guid: 4e96f1361593e034e8d56ae29ce94a02, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

@@ -252,6 +252,9 @@ MonoBehaviour:
   <GroundLayers>k__BackingField:
     serializedVersion: 2
     m_Bits: 129
+  <PickupLayers>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &2981078123423107296
 MonoBehaviour:
   m_ObjectHideFlags: 0

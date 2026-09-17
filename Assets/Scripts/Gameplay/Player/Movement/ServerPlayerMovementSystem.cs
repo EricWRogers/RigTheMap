@@ -745,9 +745,9 @@ namespace Unity.MP_FPS
                             scrollDelta +=
                                 input.PlayerInput.WeaponScrollDelta;
 
-                            Debug.Log(
-                                $"[Input Test] Scroll input detected! Delta: " +
-                                $"{input.PlayerInput.WeaponScrollDelta}");
+                            // Debug.Log(
+                            //     $"[Input Test] Scroll input detected! Delta: " +
+                            //     $"{input.PlayerInput.WeaponScrollDelta}");
                         }
                     }
 
@@ -783,9 +783,9 @@ namespace Unity.MP_FPS
                             
                             predictedPlayer.ValueRW.SelectedPlacementPrefabIndex = nextIndex;
 
-                            Debug.Log(
-                                $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
-                                $"scrolled to build item index {nextIndex}.");
+                            // Debug.Log(
+                            //     $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
+                            //     $"scrolled to build item index {nextIndex}.");
 
                             
 

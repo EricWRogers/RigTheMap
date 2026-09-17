@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -74,6 +75,9 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
 
     [field: SerializeField, Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers { get; private set; }
+
+    [field: SerializeField, Tooltip("Layer to put item Pickups on")]
+    public LayerMask PickupLayers { get; private set; }
 }
 
 public class PredictedPlayerControllerConstsBaker : Baker<PredictedPlayerControllerConstsAuthoring>
@@ -97,6 +101,7 @@ public class PredictedPlayerControllerConstsBaker : Baker<PredictedPlayerControl
                 GroundedOffset = authoring.GroundedOffset,
                 GroundLayers = authoring.GroundLayers,
                 TerminalVelocity = authoring.TerminalVelocity,
+                // PickupLayers = authoring.PickupLayers,
 
                 Walk = new FirstPersonController.ControllerConsts.StateConsts
                 {

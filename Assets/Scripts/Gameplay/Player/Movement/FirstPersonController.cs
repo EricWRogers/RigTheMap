@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
+using Unity.Entities;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -189,7 +190,7 @@ public class FirstPersonController : MonoBehaviour
 
         public float JumpHeight;
         public float BounceHeight;
-        
+
         public float Gravity;
         public float StandingFallSpeed;
         public float JumpTimeout;
@@ -200,7 +201,7 @@ public class FirstPersonController : MonoBehaviour
         public float GroundedOffset;
         public LayerMask GroundLayers;
         public float TerminalVelocity;
-        
+
     }
 
     [field: Header("Cinemachine")]
@@ -226,14 +227,14 @@ public class FirstPersonController : MonoBehaviour
     private uint _lastAnimatedJumpTick = 0;
     private uint _lastAnimatedLandTick = 0;
     private uint _lastAnimatedReloadTick = 0;
-    
+
 
     private CharacterController m_Controller;
     public CharacterController CharacterController => m_Controller;
 
     private PlayerGhost m_PlayerGhost;
     private PlayerGhost PlayerGhost => m_PlayerGhost;
-    
+
     private const int k_NumPhysicsResults = 8;
     private readonly RaycastHit[] m_GroundCheckRaycastResults = new RaycastHit[k_NumPhysicsResults];
 
@@ -255,7 +256,7 @@ public class FirstPersonController : MonoBehaviour
 
     private float footstepTriggerTimer = 0;
     private float footstepStartTimer = 0;
-    
+
 
     private void Awake()
     {
@@ -271,7 +272,7 @@ public class FirstPersonController : MonoBehaviour
         
         
     }
-    
+
 
     public void SetExcludeLayers(LayerMask excludeLayers)
     {
@@ -329,8 +330,8 @@ public class FirstPersonController : MonoBehaviour
 
     private struct GroundCollisionVariables
     {
-        
-        
+
+
         private RaycastHit m_ClosestHit;
         private RaycastHit m_FlattestHit;
         private RaycastHit m_SurfaceHit;
@@ -340,9 +341,9 @@ public class FirstPersonController : MonoBehaviour
         public Vector3 FlattestHitPoint => m_FlattestHit.point;
         public Vector3 FlattestHitNormal => m_FlattestHit.normal;
         public Vector3 ClosestHitNormal => m_ClosestHit.normal;
-        public PhysicsMaterial surfaceHit => m_SurfaceHit.collider != null ? m_SurfaceHit.collider.sharedMaterial:null;
-   
-        
+        public PhysicsMaterial surfaceHit => m_SurfaceHit.collider != null ? m_SurfaceHit.collider.sharedMaterial : null;
+
+
         public GroundCollisionVariables(RaycastHit closestHit, RaycastHit flattestHit, RaycastHit surfaceHit, float flattestHitDot)
         {
             m_ClosestHit = closestHit;
@@ -351,76 +352,76 @@ public class FirstPersonController : MonoBehaviour
             m_FlattestHitDot = flattestHitDot;
         }
     }
-    private enum GroundSurfaceType{
-            Normal,
-            Sticky,
-            Slippery,
-            Bounce,
-            Spikey
+    private enum GroundSurfaceType {
+        Normal,
+        Sticky,
+        Slippery,
+        Bounce,
+        Spikey
 
-        }     
-        private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat){
-            if(mat == null) return GroundSurfaceType.Normal;
+    }
+    private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat) {
+        if (mat == null) return GroundSurfaceType.Normal;
 
-            switch(mat.name){
-                case "Sticky":
-                    return GroundSurfaceType.Sticky;
-                case "Slippery":
-                    return GroundSurfaceType.Slippery;
-                case "Bounce":
-                    return GroundSurfaceType.Bounce;
-                case "Spikey":
-                    return GroundSurfaceType.Spikey;
-                default:
-                    return GroundSurfaceType.Normal;
-            }
+        switch (mat.name) {
+            case "Sticky":
+                return GroundSurfaceType.Sticky;
+            case "Slippery":
+                return GroundSurfaceType.Slippery;
+            case "Bounce":
+                return GroundSurfaceType.Bounce;
+            case "Spikey":
+                return GroundSurfaceType.Spikey;
+            default:
+                return GroundSurfaceType.Normal;
         }
-    
-        private Vector3 ApplySurfaceModifiers(ref ControllerState state, Vector3 move, Vector3 groundNormal){
-            if(GroundPhysicsMaterial == null){
+    }
 
-                state.slipperyVelocity = Vector3.zero;
-                return move;
-                }
-            var surface = GetGroundSurfaceType(GroundPhysicsMaterial);
+    private Vector3 ApplySurfaceModifiers(ref ControllerState state, Vector3 move, Vector3 groundNormal) {
+        if (GroundPhysicsMaterial == null) {
 
-            if(surface == GroundSurfaceType.Sticky){
-                Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
-                planarMove = Vector3.Lerp(planarMove, Vector3.zero, .85f);
-                return planarMove + Vector3.up * move.y;
-            }
-            if(surface == GroundSurfaceType.Slippery){
-                Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
-            if(state.slipperyVelocity.sqrMagnitude < 0.0001f)
-            {
-            state.slipperyVelocity = planarMove * 2.2f;
-            }
-                //momentum for sliding
-                state.slipperyVelocity = Vector3.ProjectOnPlane(state.slipperyVelocity, groundNormal);
-                state.slipperyVelocity *= 0.989f ;
-                state.slipperyVelocity += planarMove * 0.05f; //TWEAK if need to be faster
-                
-                return state.slipperyVelocity + Vector3.up * move.y;
-
-            }
-        else
-        {
-           state.slipperyVelocity = Vector3.zero;
-        }
-            if(surface == GroundSurfaceType.Spikey)//damage player
-            {
-                var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
-                
-                ghost.CurrentHealth -= 10;// one hp
-                
-                m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
-                // Vector3 knockback = groundNormal.normalized;
-                // float knockStr = 2f;
-                // move += knockback * knockStr; // instant upwards
-                
-            }
+            state.slipperyVelocity = Vector3.zero;
             return move;
         }
+        var surface = GetGroundSurfaceType(GroundPhysicsMaterial);
+
+        if (surface == GroundSurfaceType.Sticky) {
+            Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
+            planarMove = Vector3.Lerp(planarMove, Vector3.zero, .85f);
+            return planarMove + Vector3.up * move.y;
+        }
+        if (surface == GroundSurfaceType.Slippery) {
+            Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
+            if (state.slipperyVelocity.sqrMagnitude < 0.0001f)
+            {
+                state.slipperyVelocity = planarMove * 2.2f;
+            }
+            //momentum for sliding
+            state.slipperyVelocity = Vector3.ProjectOnPlane(state.slipperyVelocity, groundNormal);
+            state.slipperyVelocity *= 0.989f;
+            state.slipperyVelocity += planarMove * 0.05f; //TWEAK if need to be faster
+
+            return state.slipperyVelocity + Vector3.up * move.y;
+
+        }
+        else
+        {
+            state.slipperyVelocity = Vector3.zero;
+        }
+        if (surface == GroundSurfaceType.Spikey)//damage player
+        {
+            var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
+
+            ghost.CurrentHealth -= 10;// one hp
+
+            m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
+            // Vector3 knockback = groundNormal.normalized;
+            // float knockStr = 2f;
+            // move += knockback * knockStr; // instant upwards
+
+        }
+        return move;
+    }
     private bool ShouldUpdateGround(MovementType movementType)
     {
         return movementType != MovementType.Jumping;
@@ -491,15 +492,15 @@ public class FirstPersonController : MonoBehaviour
                     closestDistSq = distSq;
                     closestHitIndex = i;
                 }
-                
+
                 var surfaceMaterial = raycastResult.collider.sharedMaterial;
-                if(dot > 0f && GetGroundSurfaceType(surfaceMaterial) != GroundSurfaceType.Normal && distSq < closestSurfaceDistSq){
+                if (dot > 0f && GetGroundSurfaceType(surfaceMaterial) != GroundSurfaceType.Normal && distSq < closestSurfaceDistSq) {
                     closestSurfaceDistSq = distSq;
                     surfaceHitIndex = i;
                 }
 
             }
-            
+
             // Did we discard all of the collisions?
             if (flattestHitIndex >= 0)
             {
@@ -532,13 +533,13 @@ public class FirstPersonController : MonoBehaviour
             GroundPhysicsMaterial = null;
             state.GroundNormal = k_UpVector;
         }
-        Debug.Log($"[GRound] isGrounded");
+        // Debug.Log($"[GRound] isGrounded");
     }
 
     public void GroundedCheck(ref ControllerState state, in ControllerConsts consts)
     {
         bool isGrounded = UpdateGround(state, consts, out var groundCollision);
-        if(state.BounceCooldown > 0f)
+        if (state.BounceCooldown > 0f)
             state.BounceCooldown -= Time.deltaTime;
         bool isLanded = isGrounded && state.MovementType == MovementType.Falling && state.BounceCooldown <= 0f;
         bool landedFromBounce = isLanded && state.isBounce;
@@ -551,12 +552,12 @@ public class FirstPersonController : MonoBehaviour
             state.LandingTimeRemaining = consts.LandingTimeout;
             state.Land = true;
             state.LandTriggered = true;
-            if(!state.isBounce)
+            if (!state.isBounce)
                 state.Jump = false;
-                Debug.Log("[Clear] jump clear here");
+            Debug.Log("[Clear] jump clear here");
             state.isBounce = false;
             SetMovementType(ref state, MovementType.Standing);
-            
+
 
             bool isClientOwned = (m_PlayerGhost.Role == MultiplayerRole.ClientOwned);
             if (isClientOwned)
@@ -569,7 +570,7 @@ public class FirstPersonController : MonoBehaviour
         {
             SetMovementType(ref state, MovementType.Falling);
         }
-        else if (state.Land && state.TimeInState >= consts.LandingTimeout){
+        else if (state.Land && state.TimeInState >= consts.LandingTimeout) {
             state.Land = false;
         }
 
@@ -577,7 +578,7 @@ public class FirstPersonController : MonoBehaviour
         {
             state.GroundNormal = groundCollision.FlattestHitNormal;
             GroundPhysicsMaterial = groundCollision.surfaceHit;
-            if(shouldBounce)// Launch player
+            if (shouldBounce)// Launch player
             {
                 float BounceHeight = consts.BounceHeight;
                 float launchSpeed = math.sqrt(BounceHeight * -0.6f * consts.Gravity);//how high the player can go
@@ -590,7 +591,7 @@ public class FirstPersonController : MonoBehaviour
                 SetMovementType(ref state, MovementType.Jumping);
                 state.Jump = true;
                 state.Fall = false;
-                }
+            }
         }
         else
         {
@@ -885,7 +886,7 @@ public class FirstPersonController : MonoBehaviour
         state.TimeInState = 0f;
 
         player.ControllerState = state;
-        player.AccumulatedMovement += new float3(launchVelocity.x, 0f, launchVelocity.z)* deltaTime;
+        player.AccumulatedMovement += new float3(launchVelocity.x, 0f, launchVelocity.z) * deltaTime;
 
     }
     public static void AccumulateMovement(ref ControllerState state,
@@ -1058,12 +1059,12 @@ public class FirstPersonController : MonoBehaviour
         in ControllerConsts consts, float deltaTime)
     {
         state.BounceCooldown = math.max(0f, state.BounceCooldown - deltaTime);
-        if(state.LandingTimeRemaining > 0f)
+        if (state.LandingTimeRemaining > 0f)
         {
-        state.LandingTimeRemaining = math.max(0f, state.LandingTimeRemaining - deltaTime);
-            if(state.LandingTimeRemaining <= 0f){
+            state.LandingTimeRemaining = math.max(0f, state.LandingTimeRemaining - deltaTime);
+            if (state.LandingTimeRemaining <= 0f) {
                 state.Land = false;
-            }      
+            }
         }
         switch (state.MovementType)
         {
@@ -1351,4 +1352,5 @@ public class FirstPersonController : MonoBehaviour
     {
         Debug.Log($"[{UnityEngine.Time.frameCount}] {message}");
     }
+
 }
