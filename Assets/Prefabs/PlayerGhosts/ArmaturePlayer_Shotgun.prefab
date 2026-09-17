@@ -296,6 +296,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageVisualsController
   screenDamageMaterial: {fileID: 2100000, guid: 8e7ad8bce87c8734ab4f77afc0679eb1, type: 2}
+  sharkBlindMaterial: {fileID: 2100000, guid: 84bd64ce10399c64f88f93ed3c7f2d93, type: 2}
+  sharkBlindDuration: 3
   minIntensity: 0.4
   maxIntensity: 0.8
   fadeSpeed: 2

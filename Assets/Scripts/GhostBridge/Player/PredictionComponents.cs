@@ -63,6 +63,7 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int CurrentAmmo;
     [GhostField] public float LastDamageAmount;
     [GhostField] public uint LastHitTick;
+    [GhostField] public uint LastSharkHitTick;
     [GhostField] public uint LastconfirmedHitTick;
     [GhostField] public uint LastShotTick;
     [GhostField] public uint LastJumpTick;

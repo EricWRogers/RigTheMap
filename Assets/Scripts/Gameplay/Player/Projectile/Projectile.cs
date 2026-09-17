@@ -54,6 +54,10 @@ namespace Unity.MP_FPS
         private float _localTime;
         private uint _weaponId;
 
+        private Transform _homingTarget;
+        private int _homingTargetNetworkId = -1;
+        private bool _hasSearchedForHomingTarget;
+
         public override void OnGhostLinked()
         {
             var projectileData = GhostGameObject.ReadGhostComponentData<ProjectileData>();
@@ -63,21 +67,170 @@ namespace Unity.MP_FPS
         public void UpdateServer(float deltaTime)
         {
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(_weaponId);
+            if (weaponData == null)
+                return;
+            
+            if (weaponData.IsHoming)
+            {
+                if (!_hasSearchedForHomingTarget)
+                {
+                    FindHomingTarget(weaponData);
+                    _hasSearchedForHomingTarget = true;
+                }
+                UpdateHoming(weaponData, deltaTime);
+            }
             Move(deltaTime, weaponData.ProjectileSpeed);
-
             _localTime += deltaTime;
             if (_localTime > 5f)
             {
                 GhostGameObject.DestroyEntity();
                 return;
             }
-
             CheckForCollision(weaponData, deltaTime);
         }
 
         private void Move(float deltaTime, float speed)
         {
             transform.position += transform.forward * (speed * deltaTime);
+        }
+
+        private void FindHomingTarget(WeaponData weaponData)
+        {
+            if (GhostGameObject == null)
+                return;
+
+            var projectileData =
+                GhostGameObject.ReadGhostComponentData<ProjectileData>();
+
+            var world = GhostGameObject.World;
+
+            var serverSystem =
+                world.GetExistingSystemManaged<ServerPlayerMovementSystem>();
+
+            if (serverSystem == null)
+                return;
+
+            var ghostOwnerLookup =
+                serverSystem.GetComponentLookup<GhostOwner>();
+
+            Collider[] possibleTargets =
+                UnityEngine.Physics.OverlapSphere(
+                    transform.position,
+                    weaponData.HomingRange,
+                    LayerMask.GetMask("ServerPlayer"),
+                    QueryTriggerInteraction.Ignore);
+
+            Transform bestTarget = null;
+            int bestTargetNetworkId = -1;
+            float bestAngle = weaponData.HomingAngle;
+
+            foreach (var targetCollider in possibleTargets)
+            {
+                if (!GhostGameObject.TryFindGhostGameObject(
+                        targetCollider.gameObject,
+                        out var targetGhost))
+                {
+                    continue;
+                }
+
+                Entity targetEntity =
+                    targetGhost.LinkedEntity;
+
+                if (!ghostOwnerLookup.HasComponent(targetEntity))
+                    continue;
+
+                int targetNetworkId =
+                    ghostOwnerLookup[targetEntity].NetworkId;
+
+                // NEVER target the player who fired this projectile.
+                if (targetNetworkId == projectileData.OwnerNetworkId)
+                {
+                    continue;
+                }
+
+                Vector3 targetPosition =
+                    targetCollider.bounds.center;
+
+                Vector3 directionToTarget =
+                    targetPosition - transform.position;
+
+                float distanceToTarget =
+                    directionToTarget.magnitude;
+
+                if (distanceToTarget <= 0.001f)
+                    continue;
+
+                directionToTarget.Normalize();
+
+                float angle =
+                    Vector3.Angle(
+                        transform.forward,
+                        directionToTarget);
+
+                // Player isn't inside our aim cone.
+                if (angle > weaponData.HomingAngle)
+                    continue;
+
+                // Prefer the player closest to the center
+                // of the shooter's aim.
+                if (angle < bestAngle)
+                {
+                    bestAngle = angle;
+                    bestTarget = targetCollider.transform;
+                    bestTargetNetworkId = targetNetworkId;
+                }
+            }
+
+            if (bestTarget != null)
+            {
+                _homingTarget = bestTarget;
+                _homingTargetNetworkId =
+                    bestTargetNetworkId;
+
+                Debug.Log(
+                    $"[Shark Homing] LOCKED onto player " +
+                    $"{bestTargetNetworkId}. " +
+                    $"Angle: {bestAngle:F1}");
+            }
+            else
+            {
+                _homingTarget = null;
+                _homingTargetNetworkId = -1;
+
+                Debug.Log(
+                    "[Shark Homing] No valid target.");
+            }
+        }
+
+        private void UpdateHoming(WeaponData weaponData, float deltaTime)
+        {
+            if (_homingTarget == null)
+                return;
+            
+             Debug.DrawLine(
+                transform.position,
+                _homingTarget.position + Vector3.up,
+                Color.green);
+
+            Vector3 targetPosition =
+                _homingTarget.position + Vector3.up;
+
+            Vector3 directionToTarget =
+                targetPosition - transform.position;
+
+            if (directionToTarget.sqrMagnitude <= 0.001f)
+                return;
+
+            directionToTarget.Normalize();
+
+            Quaternion desiredRotation =
+                Quaternion.LookRotation(directionToTarget, Vector3.up);
+
+            transform.rotation =
+                Quaternion.RotateTowards(
+                    transform.rotation,
+                    desiredRotation,
+                    weaponData.HomingStrength * 100f * deltaTime);
         }
 
         public void UpdateClient(float deltaTime)
@@ -313,10 +466,17 @@ namespace Unity.MP_FPS
                         targetPredictedPlayer.ValueRW.ControllerState.IsHit = true;
                         targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.Damage;
                         targetPredictedPlayer.ValueRW.LastHitTick = serverCurrentTick;
-                        if(shooterEntity != Entity.Null && playerGhostLookup.HasComponent(shooterEntity))
+
+                        if (weaponData.AppliesSharkBlind)
+                        {
+                            targetPredictedPlayer.ValueRW.LastSharkHitTick = serverCurrentTick;
+                            Debug.Log($"[Shark Blind Server] Set lastsharkhittick on player {targetNetworkId} to {serverCurrentTick}");            
+                        }
+                        if (shooterEntity != Entity.Null &&
+                            playerGhostLookup.HasComponent(shooterEntity))
                         {
                             var shooterPlayer = playerGhostLookup.GetRefRW(shooterEntity);
-                            shooterPlayer.ValueRW.LastconfirmedHitTick = serverCurrentTick;                          
+                            shooterPlayer.ValueRW.LastconfirmedHitTick = serverCurrentTick;
                         }
                         
 

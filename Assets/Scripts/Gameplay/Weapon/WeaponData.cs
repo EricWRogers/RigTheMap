@@ -70,6 +70,13 @@ namespace Unity.MP_FPS
         public ProjectileBehavior Behavior = ProjectileBehavior.DirectDamage;
         public float AoeRadius = 5f;
         public float ProjectileSpeed = 30f;
+        [Header("Homing Properties")]
+        public bool IsHoming = false;
+        public float HomingRange = 30f;
+        public float HomingAngle = 25f;
+        public float HomingStrength = 5f;
+        public bool AppliesSharkBlind = false;
+        public float SharkBlindDuration = 3f;
         [Header("Hammer Properties")]
         public float HammerLaunchForce = 12f;
         public float HammerImpactRadius = 2f;

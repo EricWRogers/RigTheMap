@@ -219,7 +219,9 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private Animator m_Animator_3P;
     [SerializeField] private bool m_EnableAnimationLogging = false;
     private DamageVisualsController m_DamageVisualsController;
+    
     private uint _lastProcessedHitTick = 0;
+    private uint _lastProcessedSharkHitTick = 0;
     private uint _lastAnimatedShotTick = 0;
     private uint _lastAnimatedJumpTick = 0;
     private uint _lastAnimatedLandTick = 0;
@@ -266,6 +268,8 @@ public class FirstPersonController : MonoBehaviour
         TryGetComponent(out m_DamageVisualsController);
         Debug.Assert(m_DamageVisualsController,
             "[FIRSTPERSONCONTROLLER] Player has no DamageVisualsController component");
+        
+        
     }
     
 
@@ -728,6 +732,31 @@ public class FirstPersonController : MonoBehaviour
             }
 
             _lastProcessedHitTick = ghostState.LastHitTick;
+        }
+        if (ghostState.LastSharkHitTick > _lastProcessedSharkHitTick)
+        {
+            Debug.Log(
+                $"[SHARK BLIND] Shark hit received! Tick: {ghostState.LastSharkHitTick}");
+
+            // Only show the shark to the local player who was hit
+            if (m_PlayerGhost.Role == MultiplayerRole.ClientOwned)
+            {
+                Debug.Log(
+                    "[SHARK BLIND] Showing shark effect on local player.");
+
+                if (m_DamageVisualsController != null)
+                {
+                    m_DamageVisualsController.TriggerSharkBlind();
+                }
+                else
+                {
+                    Debug.LogError(
+                        "[SHARK BLIND] DamageVisualsController is NULL!");
+                }
+            }
+
+            _lastProcessedSharkHitTick =
+                ghostState.LastSharkHitTick;
         }
     }
 

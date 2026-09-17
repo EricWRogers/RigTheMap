@@ -8,6 +8,14 @@ namespace Unity.MP_FPS
         [Header("References")] [Tooltip("The Material template used for the damage vignette effect.")] [SerializeField]
         private Material screenDamageMaterial;
 
+        [Header("Shark Blind")]
+        [Tooltip("The fullscreen material used when the player is hit by the shark.")]
+        [SerializeField]
+        private Material sharkBlindMaterial;
+
+        [SerializeField]
+        private float sharkBlindDuration = 3f;
+
         [Header("Intensity Range")] [SerializeField]
         private float minIntensity = 0.4f;
 
@@ -17,10 +25,13 @@ namespace Unity.MP_FPS
         private float fadeSpeed = 2f;
 
         private FullScreenPassWrapper _damagePass;
+        private FullScreenPassWrapper _sharkPass;
         private Material _runtimeDamageMaterial;
+        private Material _runtimeSharkMaterial;
         private PlayerGhost _playerGhost; // To get a reference to this player's camera
 
         private float _currentIntensity = 0f;
+        private float _sharkBlindTimer = 0f;
         private static readonly int IntensityID = Shader.PropertyToID("_Intensity");
 
         void Awake()
@@ -37,6 +48,13 @@ namespace Unity.MP_FPS
             // Create an instance of our custom render pass.
             _damagePass = new FullScreenPassWrapper("_ScreenDamagePass", _runtimeDamageMaterial, 0, false, false);
 
+            //shark blind material and render pass
+            if (sharkBlindMaterial != null)
+            {
+                _runtimeSharkMaterial = new Material(sharkBlindMaterial);
+                _sharkPass = new FullScreenPassWrapper("_SharkBlindPass", _runtimeSharkMaterial, 0, false, false);
+
+            }
             // Subscribe our injection method to the render pipeline manager.
             RenderPipelineManager.beginCameraRendering += InjectRenderPass;
         }
@@ -44,30 +62,54 @@ namespace Unity.MP_FPS
         // This is the core of the new solution.
         private void InjectRenderPass(ScriptableRenderContext context, Camera camera)
         {
-            // Only proceed if the effect is active.
-            if (_currentIntensity <= 0)
+            if(_playerGhost == null|| camera != _playerGhost.GetPlayerCamera())
             {
                 return;
             }
-
-            if (_playerGhost != null && camera == _playerGhost.GetPlayerCamera())
+            // normal damage effect
+            if (_currentIntensity > 0f && _damagePass != null)
             {
-                // Setup and enqueue the pass for this camera's renderer.
                 _damagePass.EnqueuePass(camera);
+            }
+            //shark blind effect
+            if(_sharkBlindTimer > 0f && _sharkPass != null)
+            {
+                _sharkPass.EnqueuePass(camera);
             }
         }
 
         void Update()
         {
-            // The update logic now only needs to manage the intensity value.
-            // The toggling of the feature is gone.
-            if (_currentIntensity > 0)
+            if (_currentIntensity > 0f)
             {
                 _currentIntensity -= fadeSpeed * Time.deltaTime;
                 _currentIntensity = Mathf.Max(0f, _currentIntensity);
-
                 UpdateVignetteMaterial();
             }
+
+            //shark blind 
+            if (_sharkBlindTimer > 0f)
+            {
+                _sharkBlindTimer -= Time.deltaTime;
+                if (_sharkBlindTimer <= 0f)
+                {
+                    _sharkBlindTimer = 0f;
+                    Debug.Log("[SHARK BLIND] Effect Finished.");
+                }
+            }
+            
+        }
+
+        //triggers shark effect 
+        public void TriggerSharkBlind()
+        {
+            if (_sharkPass == null)
+            {
+                Debug.LogError("[Shark Blind] Shark blind material is not assigned");
+                return;
+            }
+            _sharkBlindTimer = sharkBlindDuration;
+            Debug.Log($"[Shark blind] effect triggere for {sharkBlindDuration} seconds.");
         }
 
         /// <summary>
@@ -122,10 +164,18 @@ namespace Unity.MP_FPS
 
         void OnDestroy()
         {
+            RenderPipelineManager.beginCameraRendering -= InjectRenderPass;
+
             if (_runtimeDamageMaterial != null)
             {
                 Destroy(_runtimeDamageMaterial);
                 _runtimeDamageMaterial = null;
+            }
+
+            if (_runtimeSharkMaterial != null)
+            {
+                Destroy(_runtimeSharkMaterial);
+                _runtimeSharkMaterial = null;
             }
 
             // Unsubscribe to prevent memory leaks.
