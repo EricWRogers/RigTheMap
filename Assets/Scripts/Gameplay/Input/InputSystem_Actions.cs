@@ -213,6 +213,16 @@ namespace Unity.MP_FPS
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""DebugToFightRound"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f5a2b4f-9b8b-4fc2-834b-ddebbc329a65"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -642,6 +652,17 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""RotatePlacementLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ec68268-b869-430e-97ae-47f6eae46857"",
+                    ""path"": ""<Keyboard>/leftBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugToFightRound"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1537,6 +1558,7 @@ namespace Unity.MP_FPS
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_RotatePlacementRight = m_Player.FindAction("RotatePlacementRight", throwIfNotFound: true);
             m_Player_RotatePlacementLeft = m_Player.FindAction("RotatePlacementLeft", throwIfNotFound: true);
+            m_Player_DebugToFightRound = m_Player.FindAction("DebugToFightRound", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1653,6 +1675,7 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_RotatePlacementRight;
         private readonly InputAction m_Player_RotatePlacementLeft;
+        private readonly InputAction m_Player_DebugToFightRound;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1712,6 +1735,10 @@ namespace Unity.MP_FPS
             /// Provides access to the underlying input action "Player/RotatePlacementLeft".
             /// </summary>
             public InputAction @RotatePlacementLeft => m_Wrapper.m_Player_RotatePlacementLeft;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/DebugToFightRound".
+            /// </summary>
+            public InputAction @DebugToFightRound => m_Wrapper.m_Player_DebugToFightRound;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1774,6 +1801,9 @@ namespace Unity.MP_FPS
                 @RotatePlacementLeft.started += instance.OnRotatePlacementLeft;
                 @RotatePlacementLeft.performed += instance.OnRotatePlacementLeft;
                 @RotatePlacementLeft.canceled += instance.OnRotatePlacementLeft;
+                @DebugToFightRound.started += instance.OnDebugToFightRound;
+                @DebugToFightRound.performed += instance.OnDebugToFightRound;
+                @DebugToFightRound.canceled += instance.OnDebugToFightRound;
             }
 
             /// <summary>
@@ -1821,6 +1851,9 @@ namespace Unity.MP_FPS
                 @RotatePlacementLeft.started -= instance.OnRotatePlacementLeft;
                 @RotatePlacementLeft.performed -= instance.OnRotatePlacementLeft;
                 @RotatePlacementLeft.canceled -= instance.OnRotatePlacementLeft;
+                @DebugToFightRound.started -= instance.OnDebugToFightRound;
+                @DebugToFightRound.performed -= instance.OnDebugToFightRound;
+                @DebugToFightRound.canceled -= instance.OnDebugToFightRound;
             }
 
             /// <summary>
@@ -2378,6 +2411,13 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRotatePlacementLeft(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "DebugToFightRound" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDebugToFightRound(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

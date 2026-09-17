@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
+using Gameplay.Leaderboard;
 
 [UpdateInGroup(typeof(GhostInputSystemGroup))]
 public partial class ClientInputReaderSystem : SystemBase
@@ -109,6 +110,13 @@ public partial class ClientInputReaderSystem : SystemBase
         playerInput.SetFlag(PlayerInput.InputFlag.Shoot, controls.FPS.ShootSingle.IsPressed());
         playerInput.SetFlag(PlayerInput.InputFlag.Reload, controls.FPS.Reload.triggered);
         playerInput.SetFlag(PlayerInput.InputFlag.Sprint, controls.Player.Sprint.IsPressed());
+
+        if(controls.Player.DebugToFightRound.WasPressedThisFrame() && LeaderboardManager.Instance != null 
+        && LeaderboardManager.Instance.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode)
+        {
+            LeaderboardManager.Instance.roundSkipped = true;
+            LeaderboardManager.Instance.SkipRound();
+        }
 
         var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
         playerInput.WeaponScrollDelta = scrollValue.y;

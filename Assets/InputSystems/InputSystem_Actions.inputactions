@@ -125,6 +125,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "DebugToFightRound",
+                    "type": "Button",
+                    "id": "0f5a2b4f-9b8b-4fc2-834b-ddebbc329a65",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -554,6 +564,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RotatePlacementLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ec68268-b869-430e-97ae-47f6eae46857",
+                    "path": "<Keyboard>/leftBracket",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugToFightRound",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

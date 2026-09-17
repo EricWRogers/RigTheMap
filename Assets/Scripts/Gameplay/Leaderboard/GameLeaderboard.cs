@@ -15,9 +15,10 @@ namespace Gameplay.Leaderboard
     public class LeaderboardManager : GhostMonoBehaviour, IUpdateServer, IUpdateClient
     {
         public int CurrentRound => _currentRound;
-        public float BuildTimer => _buildTimer;
+        public float BuildTimer => _buildTimer ;
         private float _buildTimerSyncAccumulator;
         public RoundPhase CurrentPhase => _roundPhase;
+        public bool roundSkipped = false;
         public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
@@ -57,6 +58,11 @@ namespace Gameplay.Leaderboard
         private static Queue<(int networkId, FixedString64Bytes playerName)> _pendingPlayers =
             new Queue<(int, FixedString64Bytes)>();
 #pragma warning restore UDR0001
+
+        public void SkipRound()
+        {
+            StartNextRound();
+        }
 
         private void BroadCastBuildTimer(float timer)
         {
@@ -174,7 +180,7 @@ namespace Gameplay.Leaderboard
 
         public void CheckForWinningTeam()
         {
-            if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting)
+            if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting || roundSkipped)
                 return;
 
             var entityManager = GhostGameObject.World.EntityManager;
