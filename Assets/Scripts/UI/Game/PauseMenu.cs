@@ -20,10 +20,13 @@ namespace Unity.MP_FPS
         Button m_MainMenuButton;
         Button m_QuitButton;
 
+        public InputAction escape;
+
         void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
-            GameInput.Actions.UI.TogglePauseMenu.performed += TogglePauseMenuVisibility;
+            // GameInput.Actions.UI.TogglePauseMenu.performed += TogglePauseMenuVisibility;
+            escape.Enable();
 
             root.SetBinding("style.display", new DataBinding
             {
@@ -45,13 +48,20 @@ namespace Unity.MP_FPS
 
         void OnDisable()
         {
-            GameInput.Actions.UI.TogglePauseMenu.performed -= TogglePauseMenuVisibility;
+            // GameInput.Actions.UI.TogglePauseMenu.performed -= TogglePauseMenuVisibility;
+            escape.Disable();
             m_ResumeButton.clicked -= OnResumePressed;
             m_MainMenuButton.clicked -= OnMainMenuPressed;
             m_QuitButton.clicked -= OnQuitPressed;
         }
 
-        void TogglePauseMenuVisibility(InputAction.CallbackContext obj)
+        void Update()
+        {
+            if(escape.WasPressedThisFrame())
+                TogglePauseMenuVisibility();
+        }
+
+        void TogglePauseMenuVisibility()
         {
             if(EventSystem.current != null)
             {

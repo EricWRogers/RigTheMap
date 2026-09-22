@@ -351,6 +351,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77b782d7864d064d91b9f1cc9ed70d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.PauseMenu
+  escape:
+    m_Name: Escape
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a691a1e6-dd59-42a6-88b9-ee3ffa023cfe
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: f39db168-b7be-4944-9a0d-154e3ca8ccbc
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Escape
+      m_Flags: 0
+    m_Flags: 0
+    m_Priority: 0
 --- !u!1001 &887720140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -426,6 +444,26 @@ PrefabInstance:
     - target: {fileID: 6934192449549660885, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419387675640752745, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: leaderBoard.m_Name
+      value: Leader Board
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419387675640752745, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: leaderBoard.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419387675640752745, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: leaderBoard.m_SingletonActionBindings.Array.data[0].m_Id
+      value: de7eb082-9b49-4cfd-b0bd-1a2db939150c
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419387675640752745, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: leaderBoard.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/tab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7419387675640752745, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: leaderBoard.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Leader Board
       objectReference: {fileID: 0}
     - target: {fileID: 7964548458680728555, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
       propertyPath: m_IsActive

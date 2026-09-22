@@ -1,6 +1,5 @@
 using Unity.Entities;
 using Unity.Mathematics;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 [DisallowMultipleComponent]

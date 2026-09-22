@@ -25,6 +25,8 @@ namespace Unity.MP_FPS.UI
 
         private float _timer;
 
+        public InputAction leaderBoard;
+
         void Awake()
         {
             var uiDocument = GetComponent<UIDocument>();
@@ -53,22 +55,24 @@ namespace Unity.MP_FPS.UI
 
         void OnEnable()
         {
-            GameInput.Actions.UI.ShowLeaderboard.started += OnShowLeaderboard;
-            GameInput.Actions.UI.ShowLeaderboard.canceled += OnHideLeaderboard;
+            leaderBoard.Enable();
+            // GameInput.Actions.UI.ShowLeaderboard.started += OnShowLeaderboard;
+            // GameInput.Actions.UI.ShowLeaderboard.canceled += OnHideLeaderboard;
         }
         
         void OnDisable()
         {
-            GameInput.Actions.UI.ShowLeaderboard.started -= OnShowLeaderboard;
-            GameInput.Actions.UI.ShowLeaderboard.canceled -= OnHideLeaderboard;
+            leaderBoard.Disable();
+            // GameInput.Actions.UI.ShowLeaderboard.started -= OnShowLeaderboard;
+            // GameInput.Actions.UI.ShowLeaderboard.canceled -= OnHideLeaderboard;
         }
         
-        private void OnShowLeaderboard(InputAction.CallbackContext context)
+        private void OnShowLeaderboard()
         {
             _rootElement.style.display = DisplayStyle.Flex;
         }
         
-        private void OnHideLeaderboard(InputAction.CallbackContext context)
+        private void OnHideLeaderboard()
         {
             _rootElement.style.display = DisplayStyle.None;
         }
@@ -111,6 +115,11 @@ namespace Unity.MP_FPS.UI
 
         void Update()
         {
+            if (leaderBoard.WasPressedThisFrame())
+                OnShowLeaderboard();
+            else if (leaderBoard.WasReleasedThisFrame())
+                OnHideLeaderboard();
+
             // Find the current ClientWorld, if any
             var clientWorld = GetClientWorld();
             // If the client world changed (new, destroyed, or swapped), (re)initialize
