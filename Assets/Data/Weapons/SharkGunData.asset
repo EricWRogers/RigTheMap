@@ -48,7 +48,7 @@ MonoBehaviour:
   PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 
+      m_AssetGUID: c93af8b935d1da7419ae22251a33748c
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -56,10 +56,10 @@ MonoBehaviour:
     <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
-        x: 0
-        y: 0
-        z: 0
-        w: 0
+        x: 2609882012
+        y: 1202527571
+        z: 1378019985
+        w: 3360109473
   MuzzleFlashVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: d5370334ebfc741919094c943fa694ee
