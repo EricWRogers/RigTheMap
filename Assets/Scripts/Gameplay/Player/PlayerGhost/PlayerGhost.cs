@@ -36,6 +36,17 @@ namespace Unity.MP_FPS
         [SerializeField] private Animator m_Animator3P;
         private static readonly int AimPitchHash = Animator.StringToHash("AimPitch");
         
+        [Header("Shark Hit Visual")]
+        [SerializeField] private GameObject m_SharkHitVisualPrefab;
+        [SerializeField] private float m_SharkHitVisualDuration = 3f;
+        [SerializeField] private Vector3 m_SharkHitPositionOffset = Vector3.zero;
+        [SerializeField] private Vector3 m_SharkHitRotationOffset = Vector3.zero;
+        [SerializeField] private Vector3 m_SharkHitScale = Vector3.one;
+
+        private uint m_LastProcessedSharkHitTick;
+        private GameObject m_ActiveSharkHitVisual;
+        private float m_SharkHitVisualTimer;
+
         public int PlayerIndex { get; private set; }
         public int InputUserId { get; set; } = -1;
         public PlayerInput ServerMovementInput { get; set; }
@@ -271,10 +282,70 @@ namespace Unity.MP_FPS
             // Server does not need to do anything for now regarding PlayerGhost
         }
 
+        private void ShowSharkHitVisual()
+        {
+            if (m_SharkHitVisualPrefab == null)
+            {
+                Debug.LogWarning("[Shark Visual] Shark hit visual prefab is not assigned");
+                return;
+            }
+
+            if (m_Animator3P == null)
+            {
+                Debug.LogWarning("[Shark Visual] 3p animator is not assigned");
+                return;
+            }
+
+            Transform head = m_Animator3P.GetBoneTransform(HumanBodyBones.Head);
+
+            if (head == null)
+            {
+                Debug.LogWarning("[Shark Visual] could not find the head bone");
+                return;
+            }
+
+            //remove previous shark if another hit happens
+            if (m_ActiveSharkHitVisual != null)
+            {
+                Destroy(m_ActiveSharkHitVisual);
+            }
+
+            m_ActiveSharkHitVisual = Instantiate(m_SharkHitVisualPrefab, head);
+            m_ActiveSharkHitVisual.transform.localPosition = m_SharkHitPositionOffset;
+            m_ActiveSharkHitVisual.transform.localRotation = Quaternion.Euler(m_SharkHitRotationOffset);
+            m_ActiveSharkHitVisual.transform.localScale = m_SharkHitScale;
+            m_SharkHitVisualTimer = m_SharkHitVisualDuration;
+
+            Debug.Log("[Shark Visual] Shark attached to players head.");
+
+        }
+
         public void UpdateClient(float deltaTime)
         {
             var predictedPlayerGhost = ReadGhostComponentData<PredictedPlayerGhost>();
             var controllerState = predictedPlayerGhost.ControllerState;
+
+            if ( predictedPlayerGhost.LastSharkHitTick > m_LastProcessedSharkHitTick)
+            {
+                Debug.Log(
+                    $"[SHARK VISUAL CHECK] " +
+                    $"Role={Role} " +
+                    $"LastSharkHitTick={predictedPlayerGhost.LastSharkHitTick} " +
+                    $"Processed={m_LastProcessedSharkHitTick}");
+                ShowSharkHitVisual();
+                m_LastProcessedSharkHitTick = predictedPlayerGhost.LastSharkHitTick;
+            }
+
+            if (m_ActiveSharkHitVisual != null)
+            {
+                m_SharkHitVisualTimer -= deltaTime;
+                if (m_SharkHitVisualTimer <= 0f)
+                {
+                    Destroy(m_ActiveSharkHitVisual);
+                    m_ActiveSharkHitVisual = null;
+                }
+            }
+
             if (Role == MultiplayerRole.ClientOwned)
             {
                 CameraTarget.transform.rotation = Quaternion.Euler(controllerState.PitchDegrees,

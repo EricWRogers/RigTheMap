@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2215748629598620410
+--- !u!1001 &3396463116085338761
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.37323144
+      value: 764.8006
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.67
+      value: -0.00001
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.9953587
+      value: 3748.9973
       objectReference: {fileID: 0}
     - target: {fileID: -3910990755373119420, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8771091787928289351, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_Name
-      value: shark2f
+      value: shark2f 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

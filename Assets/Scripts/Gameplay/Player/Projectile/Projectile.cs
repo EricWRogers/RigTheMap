@@ -24,6 +24,11 @@ namespace Unity.MP_FPS
             [GhostField] public int OwnerNetworkId;
             [GhostField] public uint SpawnTick;
             [GhostField] public uint WeaponID;
+
+            [GhostField] public float HomingDirectionX;
+            [GhostField] public float HomingDirectionY;
+            [GhostField] public float HomingDirectionZ;
+            [GhostField] public bool HasHomingDirection;
         }
 
         public class PredictedProjectileInfo
@@ -77,16 +82,26 @@ namespace Unity.MP_FPS
                     FindHomingTarget(weaponData);
                     _hasSearchedForHomingTarget = true;
                 }
+
                 UpdateHoming(weaponData, deltaTime);
             }
+            CheckForCollision(weaponData,deltaTime);
+
+            if (!GhostGameObject.GhostEntityExists())
+            {
+                return;
+            }
+            
             Move(deltaTime, weaponData.ProjectileSpeed);
             _localTime += deltaTime;
+
+           
             if (_localTime > 5f)
             {
                 GhostGameObject.DestroyEntity();
                 return;
             }
-            CheckForCollision(weaponData, deltaTime);
+            
         }
 
         private void Move(float deltaTime, float speed)
@@ -119,6 +134,8 @@ namespace Unity.MP_FPS
                     weaponData.HomingRange,
                     LayerMask.GetMask("ServerPlayer"),
                     QueryTriggerInteraction.Ignore);
+                Debug.Log(
+                    $"[SHARK SEARCH] Found {possibleTargets.Length} ServerPlayer colliders.");
 
             Transform bestTarget = null;
             int bestTargetNetworkId = -1;
@@ -126,6 +143,9 @@ namespace Unity.MP_FPS
 
             foreach (var targetCollider in possibleTargets)
             {
+                 Debug.Log(
+                    $"[SHARK SEARCH] Candidate: {targetCollider.name} " +
+                    $"Layer={LayerMask.LayerToName(targetCollider.gameObject.layer)}");
                 if (!GhostGameObject.TryFindGhostGameObject(
                         targetCollider.gameObject,
                         out var targetGhost))
@@ -230,12 +250,47 @@ namespace Unity.MP_FPS
                 Quaternion.RotateTowards(
                     transform.rotation,
                     desiredRotation,
-                    weaponData.HomingStrength * 100f * deltaTime);
+                    weaponData.HomingStrength * deltaTime);
+            
+            var projectileData = GhostGameObject.ReadGhostComponentData<ProjectileData>();
+
+            Vector3 homingDirection = transform.forward;
+
+            projectileData.HomingDirectionX = homingDirection.x;
+            projectileData.HomingDirectionY = homingDirection.y;
+            projectileData.HomingDirectionZ = homingDirection.z;
+            projectileData.HasHomingDirection = true;
+
+            GhostGameObject.WriteGhostComponentData(projectileData);
+
+
+            
         }
 
         public void UpdateClient(float deltaTime)
         {
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(_weaponId);
+            if (weaponData == null)
+                return;
+            
+            if(weaponData.IsHoming)
+            {
+                var projectileData = GhostGameObject.ReadGhostComponentData<ProjectileData>();
+                Debug.Log(
+                    $"[SHARK CLIENT] HasDir={projectileData.HasHomingDirection} " +
+                    $"Dir=({projectileData.HomingDirectionX:F2}, " +
+                    $"{projectileData.HomingDirectionY:F2}, " +
+                    $"{projectileData.HomingDirectionZ:F2})");
+
+                if (projectileData.HasHomingDirection)
+                {
+                    Vector3 homingDirection = new Vector3(projectileData.HomingDirectionX,projectileData.HomingDirectionY, projectileData.HomingDirectionZ);
+                    if (homingDirection.sqrMagnitude > 0.001f)
+                    {
+                        transform.rotation = Quaternion.LookRotation(homingDirection.normalized, Vector3.up);
+                    }
+                }
+            }
             Move(deltaTime, weaponData.ProjectileSpeed);
         }
 
