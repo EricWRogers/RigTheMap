@@ -244,7 +244,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: shark2f
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4748361991329772099, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

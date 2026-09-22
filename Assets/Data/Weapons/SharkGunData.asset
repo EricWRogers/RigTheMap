@@ -48,7 +48,7 @@ MonoBehaviour:
   PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -56,10 +56,10 @@ MonoBehaviour:
     <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
-        x: 1605990968
-        y: 1277661219
-        z: 240610982
-        w: 3023402984
+        x: 0
+        y: 0
+        z: 0
+        w: 0
   MuzzleFlashVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: d5370334ebfc741919094c943fa694ee
@@ -78,11 +78,11 @@ MonoBehaviour:
   WeaponReloadSfx: {fileID: 11400000, guid: 787dd818efa43da4f969b63e44de56b7, type: 2}
   Behavior: 0
   AoeRadius: 5
-  ProjectileSpeed: 30
+  ProjectileSpeed: 10
   IsHoming: 1
   HomingRange: 30
-  HomingAngle: 25
-  HomingStrength: 5
+  HomingAngle: 30
+  HomingStrength: 120
   AppliesSharkBlind: 1
   SharkBlindDuration: 3
   HammerLaunchForce: 12

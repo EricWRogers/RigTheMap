@@ -247,6 +247,11 @@ MonoBehaviour:
   <VisualShotOrigin1P>k__BackingField: {fileID: 7662978168577193393}
   <VisualShotOrigin3P>k__BackingField: {fileID: 4612186222108786786}
   m_Animator3P: {fileID: 9034346848951870918}
+  m_SharkHitVisualPrefab: {fileID: 6240727634212577998, guid: 34cad9c948ade134f9c0a5a640464e93, type: 3}
+  m_SharkHitVisualDuration: 3
+  m_SharkHitPositionOffset: {x: 0, y: 0, z: 0}
+  m_SharkHitRotationOffset: {x: 0, y: 0, z: 0}
+  m_SharkHitScale: {x: 1, y: 1, z: 1}
   <MainCameraPrefab>k__BackingField: {fileID: 8944336655422409498, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
 --- !u!114 &1290565221828185357
 MonoBehaviour:
