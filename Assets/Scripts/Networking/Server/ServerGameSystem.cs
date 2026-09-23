@@ -263,9 +263,13 @@ namespace Unity.MP_FPS
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (FindSpawnPoint(ref state, teamId, out var spawnPoint))
+            if (GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
+            }
+            else
+            {
+                ecb.SetComponent(playerEntity, new LocalTransform { Position = Vector3.zero, Rotation = Quaternion.identity, Scale = 1.0f });
             }
 
             ecb.SetComponent(playerEntity, new GhostGameObjectGuid

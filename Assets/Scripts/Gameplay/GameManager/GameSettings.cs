@@ -38,6 +38,7 @@ namespace Unity.MP_FPS
         static void RuntimeInitializeOnLoad() => Instance = new GameSettings();
 
         const string k_PlayerNameKey = "PlayerName";
+        const string k_MapNameKey = "MapName";
         const string k_PlayerCharacterKey = "PlayerCharacer";
         const string k_ConnectionModeKey = "ConnectionMode";
         const string k_SessionNameKey = "SessionName";
@@ -45,6 +46,7 @@ namespace Unity.MP_FPS
         GameSettings()
         {
             m_PlayerName = PlayerPrefs.GetString(k_PlayerNameKey, Environment.UserName);
+            m_MapName = PlayerPrefs.GetString(k_MapNameKey, "GameScene");
             m_PlayerCharacter = PlayerPrefs.GetInt(k_PlayerCharacterKey, 0);  
             m_ConnectionMode = PlayerPrefs.GetInt(k_ConnectionModeKey, 0);
             m_SessionName = PlayerPrefs.GetString(k_SessionNameKey, "default-session");
@@ -191,6 +193,23 @@ namespace Unity.MP_FPS
 
                 m_PlayerName = value;
                 PlayerPrefs.SetString(k_PlayerNameKey, value);
+            }
+        }
+
+        string m_MapName;
+        [CreateProperty]
+        public string MapName
+        {
+            get => m_MapName;
+            set
+            {
+                if (m_MapName == value)
+                {
+                    return;
+                }
+
+                m_MapName = value;
+                PlayerPrefs.SetString(k_MapNameKey, value);
             }
         }
 
