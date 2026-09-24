@@ -273,6 +273,15 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     {
                                         var placementPos = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
                                         var surfaceRotation = Quaternion.FromToRotation(Vector3.up, placementHit.normal);
+
+                                        int selectedIndex = math.clamp(
+                                        predictedPlayer.ValueRO.SelectedPlacementPrefabIndex,
+                                        0,
+                                        weaponData.PlacementGhostPrefabs.Count - 1);
+
+                                        if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "OneWayWall")
+                                            surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex].GhostPrefab.editorAsset.transform.rotation;
+
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
                                         var placementRotation =
                                             surfaceRotation *
@@ -281,19 +290,16 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                                 input.PlacementRotationDegrees,
                                                 0f) *
                                             modelCorrection;
-                                        bool VerticalPlacement = placementHit.collider.CompareTag("VW")||placementHit.transform.CompareTag("VW");
+                                        // bool VerticalPlacement = placementHit.collider.CompareTag("VW")||placementHit.transform.CompareTag("VW");
 
-                                        if (VerticalPlacement)
-                                        {
-                                            placementRotation = Quaternion.Euler(90f, input.PlacementRotationDegrees, 0f);
-                                        }
+                                        // if (VerticalPlacement)
+                                        // {
+                                        //     placementRotation = Quaternion.Euler(90f, input.PlacementRotationDegrees, 0f);
+                                        // }
 
                                         Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
 
-                                        int selectedIndex = math.clamp(
-                                            predictedPlayer.ValueRO.SelectedPlacementPrefabIndex,
-                                            0,
-                                            weaponData.PlacementGhostPrefabs.Count - 1);
+                                       
                                         var placementPrefab = weaponData.PlacementGhostPrefabs[selectedIndex];
 
                                         if (placementPrefab.GhostPrefab != null && placementPrefab.GhostGuid.IsValid)

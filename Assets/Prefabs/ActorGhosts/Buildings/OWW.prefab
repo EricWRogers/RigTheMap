@@ -137,15 +137,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 731418934302579820}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.000000054562, y: 0.000000057788, z: -0.55563}
-  m_LocalScale: {x: 1, y: 1, z: 0.9419947}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1844931992587103371}
   - {fileID: 8380191148592058174}
   m_Father: {fileID: 1144144569954603911}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1366292231375907915
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 4234377636476014201}
   - component: {fileID: 7921164316587028835}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: OWW
   m_TagString: VW
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -175,14 +175,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1366292231375907915}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6665178, y: -0.20570715, z: 0.20198715, w: 0.6874881}
-  m_LocalPosition: {x: -2.6436, y: 4.0575, z: -18.029}
-  m_LocalScale: {x: 1.0476086, y: 0.032232456, z: 0.19584148}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.6436, y: -0.8134, z: -18.029}
+  m_LocalScale: {x: 0.9450244, y: 0.30360562, z: 0.19584148}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8648293371050679737}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 88.274, y: -26.816, z: 6.698}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &7042194576423492412
 MeshRenderer:
   m_ObjectHideFlags: 0

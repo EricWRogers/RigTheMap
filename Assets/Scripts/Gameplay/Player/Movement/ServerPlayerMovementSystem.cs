@@ -934,10 +934,19 @@ namespace Unity.MP_FPS
                                         placementHit.normal *
                                         weaponData.PlacementOffset;
 
-                                    var surfaceRotation =
-                                        Quaternion.FromToRotation(
-                                            Vector3.up,
-                                            placementHit.normal);
+                                    Quaternion surfaceRotation;
+
+                                    if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "OneWayWall") // Jury Rig solution - !!!
+                                    {
+                                        surfaceRotation =
+                                            Quaternion.FromToRotation(
+                                                Vector3.up,
+                                                placementHit.normal);
+                                    }
+                                    else
+                                    {
+                                        surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex].GhostPrefab.editorAsset.transform.rotation;
+                                    }
 
                                     var modelCorrection =
                                         Quaternion.Euler(

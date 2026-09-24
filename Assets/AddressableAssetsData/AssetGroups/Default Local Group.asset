@@ -26,7 +26,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 279ce82bd26ea524bb1f097ccc468b83
-    m_Address: Assets/Prefabs/ActorGhosts/Buildings/Plane.prefab
+    m_Address: Assets/Prefabs/ActorGhosts/Buildings/OWW.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
