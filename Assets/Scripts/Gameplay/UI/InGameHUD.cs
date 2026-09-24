@@ -51,6 +51,7 @@ namespace Unity.MP_FPS
             if(m_Hitmarker != null)
             {
                 m_Hitmarker.style.display = DisplayStyle.None;
+                m_Hitmarker.style.scale = new Vector3(2,2,2);
             }
             // Find the UI elements by name
             m_HealthBar = m_RootElement.Q<ProgressBar>("player-health-bar");
