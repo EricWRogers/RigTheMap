@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 279ce82bd26ea524bb1f097ccc468b83
+    m_Address: Assets/Prefabs/ActorGhosts/Buildings/Plane.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
     m_Address: Assets/Prefabs/Ice.prefab
     m_ReadOnly: 0
