@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 601429168938372399}
   - component: {fileID: 5820986122102719646}
   - component: {fileID: 5717669250338867474}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: RightSide
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 714411185201609432}
   - component: {fileID: 5286914469751377877}
   - component: {fileID: 3899528560436614065}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: LeftSide
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 889143733560261256}
   - component: {fileID: 834578673742146785}
   - component: {fileID: 8292279845479200645}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: UpperCover
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 6506811781640650994}
   - component: {fileID: 6411824099589902689}
   - component: {fileID: 2782879955564417442}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: LowerWall
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 5791318674051646618}
   - component: {fileID: 4886173234400952987}
   - component: {fileID: 912297265595641628}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: TrenchBarricade
   m_TagString: Building
   m_Icon: {fileID: 0}
@@ -552,7 +552,7 @@ GameObject:
   - component: {fileID: 8358680476307567753}
   - component: {fileID: 4268102514761178112}
   - component: {fileID: 4415126967527616456}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: Cube
   m_TagString: Building
   m_Icon: {fileID: 0}

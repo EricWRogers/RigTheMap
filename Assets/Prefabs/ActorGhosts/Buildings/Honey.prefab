@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -9111218187313020679}
   - component: {fileID: 7928551277627361216}
   - component: {fileID: 5060505609863316776}
-  m_Layer: 2
+  m_Layer: 1
   m_Name: Honey
   m_TagString: Building
   m_Icon: {fileID: 0}
