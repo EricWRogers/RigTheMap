@@ -98,7 +98,7 @@ namespace Unity.MP_FPS
                 if (_sharkBlindTimer <= 0f)
                 {
                     _sharkBlindTimer = 0f;
-                    Debug.Log("[SHARK BLIND] Effect Finished.");
+                    
                 }
             }
             
@@ -119,7 +119,7 @@ namespace Unity.MP_FPS
             {
                 GameManager.Instance.SoundSystem.CreateEmitter(sharkBlindSFX,transform.position);
             }
-            Debug.Log($"[Shark blind] effect triggere for {sharkBlindDuration} seconds.");
+           
         }
 
         /// <summary>

@@ -736,14 +736,12 @@ public class FirstPersonController : MonoBehaviour
         }
         if (ghostState.LastSharkHitTick > _lastProcessedSharkHitTick)
         {
-            Debug.Log(
-                $"[SHARK BLIND] Shark hit received! Tick: {ghostState.LastSharkHitTick}");
+            
 
             // Only show the shark to the local player who was hit
             if (m_PlayerGhost.Role == MultiplayerRole.ClientOwned)
             {
-                Debug.Log(
-                    "[SHARK BLIND] Showing shark effect on local player.");
+                
 
                 if (m_DamageVisualsController != null)
                 {

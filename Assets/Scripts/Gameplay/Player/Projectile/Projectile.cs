@@ -134,18 +134,14 @@ namespace Unity.MP_FPS
                     weaponData.HomingRange,
                     LayerMask.GetMask("ServerPlayer"),
                     QueryTriggerInteraction.Ignore);
-                Debug.Log(
-                    $"[SHARK SEARCH] Found {possibleTargets.Length} ServerPlayer colliders.");
-
+                
             Transform bestTarget = null;
             int bestTargetNetworkId = -1;
             float bestAngle = weaponData.HomingAngle;
 
             foreach (var targetCollider in possibleTargets)
             {
-                 Debug.Log(
-                    $"[SHARK SEARCH] Candidate: {targetCollider.name} " +
-                    $"Layer={LayerMask.LayerToName(targetCollider.gameObject.layer)}");
+                 
                 if (!GhostGameObject.TryFindGhostGameObject(
                         targetCollider.gameObject,
                         out var targetGhost))
@@ -207,10 +203,7 @@ namespace Unity.MP_FPS
                 _homingTargetNetworkId =
                     bestTargetNetworkId;
 
-                Debug.Log(
-                    $"[Shark Homing] LOCKED onto player " +
-                    $"{bestTargetNetworkId}. " +
-                    $"Angle: {bestAngle:F1}");
+                
             }
             else
             {
@@ -276,11 +269,7 @@ namespace Unity.MP_FPS
             if(weaponData.IsHoming)
             {
                 var projectileData = GhostGameObject.ReadGhostComponentData<ProjectileData>();
-                Debug.Log(
-                    $"[SHARK CLIENT] HasDir={projectileData.HasHomingDirection} " +
-                    $"Dir=({projectileData.HomingDirectionX:F2}, " +
-                    $"{projectileData.HomingDirectionY:F2}, " +
-                    $"{projectileData.HomingDirectionZ:F2})");
+                
 
                 if (projectileData.HasHomingDirection)
                 {
@@ -525,7 +514,7 @@ namespace Unity.MP_FPS
                         if (weaponData.AppliesSharkBlind)
                         {
                             targetPredictedPlayer.ValueRW.LastSharkHitTick = serverCurrentTick;
-                            Debug.Log($"[Shark Blind Server] Set lastsharkhittick on player {targetNetworkId} to {serverCurrentTick}");            
+                                     
                         }
                         if (shooterEntity != Entity.Null &&
                             playerGhostLookup.HasComponent(shooterEntity))
