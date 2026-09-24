@@ -131,6 +131,7 @@ namespace Unity.MP_FPS
                     m_SelectedBuildingLabel.style.display = DisplayStyle.Flex;
                     m_SelectedBuildingLabel.style.color = Color.white;
                     m_SelectedBuildingLabel.style.fontSize = 40;
+                    m_SelectedBuildingLabel.style.translate = new Vector3(-150, 0, 0);
                 }
                 else
                 {
