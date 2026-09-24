@@ -8,6 +8,7 @@ TagManager:
   - Building
   - DeathPlane
   - HealthPack
+  - VW
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - ClientPlayer
   - Ground
   - FirstPersonOverlay
-  - 
+  - Building
   - 
   - 
   - 

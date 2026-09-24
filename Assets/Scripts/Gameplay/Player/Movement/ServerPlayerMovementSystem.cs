@@ -916,9 +916,7 @@ namespace Unity.MP_FPS
                                 int placementMask =
                                     weaponData.PlacementLayerMask.value != 0
                                         ? weaponData.PlacementLayerMask.value
-                                        : LayerMask.GetMask(
-                                            "Ground",
-                                            "Default");
+                                        : LayerMask.GetMask("Default");
 
                                 if (UnityEngine.Physics.Raycast(
                                         eyePosition,
