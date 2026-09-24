@@ -945,7 +945,7 @@ namespace Unity.MP_FPS
                                     }
                                     else
                                     {
-                                        surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex].GhostPrefab.editorAsset.transform.rotation;
+                                        surfaceRotation = GhostSpawner.FindGhostPrefab(weaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
                                     }
 
                                     var modelCorrection =

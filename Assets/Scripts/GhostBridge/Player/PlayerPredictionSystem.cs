@@ -280,7 +280,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         weaponData.PlacementGhostPrefabs.Count - 1);
 
                                         if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "OneWayWall")
-                                            surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex].GhostPrefab.editorAsset.transform.rotation;
+                                            surfaceRotation = GhostSpawner.FindGhostPrefab(weaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
 
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
                                         var placementRotation =

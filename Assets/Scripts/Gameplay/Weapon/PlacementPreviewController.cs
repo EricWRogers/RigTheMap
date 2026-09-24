@@ -170,7 +170,7 @@ public class PlacementPreviewController : MonoBehaviour
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
             if(currentWeaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "OneWayWall")
-                surfaceRotation = currentWeaponData.PlacementGhostPrefabs[selectedIndex].GhostPrefab.editorAsset.transform.rotation;
+                surfaceRotation = GhostSpawner.FindGhostPrefab(currentWeaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
 
             Quaternion rotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 0f);
             // if (gameObject.CompareTag("VW"))
