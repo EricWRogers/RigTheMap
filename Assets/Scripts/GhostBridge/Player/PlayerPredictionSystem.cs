@@ -8,6 +8,8 @@ using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.MP_FPS;
+using Unity.CharacterController;
+using Unity.XR.OpenVR;
 
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
 [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
@@ -279,6 +281,12 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                                 input.PlacementRotationDegrees,
                                                 0f) *
                                             modelCorrection;
+                                        bool VerticalPlacement = placementHit.collider.CompareTag("VW")||placementHit.transform.CompareTag("VW");
+
+                                        if (VerticalPlacement)
+                                        {
+                                            placementRotation = Quaternion.Euler(90f, input.PlacementRotationDegrees, 0f);
+                                        }
 
                                         Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
 
