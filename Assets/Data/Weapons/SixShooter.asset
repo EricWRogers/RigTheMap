@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 600e1b9bafb249d0907133f228c0a442, type: 3}
-  m_Name: SharkGunData
-  m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.WeaponData
-  WeaponName: Shark Gun
-  Type: 1
-  ReticleType: 1
-  CooldownInMs: 2
-  Damage: 25
+  m_Name: SixShooter
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  WeaponName: SixShooter
+  Type: 0
+  ReticleType: 0
+  CooldownInMs: 0.5
+  Damage: 5
   HitscanRange: 100
   IsPlacementWeapon: 0
   PlacementLayerMask:
@@ -29,11 +29,11 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   PlacementOffset: 0.25
-  MagazineSize: 30
-  ReloadTime: 3
+  MagazineSize: 6
+  ReloadTime: 1.25
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: 83a79bf5320972c46ae675e08e77534b
+      m_AssetGUID: 
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -41,14 +41,14 @@ MonoBehaviour:
     <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
-        x: 1605990968
-        y: 1277661219
-        z: 240610982
-        w: 3023402984
+        x: 0
+        y: 0
+        z: 0
+        w: 0
   PlacementGhostPrefabs: []
   ProjectileHitVfxPrefab:
     <GhostPrefab>k__BackingField:
-      m_AssetGUID: c93af8b935d1da7419ae22251a33748c
+      m_AssetGUID: e0aa30b8adee8b44dac442776f34f5e7
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
@@ -56,10 +56,10 @@ MonoBehaviour:
     <AssetName>k__BackingField: 
     m_GhostGuid:
       Value:
-        x: 2609882012
-        y: 1202527571
-        z: 1378019985
-        w: 3360109473
+        x: 2332273166
+        y: 1152970458
+        z: 1998867629
+        w: 2120172534
   MuzzleFlashVfxPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: d5370334ebfc741919094c943fa694ee
@@ -75,17 +75,17 @@ MonoBehaviour:
         z: 1237618833
         w: 3997788915
   WeaponFireSfx: {fileID: 11400000, guid: fc81bfa0b72614d498bbd910628ff6ef, type: 2}
-  WeaponReloadSfx: {fileID: 11400000, guid: 787dd818efa43da4f969b63e44de56b7, type: 2}
+  WeaponReloadSfx: {fileID: 11400000, guid: e371920830b214046bde8a79c9798829, type: 2}
   Behavior: 0
   AoeRadius: 5
-  ProjectileSpeed: 10
-  IsHoming: 1
+  ProjectileSpeed: 30
+  IsHoming: 0
   HomingRange: 30
-  HomingAngle: 30
-  HomingStrength: 120
-  AppliesSharkBlind: 1
+  HomingAngle: 25
+  HomingStrength: 5
+  AppliesSharkBlind: 0
   SharkBlindDuration: 3
   HammerLaunchForce: 12
   HammerImpactRadius: 2
-  HammerDamage: 10
+  HammerDamage: 25
   HammerGroundRange: 3

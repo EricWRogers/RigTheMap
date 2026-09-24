@@ -25,7 +25,7 @@ namespace Unity.MP_FPS
         {
             LoadingData.Instance.UpdateLoading(LoadingData.LoadingSteps.UnloadingWorld);
 
-            var gameplay = SceneManager.GetSceneByName(GameManager.GameSceneName);
+            var gameplay = SceneManager.GetSceneByName("GameScene"); // Jurry rig solution - !!!
             if (gameplay.IsValid() && gameplay != SceneManager.GetActiveScene())
             {
                 var unloadScene = SceneManager.UnloadSceneAsync(gameplay);

@@ -12,6 +12,7 @@ namespace Unity.MP_FPS.Client
             public const string HidingBackground = "HidingBackground";
             public const string NameInputField = "PlayerNameField";
             // public const string ChooseCharacterOption = "ChooseCharacterOption";
+            public const string MapInputField = "MapNameField";
             public const string ConnectionModeOption = "ConnetionModeOption";
             public const string SessionNameLabel = "SessionName";
             public const string SessionInputField = "SessionNameField";
@@ -22,10 +23,11 @@ namespace Unity.MP_FPS.Client
         }
 
         VisualElement m_MainMenu;
-        RadioButtonGroup m_ChosseCharacterGroup;
+        // RadioButtonGroup m_ChosseCharacterGroup;
         RadioButtonGroup m_ConnectionModeGroup;
         Label m_SessionNameLabel;
         TextField m_SessionNameField;
+        TextField m_MapNameField;
         Button m_CreateGameButton;
         Button m_StartHostButton;
         Button m_ConnectToServerButton;
@@ -47,6 +49,14 @@ namespace Unity.MP_FPS.Client
             {
                 dataSource = GameSettings.Instance,
                 dataSourcePath = new PropertyPath(nameof(GameSettings.PlayerName)),
+                bindingMode = BindingMode.TwoWay,
+            });
+
+            var mapInputField = m_MainMenu.Q<TextField>(UIElementNames.MapInputField);
+            mapInputField.SetBinding("value", new DataBinding
+            {
+                dataSource = GameSettings.Instance,
+                dataSourcePath = new PropertyPath(nameof(GameSettings.MapName)),
                 bindingMode = BindingMode.TwoWay,
             });
 

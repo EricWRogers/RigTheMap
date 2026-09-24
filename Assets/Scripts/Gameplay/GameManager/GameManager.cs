@@ -18,7 +18,7 @@ namespace Unity.MP_FPS
 
         public const int MaxPlayer = 32;
         public const string MainMenuSceneName = "MainMenu";
-        public const string GameSceneName = "GameScene";
+        static public string GameSceneName = "GameScene";
         static public GameConnection GameConnection { get; private set; }
 
         Task m_LoadingGame;
@@ -134,6 +134,8 @@ namespace Unity.MP_FPS
         /// </remarks>
         public async void StartGameAsync(CreationType creationType)
         {
+            GameSceneName = GameSettings.Instance.MapName;
+
             if (GameSettings.Instance.GameState != GlobalGameState.MainMenu)
             {
                 Debug.Log("[StartGameAsync] Called but in-game, cannot start while in-game!");

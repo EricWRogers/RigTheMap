@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SpawnPointsSubScene.unity
     guid: 4b2b8f84db1610c4a8bbf1528d4eb489
+  - enabled: 1
+    path: Assets/Scenes/ChloesScene.unity
+    guid: 8763efb00ae35b640a55bf8eebab4c43
+  - enabled: 1
+    path: Assets/Scenes/JoshScene.unity
+    guid: 8136c8417022c954987c6d7f521fdcf1
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 8a359052d73013046af0cccc79347d43, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
