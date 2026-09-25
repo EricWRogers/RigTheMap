@@ -17,6 +17,7 @@ namespace Gameplay.Leaderboard
         public int CurrentRound => _currentRound;
         public float BuildTimer => _buildTimer ;
         private float _buildTimerSyncAccumulator;
+        public bool HealthPackSpawned { get; set; } = false;
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
         public int LastWinningTeamId {get; private set; } = -1;
@@ -37,8 +38,16 @@ namespace Gameplay.Leaderboard
             public float BuildTimer;
         }
 
+        public struct HealthPackSpawnedRpc : IRpcCommand
+        {
+            public bool HealthPackSpawned;
+        }
+
         private int _currentRound = 1;
         private float _buildTimer = 40f;
+
+        [SerializeField] private GhostSpawner.GhostReference m_HealthPackPrefab;
+        [SerializeField] private Transform[] m_HealthPackSpawnPoints;
 
         private bool _initialBuildPhase = true;
 
@@ -183,6 +192,9 @@ namespace Gameplay.Leaderboard
             if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting || roundSkipped)
                 return;
 
+            if (GhostGameObject == null || !GhostGameObject.IsGhostLinked() || !GhostGameObject.World.IsCreated)
+                return;
+
             var entityManager = GhostGameObject.World.EntityManager;
             var query = entityManager.CreateEntityQuery(
                 ComponentType.ReadOnly<JoinedClient>(),
@@ -287,6 +299,8 @@ namespace Gameplay.Leaderboard
                     $"[ROUND] Starting Round {_currentRound}"
                 );
 
+                SpawnHealthPack();
+
                 return;
             }
 
@@ -328,6 +342,48 @@ namespace Gameplay.Leaderboard
             Debug.Log(
                 $"[ROUND] Starting Round {_currentRound}"
             );
+
+            SpawnHealthPack();
+        }
+
+        public void SpawnHealthPack()
+        {
+            if (Role != MultiplayerRole.Server)
+                return;
+
+            if (m_HealthPackPrefab == null || !m_HealthPackPrefab.GhostGuid.IsValid)
+                return;
+
+            if (Unity.GhostBridge.GhostBridgeManager.Instance == null ||
+                !Unity.GhostBridge.GhostBridgeManager.Instance.IsServerListening())
+            {
+                Debug.LogWarning("[LeaderboardManager] Server not listening yet; delaying health pack spawn.");
+                return;
+            }
+
+            Vector3 spawnPos = Vector3.zero;
+            if (m_HealthPackSpawnPoints != null && m_HealthPackSpawnPoints.Length > 0)
+            {
+                spawnPos = m_HealthPackSpawnPoints[Random.Range(0, m_HealthPackSpawnPoints.Length)].position;
+            }
+            else
+            {
+                spawnPos = this.transform.position + Vector3.up * 1.0f;
+            }
+
+            var netGuid = GhostGameObject.GenerateRandomHash();
+
+            var spawned = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos, Quaternion.identity, netGuid);
+            if (!spawned)
+            {
+                Debug.LogError("[LeaderboardManager] Failed to spawn health pack.");
+                return;
+            }
+
+            HealthPackSpawned = true;
+
+            var hpRpc = new HealthPackSpawnedRpc { HealthPackSpawned = true };
+            GhostGameObject.BroadcastRPC(hpRpc);
         }
 
         public void AnnouncePlayerJoined(FixedString64Bytes playerName)
@@ -563,6 +619,12 @@ namespace Gameplay.Leaderboard
             {
                 ActionFeed.Instance.AnnouncePlayerJoined(
                     joinRpc.PlayerName.ToString());
+            }
+
+            while (GhostGameObject.ConsumeRPC(
+                       out HealthPackSpawnedRpc hpRpc))
+            {
+                HealthPackSpawned = hpRpc.HealthPackSpawned;
             }
         }
     }
