@@ -303,11 +303,14 @@ MonoBehaviour:
   <CameraTarget>k__BackingField: {fileID: 1666222585322407308}
   <ReticlePoint>k__BackingField: {fileID: 912756953968078347}
   <ShotOrigin>k__BackingField: {fileID: 6355405324223741531}
-  <VisualShotOrigin1P>k__BackingField: {fileID: 6355405324223741531}
-  <VisualShotOrigin3P>k__BackingField: {fileID: 4183022331907977603}
+  <VisualShotOrigin1P>k__BackingField: {fileID: 0}
+  <VisualShotOrigin3P>k__BackingField: {fileID: 0}
   m_Animator3P: {fileID: 9034346848951870918}
-  m_SharkHitVisual: {fileID: 0}
+  m_SharkHitVisualPrefab: {fileID: 6240727634212577998, guid: 34cad9c948ade134f9c0a5a640464e93, type: 3}
   m_SharkHitVisualDuration: 3
+  m_SharkHitPositionOffset: {x: 0, y: 0, z: 0}
+  m_SharkHitRotationOffset: {x: 0, y: 0, z: 0}
+  m_SharkHitScale: {x: 1, y: 1, z: 1}
   <MainCameraPrefab>k__BackingField: {fileID: 8944336655422409498, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
 --- !u!114 &1290565221828185357
 MonoBehaviour:
@@ -366,37 +369,6 @@ MonoBehaviour:
   minIntensity: 0.4
   maxIntensity: 0.8
   fadeSpeed: 2
---- !u!1 &4590013261805528332
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4183022331907977603}
-  m_Layer: 0
-  m_Name: ShotOrigin3P
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4183022331907977603
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4590013261805528332}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.849, y: 0.512, z: 0.721}
-  m_LocalScale: {x: 2, y: 2, z: 2}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3134608983848910780}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4657941816999191273
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +629,7 @@ Transform:
   m_GameObject: {fileID: 7914790564681447215}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.291, y: -1.354, z: 0.657}
+  m_LocalPosition: {x: 0, y: -0.199, z: 0.9253833}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -750,9 +722,6 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4183022331907977603}
     - targetCorrespondingSourceObject: {fileID: -3333394021457481789, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1289045588336530659}
