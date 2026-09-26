@@ -206,8 +206,14 @@ namespace Unity.MP_FPS
                 teamId = GetTeamForNewPlayer(ref state);
             }
 
+            Entity clientInputEntity;
+
             // Instantiate the client input entity
-            var clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
+            if(lives > 0)
+                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
+            else
+                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientSpectateEntityPrefab);
+
             ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
             
             ecb.SetComponent(connectionEntity, new CommandTarget { targetEntity = clientInputEntity });
@@ -218,9 +224,18 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-            var weaponId = isBuildMode
-                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+            uint weaponId;
+
+            if(lives > 0)
+            {
+                weaponId = isBuildMode
+                    ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                    : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
+                
+            }
+            else
+                weaponId = (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2); // -2 is spectator cam
+
             characterIndex = (int)weaponId;
 
             // Instantiate the player entity for the current round phase.
@@ -233,6 +248,7 @@ namespace Unity.MP_FPS
                 1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
                 2 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
                 3 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
+                4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -248,8 +264,9 @@ namespace Unity.MP_FPS
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
 
             ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
+
             ecb.AddComponent(playerEntity, new PlayerClientCommandInputLookup { ClientCommandInputEntity = clientInputEntity });
-            
+                        
             ecb.SetComponent(playerEntity, new PredictedPlayerGhost
             {
                 InputIndex = 0,
@@ -263,7 +280,7 @@ namespace Unity.MP_FPS
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
+            if (lives > 0 && GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
@@ -291,7 +308,7 @@ namespace Unity.MP_FPS
                     PlayerName = playerName,
                     CharacterIndex = characterIndex,
                     TeamId = teamId,
-                    lives = lives
+                    lives = lives,
                 });
             }
             else
@@ -304,7 +321,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives
+                    lives = joinedClient.lives,
+                    spectator = joinedClient.spectator
                 });
             }
 
@@ -315,6 +333,82 @@ namespace Unity.MP_FPS
                 ecb.AddComponent(connectionEntity, new NetworkStreamInGame());
             }
         }
+
+
+        // private void SpawnSpecCam(
+        //     ref SystemState state,
+        //     EntityCommandBuffer ecb,
+        //     Entity connectionEntity,
+        //     FixedString64Bytes playerName,
+        //     int lives = 3)
+        // { 
+        //     var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
+        //     var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
+
+        //     // Instantiate the client input entity
+        //     var clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
+        //     ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
+            
+        //     ecb.SetComponent(connectionEntity, new CommandTarget { targetEntity = clientInputEntity });
+        //     ecb.AddBuffer<ClientCommandInput>(clientInputEntity);
+        //     ecb.SetComponent(clientInputEntity, new PlayerCommandTarget { NetworkId = ownerNetworkId.Value });
+
+        //     var playerEntity = ecb.Instantiate(playerEntityPrefabs.PlayerSpectateEntityPrefab);
+
+        //     ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
+        //     ecb.AddComponent(playerEntity, new PlayerClientCommandInputLookup { ClientCommandInputEntity = clientInputEntity });
+            
+        //     ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
+        //     ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
+
+            
+        //     ecb.SetComponent(playerEntity, new LocalTransform { Position = Vector3.zero, Rotation = Quaternion.identity, Scale = 1.0f });
+
+        //     ecb.SetComponent(playerEntity, new GhostGameObjectGuid
+        //     {
+        //         Guid = GhostGameObject.GenerateRandomHash()
+        //     });
+        //     ecb.SetComponent(playerEntity, new PlayerGhost.PlayerData { Name = playerName });
+
+        //     // Update the clients map
+        //     var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
+        //     clientsMap.ElementAt(ownerNetworkId.Value).PlayerEntity = playerEntity;
+
+        //     if (!SystemAPI.HasComponent<JoinedClient>(connectionEntity))
+        //     {
+        //         // Update the connection's JoinedClient component with the new player entity
+        //         ecb.AddComponent(connectionEntity, new JoinedClient
+        //         {
+        //             PlayerEntity = playerEntity,
+        //             PlayerName = playerName,
+        //             CharacterIndex = 0,
+        //             TeamId = -2,
+        //             lives = lives,
+        //             spectator = true
+        //         });
+        //     }
+        //     else
+        //     {
+        //         var joinedClient = SystemAPI.GetComponent<JoinedClient>(connectionEntity);
+
+        //         ecb.SetComponent(connectionEntity, new JoinedClient
+        //         {
+        //             PlayerEntity = playerEntity,
+        //             PlayerName = joinedClient.PlayerName,
+        //             CharacterIndex = joinedClient.CharacterIndex,
+        //             TeamId = joinedClient.TeamId,
+        //             lives = joinedClient.lives,
+        //             spectator = true
+        //         });
+        //     }
+
+        //     ecb.AppendToBuffer(connectionEntity, new LinkedEntityGroup { Value = playerEntity });
+
+        //     if (!SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity))
+        //     {
+        //         ecb.AddComponent(connectionEntity, new NetworkStreamInGame());
+        //     }
+        // }
 
         void HandlePlayerDeathAndRespawn(ref SystemState state, EntityCommandBuffer ecb)
         {

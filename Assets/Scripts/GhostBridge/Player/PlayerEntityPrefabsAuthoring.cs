@@ -5,21 +5,25 @@ using UnityEngine;
 public class PlayerEntityPrefabsAuthoring : MonoBehaviour
 {
     [field: SerializeField] public GhostAuthoringComponent ClientInputEntityPrefab { get; private set; }
+    [field: SerializeField] public GhostAuthoringComponent ClientSpectateEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerRifleEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerShotgunEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerSharkEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerHammerEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerBuildEntityPrefab { get; private set; }
+    [field: SerializeField] public GhostAuthoringComponent PlayerSpectateEntityPrefab { get; private set; }
 }
 
 public struct PlayerEntityPrefabs : IComponentData
 {
     public Entity ClientInputEntityPrefab;
+    public Entity ClientSpectateEntityPrefab;
     public Entity PlayerRifleEntityPrefab;
     public Entity PlayerShotgunEntityPrefab;
     public Entity PlayerSharkEntityPrefab;
     public Entity PlayerHammerEntityPrefab;
     public Entity PlayerBuildEntityPrefab;
+    public Entity PlayerSpectateEntityPrefab;
 }
 
 public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
@@ -39,6 +43,9 @@ public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
                 authoring.PlayerRifleEntityPrefab != null ?
                     GetEntity(authoring.PlayerRifleEntityPrefab.gameObject, TransformUsageFlags.None) 
                     : Entity.Null,
+
+            ClientSpectateEntityPrefab = GetEntity(authoring.ClientSpectateEntityPrefab.gameObject, TransformUsageFlags.None),
+
             PlayerShotgunEntityPrefab = 
                 authoring.PlayerShotgunEntityPrefab !=null ? 
                     GetEntity(authoring.PlayerShotgunEntityPrefab.gameObject, TransformUsageFlags.None) 
@@ -60,6 +67,13 @@ public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
                 authoring.PlayerBuildEntityPrefab != null
                     ? GetEntity(
                         authoring.PlayerBuildEntityPrefab.gameObject,
+                        TransformUsageFlags.None)
+                    : Entity.Null,
+
+            PlayerSpectateEntityPrefab =
+                authoring.PlayerSpectateEntityPrefab != null
+                    ? GetEntity(
+                        authoring.PlayerSpectateEntityPrefab.gameObject,
                         TransformUsageFlags.None)
                     : Entity.Null
         });
