@@ -66,17 +66,27 @@ namespace Unity.MP_FPS
         // This is the core of the new solution.
         private void InjectRenderPass(ScriptableRenderContext context, Camera camera)
         {
-            if(_playerGhost == null|| camera != _playerGhost.GetPlayerCamera())
+            if (_playerGhost == null || camera == null)
             {
                 return;
             }
+
+            var playerCamera = _playerGhost.GetPlayerCamera();
+            var isThisPlayerCamera = playerCamera != null ? camera == playerCamera : camera.GetComponentInParent<PlayerGhost>() == _playerGhost;
+
+            if (!isThisPlayerCamera)
+            {
+                return;
+            }
+
             // normal damage effect
             if (_currentIntensity > 0f && _damagePass != null)
             {
                 _damagePass.EnqueuePass(camera);
             }
+
             //shark blind effect
-            if(_sharkBlindTimer > 0f && _sharkPass != null)
+            if (_sharkBlindTimer > 0f && _sharkPass != null)
             {
                 _sharkPass.EnqueuePass(camera);
             }
