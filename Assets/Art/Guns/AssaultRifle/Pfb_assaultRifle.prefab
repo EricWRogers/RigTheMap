@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pfb_assaultRifle
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 620c8f207f9037342bc425f717127f64, type: 3}
+      propertyPath: m_TagString
+      value: Primary
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

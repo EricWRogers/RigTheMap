@@ -740,6 +740,19 @@ namespace Unity.MP_FPS
                             commands[
                                 predictedClient.BeginInputIndex + i];
 
+                        if (input.PlayerInput.SelectSecondary)
+                        {
+                            predictedPlayer.ValueRW.SelectWeapon(
+                                WeaponRegistry.SixShooterWeaponId,
+                                WeaponRegistry.SixShooterWeaponId);
+                        }
+                        else if (input.PlayerInput.SelectPrimary)
+                        {
+                            predictedPlayer.ValueRW.SelectWeapon(
+                                predictedPlayer.ValueRO.PrimaryWeaponID,
+                                WeaponRegistry.SixShooterWeaponId);
+                        }
+
                         if (input.PlayerInput.WeaponScrollDelta != 0)
                         {
                             scrollDelta +=

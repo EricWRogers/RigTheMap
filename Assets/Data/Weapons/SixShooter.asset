@@ -16,7 +16,7 @@ MonoBehaviour:
   Type: 0
   ReticleType: 0
   CooldownInMs: 0.5
-  Damage: 5
+  Damage: 16.666666
   HitscanRange: 100
   IsPlacementWeapon: 0
   PlacementLayerMask:

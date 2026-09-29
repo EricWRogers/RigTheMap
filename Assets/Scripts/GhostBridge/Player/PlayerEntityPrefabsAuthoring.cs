@@ -10,6 +10,7 @@ public class PlayerEntityPrefabsAuthoring : MonoBehaviour
     [field: SerializeField] public GhostAuthoringComponent PlayerShotgunEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerSharkEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerHammerEntityPrefab { get; private set; }
+    [field: SerializeField] public GhostAuthoringComponent PlayerSixShooterEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerBuildEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerSpectateEntityPrefab { get; private set; }
 }
@@ -22,6 +23,7 @@ public struct PlayerEntityPrefabs : IComponentData
     public Entity PlayerShotgunEntityPrefab;
     public Entity PlayerSharkEntityPrefab;
     public Entity PlayerHammerEntityPrefab;
+    public Entity PlayerSixShooterEntityPrefab;
     public Entity PlayerBuildEntityPrefab;
     public Entity PlayerSpectateEntityPrefab;
 }

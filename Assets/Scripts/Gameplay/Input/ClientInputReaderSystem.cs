@@ -11,6 +11,9 @@ public partial class ClientInputReaderSystem : SystemBase
 {
     public static float PlacementRotationDegrees { get; private set; }
 
+    public static event System.Action SelectPrimaryRequested;
+    public static event System.Action SelectSecondaryRequested;
+
     private float2 _accumulatedLook;
     private float _placementRotationDegrees;
 
@@ -117,8 +120,21 @@ public partial class ClientInputReaderSystem : SystemBase
             LeaderboardManager.Instance.roundSkipped = true;
             LeaderboardManager.Instance.SkipRound();
         }
+        if(controls.Player.Previous.WasPressedThisFrame())
+        {
+            playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, true);
+            SelectPrimaryRequested?.Invoke();
+            Debug.Log("Select primary requested");
+        }
+            
+        if(controls.Player.Next.WasPressedThisFrame())
+        {
+            playerInput.SetFlag(PlayerInput.InputFlag.SelectSecondary, true);
+            SelectSecondaryRequested?.Invoke();
+            Debug.Log("Select secondary requested");
+        }
 
-        var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
+    var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
         playerInput.WeaponScrollDelta = scrollValue.y;
 
         if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())

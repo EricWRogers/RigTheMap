@@ -76,9 +76,17 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 138f64fd3a5cc8d46ad707e6a9c154d5, type: 2}
+    - target: {fileID: 7431196452171373437, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
+      propertyPath: m_Name
+      value: Pfb_sixshooter
+      objectReference: {fileID: 0}
     - target: {fileID: 7499315636393335951, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
       propertyPath: m_Name
       value: Pfb_sixshooter
+      objectReference: {fileID: 0}
+    - target: {fileID: 7812401069683704263, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

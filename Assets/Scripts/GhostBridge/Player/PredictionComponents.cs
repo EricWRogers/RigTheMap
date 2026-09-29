@@ -56,6 +56,9 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public float MaxHealth;
 
     [GhostField] public uint EquippedWeaponID;
+    [GhostField] public uint PrimaryWeaponID;
+    [GhostField] public int PrimaryWeaponAmmo;
+    [GhostField] public int SecondaryWeaponAmmo;
     [GhostField] public float WeaponCooldown;
 
     [GhostField] public int SelectedPlacementPrefabIndex;
@@ -79,4 +82,20 @@ public struct PredictedPlayerGhost : IComponentData
 
     [GhostField] public byte BuildItemsUsedMask;
     [GhostField] public int LivesRemaining;
+
+    public void SelectWeapon(uint weaponId, uint secondaryWeaponId)
+    {
+        if (weaponId == EquippedWeaponID)
+            return;
+
+        if (EquippedWeaponID == secondaryWeaponId)
+            SecondaryWeaponAmmo = CurrentAmmo;
+        else
+            PrimaryWeaponAmmo = CurrentAmmo;
+
+        ControllerState.IsReloadingState = false;
+        ReloadTimer = 0f;
+        EquippedWeaponID = weaponId;
+        CurrentAmmo = weaponId == secondaryWeaponId ? SecondaryWeaponAmmo : PrimaryWeaponAmmo;
+    }
 }
