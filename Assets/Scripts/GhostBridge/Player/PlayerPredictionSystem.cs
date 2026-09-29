@@ -10,6 +10,8 @@ using UnityEngine;
 using Unity.MP_FPS;
 using Unity.CharacterController;
 using Unity.XR.OpenVR;
+using UnityEngine.SocialPlatforms.Impl;
+using Gameplay.Leaderboard;
 
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
 [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
@@ -208,7 +210,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                     {
                         predictedPlayer.ValueRW.LocalLookYawPitchDegrees = input.LookYawPitchDegrees;
 
-                        if (input.SelectSecondary)
+                        if (input.SelectSecondary && LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode)
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
                                 WeaponRegistry.SixShooterWeaponId,

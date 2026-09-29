@@ -249,7 +249,7 @@ namespace Unity.MP_FPS
                 1 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
                 2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
                 3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
-                4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
+                //4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);

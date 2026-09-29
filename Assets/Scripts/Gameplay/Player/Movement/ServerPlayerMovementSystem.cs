@@ -740,7 +740,7 @@ namespace Unity.MP_FPS
                             commands[
                                 predictedClient.BeginInputIndex + i];
 
-                        if (input.PlayerInput.SelectSecondary)
+                        if (input.PlayerInput.SelectSecondary && LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode)
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
                                 WeaponRegistry.SixShooterWeaponId,
