@@ -206,8 +206,14 @@ namespace Unity.MP_FPS
                 teamId = GetTeamForNewPlayer(ref state);
             }
 
+            Entity clientInputEntity;
+
             // Instantiate the client input entity
-            var clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
+            if(lives > 0)
+                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
+            else
+                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientSpectateEntityPrefab);
+
             ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
             
             ecb.SetComponent(connectionEntity, new CommandTarget { targetEntity = clientInputEntity });
@@ -218,9 +224,18 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-            var weaponId = isBuildMode
-                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+            uint weaponId;
+
+            if(lives > 0)
+            {
+                weaponId = isBuildMode
+                    ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                    : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
+                
+            }
+            else
+                weaponId = (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2); // -2 is spectator cam
+
             characterIndex = (int)weaponId;
 
             // Instantiate the player entity for the current round phase.
@@ -233,6 +248,8 @@ namespace Unity.MP_FPS
                 1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
                 2 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
                 3 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
+                4 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
+                5 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -246,10 +263,12 @@ namespace Unity.MP_FPS
 
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
+            var secondaryWeaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(WeaponRegistry.SixShooterWeaponId);
 
             ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
+
             ecb.AddComponent(playerEntity, new PlayerClientCommandInputLookup { ClientCommandInputEntity = clientInputEntity });
-            
+                        
             ecb.SetComponent(playerEntity, new PredictedPlayerGhost
             {
                 InputIndex = 0,
@@ -257,13 +276,16 @@ namespace Unity.MP_FPS
                 CurrentHealth = 100f,
                 LivesRemaining = lives,
                 EquippedWeaponID = weaponId,
+                PrimaryWeaponID = weaponId,
+                PrimaryWeaponAmmo = magazineSize,
+                SecondaryWeaponAmmo = secondaryWeaponData != null ? secondaryWeaponData.MagazineSize : 30,
                 CurrentAmmo = magazineSize,
                 SelectedPlacementPrefabIndex = 0
             });
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
+            if (lives > 0 && GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
@@ -291,7 +313,7 @@ namespace Unity.MP_FPS
                     PlayerName = playerName,
                     CharacterIndex = characterIndex,
                     TeamId = teamId,
-                    lives = lives
+                    lives = lives,
                 });
             }
             else
@@ -304,7 +326,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives
+                    lives = joinedClient.lives,
+                    spectator = joinedClient.spectator
                 });
             }
 

@@ -9,6 +9,8 @@ TagManager:
   - DeathPlane
   - HealthPack
   - VW
+  - Primary
+  - Secondary
   layers:
   - Default
   - TransparentFX

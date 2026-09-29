@@ -10,7 +10,9 @@ public struct PlayerInput
         Jump = 1 << 0,
         Shoot = 1 << 1,
         Sprint = 1 << 2,
-        Reload = 1 << 3
+        Reload = 1 << 3,
+        SelectPrimary = 1 << 4,
+        SelectSecondary = 1 << 5
     }
 
     public float2 MoveInput;
@@ -22,6 +24,8 @@ public struct PlayerInput
     public bool Shoot => (InputFlags & (uint)InputFlag.Shoot) != 0;
     public bool Reload => (InputFlags & (uint)InputFlag.Reload) != 0;
     public bool Sprint => (InputFlags & (uint)InputFlag.Sprint) != 0;
+    public bool SelectPrimary => (InputFlags & (uint)InputFlag.SelectPrimary) != 0;
+    public bool SelectSecondary => (InputFlags & (uint)InputFlag.SelectSecondary) != 0;
     
     public float WeaponScrollDelta;
     public float PlacementRotationDegrees;

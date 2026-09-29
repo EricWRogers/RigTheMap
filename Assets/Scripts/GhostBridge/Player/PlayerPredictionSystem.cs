@@ -208,6 +208,19 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                     {
                         predictedPlayer.ValueRW.LocalLookYawPitchDegrees = input.LookYawPitchDegrees;
 
+                        if (input.SelectSecondary)
+                        {
+                            predictedPlayer.ValueRW.SelectWeapon(
+                                WeaponRegistry.SixShooterWeaponId,
+                                WeaponRegistry.SixShooterWeaponId);
+                        }
+                        else if (input.SelectPrimary)
+                        {
+                            predictedPlayer.ValueRW.SelectWeapon(
+                                predictedPlayer.ValueRO.PrimaryWeaponID,
+                                WeaponRegistry.SixShooterWeaponId);
+                        }
+
                         var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(predictedPlayer.ValueRO.EquippedWeaponID);
                         if (weaponData != null)
                         {
