@@ -11,6 +11,7 @@ using Unity.Physics;
 using Random = Unity.Mathematics.Random;
 using Unity.Transforms;
 using Collider = UnityEngine.Collider;
+using UnityEditor.MPE;
 
 namespace Unity.MP_FPS
 {
@@ -472,10 +473,21 @@ namespace Unity.MP_FPS
             {
                 var connectionEntity = rpcReceive.ValueRW.SourceConnection;
 
+                if (request.ValueRO.mapName != GameSettings.Instance.MapName)
+                {
+                    Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
+
+                    ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
+                    ecb.DestroyEntity(entity); // The received join-request RPC
+                    continue;
+                }
+
                 if (SystemAPI.HasComponent<NetworkId>(connectionEntity) &&
                     !SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity) &&
                     claimedConnections.Add(connectionEntity))
                 {
+
+
                     int teamId = greenPlayers <= bluePlayers ? 0 : 1;
 
                     if (teamId == 0)

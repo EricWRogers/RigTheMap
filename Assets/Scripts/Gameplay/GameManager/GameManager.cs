@@ -134,6 +134,8 @@ namespace Unity.MP_FPS
         /// </remarks>
         public async void StartGameAsync(CreationType creationType)
         {
+            await ScenesLoader.UnloadGameplayScenesAsync();
+
             GameSceneName = GameSettings.Instance.MapName;
 
             if (GameSettings.Instance.GameState != GlobalGameState.MainMenu)
