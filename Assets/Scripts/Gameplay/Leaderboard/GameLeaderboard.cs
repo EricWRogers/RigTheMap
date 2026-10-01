@@ -361,28 +361,50 @@ namespace Gameplay.Leaderboard
                 return;
             }
 
-            Vector3 spawnPos = Vector3.zero;
+            Vector3 spawnPos1;
+            Vector3 spawnPos2;
+
             if (m_HealthPackSpawnPoints != null && m_HealthPackSpawnPoints.Length > 0)
             {
-                spawnPos = m_HealthPackSpawnPoints[Random.Range(0, m_HealthPackSpawnPoints.Length)].position;
+                if (m_HealthPackSpawnPoints.Length > 1)
+                {
+                    int idx1 = Random.Range(0, m_HealthPackSpawnPoints.Length);
+                    int idx2 = idx1;
+                    while (idx2 == idx1)
+                        idx2 = Random.Range(0, m_HealthPackSpawnPoints.Length);
+
+                    spawnPos1 = m_HealthPackSpawnPoints[idx1].position;
+                    spawnPos2 = m_HealthPackSpawnPoints[idx2].position;
+                }
+                else
+                {
+                    spawnPos1 = m_HealthPackSpawnPoints[0].position;
+                    spawnPos2 = spawnPos1 + Vector3.right * 1.5f;
+                }
             }
             else
             {
-                spawnPos = this.transform.position + Vector3.up * 1.0f;
+                spawnPos1 = this.transform.position + Vector3.up * 1.0f;
+                spawnPos2 = spawnPos1 + Vector3.right * 1.5f;
             }
 
-            var netGuid = GhostGameObject.GenerateRandomHash();
-
-            var spawned = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos, Quaternion.identity, netGuid);
-            if (!spawned)
+            var netGuid1 = GhostGameObject.GenerateRandomHash();
+            var spawned1 = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos1, Quaternion.identity, netGuid1);
+            if (!spawned1)
             {
-                Debug.LogError("[LeaderboardManager] Failed to spawn health pack.");
-                return;
+                Debug.LogError("[LeaderboardManager] Failed to spawn first health pack.");
             }
 
-            HealthPackSpawned = true;
+            var netGuid2 = GhostGameObject.GenerateRandomHash();
+            var spawned2 = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos2, Quaternion.identity, netGuid2);
+            if (!spawned2)
+            {
+                Debug.LogError("[LeaderboardManager] Failed to spawn second health pack.");
+            }
 
-            var hpRpc = new HealthPackSpawnedRpc { HealthPackSpawned = true };
+            HealthPackSpawned = spawned1 || spawned2;
+
+            var hpRpc = new HealthPackSpawnedRpc { HealthPackSpawned = HealthPackSpawned };
             GhostGameObject.BroadcastRPC(hpRpc);
         }
 

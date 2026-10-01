@@ -53,9 +53,14 @@ public class HealthPack : GhostMonoBehaviour, IUpdateServer
             predicted.CurrentHealth = Mathf.Min(predicted.MaxHealth, predicted.CurrentHealth + m_HealAmount);
             playerGhost.GhostGameObject.WriteGhostComponentData(predicted);
 
-            m_Collected = true;
-            GhostGameObject.DestroyEntity();
-            return;
+            if (predicted.CurrentHealth < predicted.MaxHealth)
+            {
+                m_Collected = true;
+            }
+            if (m_Collected == true)
+            {
+                GhostGameObject.DestroyEntity();
+            }
         }
     }
 
