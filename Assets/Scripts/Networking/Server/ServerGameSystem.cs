@@ -285,12 +285,13 @@ namespace Unity.MP_FPS
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (lives > 0 && GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
+            if (lives > 0 && FindSpawnPoint(ref state, teamId, out var spawnPoint))
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
-            else
+            else if (lives > 0) // Spawn at origin if no spawnPointsFound
             {
+                Debug.LogError("No SpawnPoints found in Scene, spawning at origin");
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = Vector3.zero, Rotation = Quaternion.identity, Scale = 1.0f });
             }
 
