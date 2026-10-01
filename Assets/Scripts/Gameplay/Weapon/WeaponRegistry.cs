@@ -6,7 +6,7 @@ namespace Unity.MP_FPS
     [CreateAssetMenu(fileName = "WeaponRegistry", menuName = "FPS Sample/Weapon Registry")]
     public class WeaponRegistry : ScriptableObject
     {
-        public const uint SixShooterWeaponId = 4;
+        public const uint SixShooterWeaponId = 3;
 
         public List<WeaponData> Weapons;
 

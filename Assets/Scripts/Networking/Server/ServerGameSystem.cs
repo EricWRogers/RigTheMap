@@ -11,6 +11,7 @@ using Unity.Physics;
 using Random = Unity.Mathematics.Random;
 using Unity.Transforms;
 using Collider = UnityEngine.Collider;
+using UnityEditor.MPE;
 
 namespace Unity.MP_FPS
 {
@@ -245,11 +246,11 @@ namespace Unity.MP_FPS
                 : characterIndex switch
             {
                 0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
-                1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
-                2 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
-                3 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
-                4 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
-                5 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
+                // 1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun removed till rework
+                1 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
+                2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
+                3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
+                //4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -285,12 +286,13 @@ namespace Unity.MP_FPS
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
             ecb.SetComponentEnabled<PlayerCharacterInitialized>(playerEntity, false);
 
-            if (lives > 0 && GameSettings.Instance.MapName == "GameScene" && FindSpawnPoint(ref state, teamId, out var spawnPoint)) // Jury Rig solution - !!!
+            if (lives > 0 && FindSpawnPoint(ref state, teamId, out var spawnPoint))
             {
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
-            else
+            else if (lives > 0) // Spawn at origin if no spawnPointsFound
             {
+                Debug.LogError("No SpawnPoints found in Scene, spawning at origin");
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = Vector3.zero, Rotation = Quaternion.identity, Scale = 1.0f });
             }
 
@@ -471,10 +473,21 @@ namespace Unity.MP_FPS
             {
                 var connectionEntity = rpcReceive.ValueRW.SourceConnection;
 
+                if (request.ValueRO.mapName != GameSettings.Instance.MapName)
+                {
+                    Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
+
+                    ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
+                    ecb.DestroyEntity(entity); // The received join-request RPC
+                    continue;
+                }
+
                 if (SystemAPI.HasComponent<NetworkId>(connectionEntity) &&
                     !SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity) &&
                     claimedConnections.Add(connectionEntity))
                 {
+
+
                     int teamId = greenPlayers <= bluePlayers ? 0 : 1;
 
                     if (teamId == 0)

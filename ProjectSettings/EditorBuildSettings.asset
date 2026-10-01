@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/JoshScene.unity
     guid: 8136c8417022c954987c6d7f521fdcf1
+  - enabled: 1
+    path: Assets/Scenes/Farm.unity
+    guid: 0e945b103828e5946a2fbf143289960f
+  - enabled: 1
+    path: Assets/Scenes/CamsScene.unity
+    guid: 9222fdd8f7b2a854e85902d547be2ae0
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 8a359052d73013046af0cccc79347d43, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
