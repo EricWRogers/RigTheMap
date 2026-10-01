@@ -1,5 +1,11 @@
+using System;
+using Unity.Entities;
 using Unity.MP_FPS;
 using UnityEngine;
+using static GhostSpawner;
+
+using Hash128 = Unity.Entities.Hash128;
+
 
 public class HealthPack : GhostMonoBehaviour, IUpdateServer
 {
@@ -47,9 +53,19 @@ public class HealthPack : GhostMonoBehaviour, IUpdateServer
             predicted.CurrentHealth = Mathf.Min(predicted.MaxHealth, predicted.CurrentHealth + m_HealAmount);
             playerGhost.GhostGameObject.WriteGhostComponentData(predicted);
 
-            m_Collected = true;
-            GhostGameObject.DestroyEntity();
-            return;
+            if (predicted.CurrentHealth < predicted.MaxHealth)
+            {
+                m_Collected = true;
+            }
+            if (m_Collected == true)
+            {
+                GhostGameObject.DestroyEntity();
+            }
         }
+    }
+
+    public static bool SpawnGhostPrefab(GhostReference ghostPrefab, Vector3 spawnPos, Quaternion spawnRot, Hash128 netGuid, float uniformScale = 1.0f, Action<Entity, EntityCommandBuffer> postSpawnSpecialisation = null)
+    {
+        return GhostSpawner.SpawnGhostPrefab(ghostPrefab, spawnPos, spawnRot, netGuid, uniformScale, postSpawnSpecialisation);
     }
 }
