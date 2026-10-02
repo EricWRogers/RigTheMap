@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d7c612b75f4414a8208fd381d0fb0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthPack
-  m_HealAmount: 60
+  m_HealAmount: 40
   m_PickupRadius: 0.8
   m_PlayerLayerMask:
     serializedVersion: 2
