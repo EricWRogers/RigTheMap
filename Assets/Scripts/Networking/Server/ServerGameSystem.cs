@@ -11,7 +11,6 @@ using Unity.Physics;
 using Random = Unity.Mathematics.Random;
 using Unity.Transforms;
 using Collider = UnityEngine.Collider;
-using UnityEditor.MPE;
 
 namespace Unity.MP_FPS
 {
