@@ -324,20 +324,22 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     }
 
                                     continue;
-                                }
-
+                                }  
                                 if (weaponData.Type == WeaponType.Hitscan)
                                 {
+                                    Vector3 endPoint;
                                     if (Physics.Raycast(eyePosition, aimDirection, out RaycastHit cosmeticHit,
                                         weaponData.HitscanRange, s_HitscanLayerMask))
                                     {
-                                        Debug.DrawLine(shotOriginPosition, cosmeticHit.point, Color.yellow, 0.3f);
+                                        endPoint = cosmeticHit.point;
+                                        Debug.DrawLine(shotOriginPosition, endPoint, Color.yellow, 0.3f);
                                     }
                                     else
                                     {
-                                        Vector3 endPoint = eyePosition + aimDirection * weaponData.HitscanRange;
+                                        endPoint = eyePosition + aimDirection * weaponData.HitscanRange;
                                         Debug.DrawLine(shotOriginPosition, endPoint, Color.cyan, 0.3f);
                                     }
+                                    VisualEffectManager.ClientInstance.SpawnHitscanTrail(shotOriginPosition, endPoint);
                                 }
                                 else if (weaponData.Type == WeaponType.Projectile)
                                 {

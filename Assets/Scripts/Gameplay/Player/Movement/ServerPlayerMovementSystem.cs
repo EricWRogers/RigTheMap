@@ -888,12 +888,24 @@ namespace Unity.MP_FPS
                             float3 shotOriginPosition =
                                 eyePosition +
                                 aimDirection * 0.5f;
+                            
+                            Vector3 trailEndPoint = 
+                                eyePosition + 
+                                aimDirection * 
+                                weaponData.HitscanRange;
+                            
+                            if(weaponData.Type == WeaponType.Hitscan &&
+                            !weaponData.IsPlacementWeapon &&
+                            UnityEngine.Physics.Raycast(eyePosition, aimDirection, out var trailHit, weaponData.HitscanRange, s_HitscanLayerMask)){
+                            trailEndPoint = trailHit.point;
+                            }
+
 
                             if (VisualEffectManager.ServerInstance != null)
                             {
                                 VisualEffectManager.ServerInstance.Server_RequestVfx(
                                     shooterNetworkId,
-                                    predictedPlayer.ValueRO.EquippedWeaponID);
+                                    predictedPlayer.ValueRO.EquippedWeaponID, shotOriginPosition, trailEndPoint);
                             }
 
                             int selectedIndex =

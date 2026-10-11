@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using Unity.NetCode;
+using System.Net;
 
 namespace Unity.MP_FPS
 {
@@ -9,15 +10,18 @@ namespace Unity.MP_FPS
     {
         public int OwnerNetworkId;
         public uint WeaponId;
+        public Vector3 StartPoint;
+        public Vector3 EndPoint;
     }
 
     public class VisualEffectManager : GhostSingleton<VisualEffectManager>, IUpdateServer, IUpdateClient, IGhostManager
     {
+        [SerializeField] private GameObject hitscanTrailPrefab;
         private Queue<ClientSpawnVfxRpc> _vfxQueue = new();
 
-        public void Server_RequestVfx(int ownerNetworkId, uint weaponId)
+        public void Server_RequestVfx(int ownerNetworkId, uint weaponId, Vector3 startPoint, Vector3 endPoint)
         {
-            _vfxQueue.Enqueue(new ClientSpawnVfxRpc { OwnerNetworkId = ownerNetworkId, WeaponId = weaponId });
+            _vfxQueue.Enqueue(new ClientSpawnVfxRpc { OwnerNetworkId = ownerNetworkId, WeaponId = weaponId, StartPoint = startPoint, EndPoint = endPoint });
         }
 
         public void UpdateServer(float deltaTime)
@@ -62,12 +66,38 @@ namespace Unity.MP_FPS
                         if (player.GhostGameObject.Owner == rpc.OwnerNetworkId)
                         {
                             // Found the remote player. Spawn the effect.
+                            var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(rpc.WeaponId);
+                            if(weaponData != null && weaponData.Type == WeaponType.Hitscan && !weaponData.IsPlacementWeapon)
+                            {
+                                SpawnHitscanTrail(rpc.StartPoint, rpc.EndPoint);
+                            }
+                            
                             SpawnMuzzleFlash(player, rpc.WeaponId, false);
                             break;
                         }
                     }
                 }
             }
+        }
+        public void SpawnHitscanTrail(Vector3 startPoint, Vector3 endPoint)
+        {
+            if(hitscanTrailPrefab == null)
+            {
+                Debug.Log("no hitscan trail in");
+                return;
+            }
+            var trailInstance = Instantiate(hitscanTrailPrefab, startPoint, Quaternion.identity);
+            var lineRenderer = trailInstance.GetComponentInChildren<LineRenderer>();
+            if (lineRenderer == null)
+            {
+                Destroy(trailInstance);
+                return;
+            }
+            lineRenderer.useWorldSpace = true;
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, startPoint);
+            lineRenderer.SetPosition(1, endPoint);
+            trailInstance.AddComponent<DestroyAfterDelay>().Lifetime = 0.1f;
         }
 
         public async void SpawnMuzzleFlash(PlayerGhost player, uint weaponId, bool isFirstPerson)
