@@ -57,11 +57,11 @@ Material:
     - _Random: 0
     - _SmoothMax: 1.02
     - _SmoothMin: 0
-    - _Transparency: 0.31
+    - _Transparency: 0.9
     m_Colors:
     - _MainTiling: {r: 0, g: 0, b: 0, a: 0}
     - _Vector2: {r: 0, g: 0, b: 0, a: 0}
-    - _iceTint: {r: 0, g: 1, b: 0.91878176, a: 1}
-    - _ice_tips: {r: 0, g: 0.95196533, b: 1, a: 1}
+    - _iceTint: {r: 0.69049615, g: 0.6761006, b: 1, a: 1}
+    - _ice_tips: {r: 0.5005339, g: 0.7864462, b: 0.9308176, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

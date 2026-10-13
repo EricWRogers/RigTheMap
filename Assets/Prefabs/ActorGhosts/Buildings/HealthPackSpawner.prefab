@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8082609122576819278}
   m_Layer: 0
   m_Name: HealthPackSpawner
-  m_TagString: Untagged
+  m_TagString: HealthPack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,11 +162,11 @@ MonoBehaviour:
   GhostGroup: 0
   UsePreSerialization: 0
   UseSingleBaseline: 0
-  RollbackPredictedSpawnedGhostState: 0
+  RollbackPredictedSpawnedGhostState: 1
   RollbackPredictionOnStructuralChanges: 1
   DefaultGhostMode: 0
   SupportedGhostModes: 3
   OptimizationMode: 0
-  Importance: 1
+  Importance: 40
   MaxSendRate: 0
-  prefabId: 
+  prefabId: 55aca060ce02f08448e041ace3f96dcb
