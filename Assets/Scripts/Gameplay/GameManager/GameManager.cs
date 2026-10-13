@@ -25,6 +25,11 @@ namespace Unity.MP_FPS
         CancellationTokenSource m_LoadingGameCancel;
         Task m_LoadingMainMenu;
         CancellationTokenSource m_LoadingMainMenuCancel;
+        World m_LobbyServerWorld;
+        World m_LobbyClientWorld;
+        CancellationToken m_LobbyCancellationToken;
+
+        public bool IsLobbyHost { get; private set;}
 
         public UnityEngine.Audio.AudioMixer AudioMixer;
         public int MaxSoundEmitters;
@@ -210,13 +215,12 @@ namespace Unity.MP_FPS
                 m_LoadingGameCancel = null;
             }
 
-            FinishLoadingGame();
+            //FinishLoadingGame();
         }
 
         void BeginEnteringGame()
         {
-            GameSettings.Instance.GameState = GlobalGameState.Loading;
-            LoadingData.Instance.UpdateLoading(LoadingData.LoadingSteps.StartLoading);
+            GameSettings.Instance.GameState = GlobalGameState.Lobby;
         }
 
         async Task StartGameAsync(CreationType creationType, CancellationToken cancellationToken)
@@ -289,23 +293,37 @@ namespace Unity.MP_FPS
                 GhostBridgeManager.Instance.SetServerNetworkStreamDriver(serverDriver);
 
                 serverDriver.Listen(GameConnection.ListenEndpoint);
-                await ScenesLoader.LoadGameplayAsync(server, null);
+                
             }
 
             //The the client world was created, connect to the server
+            //won't load gameplay
+           
             if (client != null)
             {
                 ConnectionSettings.Instance.ConnectionEndpoint = GameConnection.ConnectEndpoint;
                 await WaitForPlayerConnectionAsync(cancellationToken);
-                await ScenesLoader.LoadGameplayAsync(null, client);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (client != null)
-            {
-                await WaitForGhostReplicationAsync(client, cancellationToken);
-            }
+            await ScenesLoader.LoadGameplayAsync(server, client);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            m_LobbyServerWorld = server;
+            m_LobbyClientWorld = client;
+            m_LobbyCancellationToken = cancellationToken;
+
+            IsLobbyHost = server != null;
+
+            Debug.Log($"[Lobby] Connected. Host={IsLobbyHost}" + $"ServerWorld={server != null} ClientWorld={client != null}");
+
+            GameSettings.Instance.GameState = GlobalGameState.Lobby;
+            
         }
 
         /// <summary>
@@ -419,6 +437,16 @@ namespace Unity.MP_FPS
         {
             LoadingData.Instance.UpdateLoading(LoadingData.LoadingSteps.LoadingDone);
             GameSettings.Instance.GameState = GlobalGameState.InGame;
+        }
+
+        public void EnterGameplayFromLobby()
+        {
+            if (GameSettings.Instance.GameState != GlobalGameState.Lobby)
+                return;
+
+            Debug.Log("[Lobby]Entering gameplay");
+
+            FinishLoadingGame();
         }
 
         /// <summary>
