@@ -20,6 +20,7 @@ namespace Unity.MP_FPS
     {
         public void OnCreate(ref SystemState state)
         {
+            UnityEngine.Debug.Log("[GAME CLIENT] ClientGameSystem created.");
             state.RequireForUpdate<PlayerEntityPrefabs>();
 
             var randomSeed = (uint)DateTime.Now.Millisecond;
@@ -36,12 +37,20 @@ namespace Unity.MP_FPS
             {
                 state.EntityManager.DestroyEntity(SystemAPI.GetSingletonEntity<DisableCharacterDynamicContacts>());
             }
+            UnityEngine.Debug.Log("[GAME CLIENT] OnUpdate running.");
 
             HandleSendJoinRequest(ref state);
         }
 
         void HandleSendJoinRequest(ref SystemState state)
         {
+            //dont spawn gameplay characters whil waiting in lobby
+            if (!state.WorldUnmanaged.IsThinClient() && GameSettings.Instance.GameState != GlobalGameState.InGame)
+            {
+                return;
+            }
+            UnityEngine.Debug.Log("[GAME CLIENT] Passed lobby check. Attempting gameplay join.");
+            
             if (!SystemAPI.TryGetSingletonEntity<NetworkId>(out var clientEntity)
                 || SystemAPI.HasComponent<NetworkStreamInGame>(clientEntity))
             {

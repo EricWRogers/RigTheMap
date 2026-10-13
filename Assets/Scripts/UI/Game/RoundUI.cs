@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using Gameplay.Leaderboard;
+using Unity.MP_FPS;
 
 public class RoundUI : MonoBehaviour
 {
@@ -9,6 +10,17 @@ public class RoundUI : MonoBehaviour
 
     private void Update()
     {
+        //hide round ui until in game
+        if (GameSettings.Instance == null || GameSettings.Instance.GameState != GlobalGameState.InGame)
+        {
+            if (roundText != null)
+                roundText.text = string.Empty;
+
+            if (roundWinner != null)
+                roundWinner.text = string.Empty;
+
+            return;
+        }
         if (LeaderboardManager.Instance == null)
             return;
 
