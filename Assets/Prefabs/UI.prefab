@@ -68,6 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fea4d95466241388ad16eb75d676c5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InGameHUD
+  reticleBaseSize: 80
 --- !u!1 &320253217878538870
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,6 +690,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.UI.LeaderboardUi
   ScoreItemTemplate: {fileID: 9197481963319205126, guid: 146f42ccefdda1a4cb3c28beaf0d2d24, type: 3}
+  leaderBoard:
+    m_Name: Leader Board
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 48b6dde6-d817-4775-a916-911dd522bd2e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+    m_Priority: 0
 --- !u!1 &5169997198457494746
 GameObject:
   m_ObjectHideFlags: 0
