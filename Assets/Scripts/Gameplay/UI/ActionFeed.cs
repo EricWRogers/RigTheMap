@@ -25,9 +25,11 @@ namespace Unity.MP_FPS.UI
 
         private VisualElement _rootElement;
         private VisualElement _actionFeedContainer;
+        private VisualElement _inGameHudContainer;
         private Label _roundStatus;
         private Label _teamStatus;
         private Label _matchWinner;
+        
 
         private void Awake()
         {
@@ -48,6 +50,7 @@ namespace Unity.MP_FPS.UI
                 Debug.LogError("KillFeedUI: Could not find root VisualElement.");
                 return;
             }
+            _inGameHudContainer = _rootElement.Q<VisualElement>("InGameHudContainer");
 
             _actionFeedContainer = _rootElement.Q<VisualElement>(KillFeedContainerName);
             _roundStatus = _rootElement.Q<Label>(RoundStatusName);
@@ -80,6 +83,17 @@ namespace Unity.MP_FPS.UI
         }
 
         private void Update() {
+
+            bool isInGame = GameSettings.Instance.GameState == GlobalGameState.InGame;
+
+            if (_inGameHudContainer != null)
+            {
+                _inGameHudContainer.style.display = isInGame ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            //prevents game play ui from running in lobby
+            if (!isInGame)
+                return;
+
             if (LeaderboardManager.Instance == null) 
                return;
 

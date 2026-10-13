@@ -20,6 +20,7 @@ namespace Gameplay.Leaderboard
         public bool HealthPackSpawned { get; set; } = false;
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
+        private bool _hasInvokedInitialBuildMode = false;
         public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
@@ -41,6 +42,13 @@ namespace Gameplay.Leaderboard
         public struct HealthPackSpawnedRpc : IRpcCommand
         {
             public bool HealthPackSpawned;
+        }
+
+        public struct BuyBuildItemRpc : IRpcCommand
+        {
+            public int NetworkId;
+            public int BuildItemId;
+            public int Cost;
         }
 
         private int _currentRound = 1;
@@ -107,6 +115,8 @@ namespace Gameplay.Leaderboard
             [GhostField] public FixedString64Bytes PlayerName;
             [GhostField] public int Kills;
             [GhostField] public int Deaths;
+            [GhostField] public int Assists; //track the assists
+            [GhostField] public int BuildPoints;//track the total build points the player can use during the build phase
         }
 
         private void Awake()
@@ -179,6 +189,7 @@ namespace Gameplay.Leaderboard
                 {
                     var entry = buffer[i];
                     entry.Kills++;
+                    entry.BuildPoints += 6; // Award build points for kills
                     buffer[i] = entry;
                     break;
                 }
@@ -443,6 +454,7 @@ namespace Gameplay.Leaderboard
                 {
                     var entry = buffer[i];
                     entry.Deaths++;
+                    entry.BuildPoints += 3; // Award build points for deaths
                     buffer[i] = entry;
                     return;
                 }
@@ -465,6 +477,44 @@ namespace Gameplay.Leaderboard
             }
 
             return scores;
+        }
+
+        public void RequestBuyBuildItem(int networkId, int buildItemId, int cost)
+        {
+            if (Role != MultiplayerRole.Server) return;
+            if (_roundPhase != RoundPhase.BuildMode)
+            {
+                Debug.LogWarning("[LeaderboardManager] Cannot purchase build items outside of Build Mode.");
+                return;
+            }
+
+            var buffer = GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                if (buffer[i].NetworkId == networkId)
+                {
+                    var entry = buffer[i];
+                    if (entry.BuildPoints >= cost) //This checks if the player has enough build points to purchase the item
+                    {
+                        // Deduct the cost from the player's build points
+                        entry.BuildPoints -= cost;
+                        buffer[i] = entry;
+
+                        // Broadcast the purchase to all clients
+                        var purchaseRpc = new BuyBuildItemRpc
+                        {
+                            NetworkId = networkId,
+                            BuildItemId = buildItemId,
+                            Cost = cost
+                        };
+                        GhostGameObject.BroadcastRPC(purchaseRpc);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[LeaderboardManager] Player {networkId} does not have enough build points to purchase item {buildItemId}.");
+                    }
+                    return;}
+            }
         }
 
         public void UpdateServer(float deltaTime)
@@ -532,7 +582,8 @@ namespace Gameplay.Leaderboard
                             NetworkId = networkId,
                             PlayerName = playerName,
                             Kills = 0,
-                            Deaths = 0
+                            Deaths = 0,
+                            BuildPoints = 10 //start with 10 for first build phase 
                         });
 
                     Debug.Log(
@@ -603,6 +654,12 @@ namespace Gameplay.Leaderboard
             if (!GhostGameObject.IsGhostLinked())
                 return;
 
+            if (_roundPhase == RoundPhase.BuildMode && !_hasInvokedInitialBuildMode)
+            {
+                _hasInvokedInitialBuildMode = true;
+                BuildModeChanged?.Invoke(true);
+            }
+
             while (GhostGameObject.ConsumeRPC(out BuildTimerRpc timerRpc))
             {
                 _buildTimer = timerRpc.BuildTimer;
@@ -641,6 +698,13 @@ namespace Gameplay.Leaderboard
             {
                 ActionFeed.Instance.AnnouncePlayerJoined(
                     joinRpc.PlayerName.ToString());
+            }
+
+            while (GhostGameObject.ConsumeRPC(
+                       out BuyBuildItemRpc purchaseRpc))
+            {
+                //send a message to the action feed that the player bought an itme.
+                Debug.Log($"[Client] Player {purchaseRpc.NetworkId} purchased build item {purchaseRpc.BuildItemId} for {purchaseRpc.Cost} build points.");
             }
 
             while (GhostGameObject.ConsumeRPC(

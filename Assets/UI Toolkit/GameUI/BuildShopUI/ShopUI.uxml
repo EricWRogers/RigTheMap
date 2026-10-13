@@ -1,0 +1,5 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/GameUI/BuildShopUI/shopGrid.uss?fileID=7433441132597879392&amp;guid=b4371392ce71cec44a0deb39cfd4f6f6&amp;type=3#shopGrid"/>
+    <ui:Label text="Points:" name="points-label"/>
+    <ui:ListView name="shop-items-list" show-border="false" style="height: 337px; width: 538px;"/>
+</ui:UXML>
