@@ -412,7 +412,10 @@ public class FirstPersonController : MonoBehaviour
         {
             var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
 
-            ghost.CurrentHealth -= 10;// one hp
+
+            ghost.CurrentHealth -= 1f;
+            
+            
 
             m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
             // Vector3 knockback = groundNormal.normalized;
