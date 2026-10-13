@@ -1,3 +1,9 @@
 :root {
-
+    bottom: 0;
+    left: auto;
+    top: auto;
+    right: auto;
+    position: relative;
+    align-content: center;
+    transform-origin: center;
 }
