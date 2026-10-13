@@ -42,19 +42,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Crack_Scale: 18
-    - _Crack_Strength: 0.7
-    - _Metallic: 0
-    - _Noise_Scale: 5
+    - _Crack_Scale: 15.73
+    - _Crack_Strength: 0.06
+    - _Metallic: 0.52
+    - _Noise_Scale: -3.9
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Rim_Strength: 1.5
-    - _Smoothness: 0.85
-    - _Transparency: 1
+    - _Rim_Strength: 3.4
+    - _Smoothness: 1.1
+    - _Transparency: 1.01
     m_Colors:
     - _Crack_Color: {r: 0.39943027, g: 0.8301887, b: 0.8301887, a: 1}
     - _Dark_Ice: {r: 0.36470586, g: 0.7254902, b: 0.9098039, a: 1}
-    - _Ice_color: {r: 0.7411765, g: 0.9215686, b: 1, a: 1}
+    - _Ice_color: {r: 0.76415086, g: 0.9288984, b: 1, a: 1}
     - _Rim_Color: {r: 0.4927613, g: 0.9496855, b: 0.9257229, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

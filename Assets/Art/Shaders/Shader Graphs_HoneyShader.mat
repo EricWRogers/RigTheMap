@@ -52,10 +52,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _Float: 0
-    - _Occlusion_Strength: 1
+    - _Occlusion_Strength: 33.9
+    - _Power: 7.3
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _intersection: 1
+    - _cells: 216.7
+    - _height: 2.02
+    - _intersection: 74.8
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1
