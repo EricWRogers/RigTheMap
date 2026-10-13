@@ -9,6 +9,7 @@ namespace Unity.MP_FPS
     public enum GlobalGameState
     {
         MainMenu,
+        Lobby,
         InGame,
         Loading,
     }
@@ -72,6 +73,7 @@ namespace Unity.MP_FPS
                 m_GameState = value;
 
                 Notify(MainMenuStylePropertyName);
+                Notify(LobbyStylePropertyName);
                 Notify(LoadingScreenStylePropertyName);
                 Notify(InGameUIPropertyName);
             }
@@ -116,6 +118,9 @@ namespace Unity.MP_FPS
                                       MainMenuState == MainMenuState.MainMenuScreen ? 
                                       DisplayStyle.Flex : DisplayStyle.None;
 
+        public static readonly string LobbyStylePropertyName = nameof(LobbyStyle);
+        [CreateProperty]
+        DisplayStyle LobbyStyle => m_GameState == GlobalGameState.Lobby ? DisplayStyle.Flex : DisplayStyle.None;
         public static readonly string JoinSessionStylePropertyName = nameof(JoinSessionStyle);
         [CreateProperty]
         DisplayStyle JoinSessionStyle => m_GameState == GlobalGameState.MainMenu && 

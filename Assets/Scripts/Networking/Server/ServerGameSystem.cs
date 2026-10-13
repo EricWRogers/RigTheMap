@@ -90,7 +90,7 @@ namespace Unity.MP_FPS
                     {
                         clientsMap.Resize(lengthNeeded, NativeArrayOptions.ClearMemory);
                     }
-
+                    Debug.Log($"[ClientsMap] Connected ID={evt.Id.Value}, buffer length={clientsMap.Length}");
                     clientsMap.ElementAt(evt.Id.Value).ConnectionEntity = evt.ConnectionEntity;
                 }
 
@@ -303,6 +303,15 @@ namespace Unity.MP_FPS
 
             // Update the clients map
             var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
+
+            int requiredLength = ownerNetworkId.Value + 1;
+
+            if (clientsMap.Length < requiredLength)
+            {
+                clientsMap.Resize(requiredLength, NativeArrayOptions.ClearMemory);
+            }
+
+            clientsMap.ElementAt(ownerNetworkId.Value).ConnectionEntity = connectionEntity;
             clientsMap.ElementAt(ownerNetworkId.Value).PlayerEntity = playerEntity;
 
             if (!SystemAPI.HasComponent<JoinedClient>(connectionEntity))
