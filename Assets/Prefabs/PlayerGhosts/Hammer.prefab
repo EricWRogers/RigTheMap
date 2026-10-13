@@ -477,6 +477,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: toy_hammer
       objectReference: {fileID: 0}
+    - target: {fileID: -6689036041284674117, guid: 8a3bd1cfd9b800c48b1f9115cb22872d, type: 3}
+      propertyPath: m_TagString
+      value: Primary
+      objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 8a3bd1cfd9b800c48b1f9115cb22872d, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.001
@@ -554,6 +558,10 @@ PrefabInstance:
     - target: {fileID: -6689036041284674117, guid: 8a3bd1cfd9b800c48b1f9115cb22872d, type: 3}
       propertyPath: m_Name
       value: toy_hammer
+      objectReference: {fileID: 0}
+    - target: {fileID: -6689036041284674117, guid: 8a3bd1cfd9b800c48b1f9115cb22872d, type: 3}
+      propertyPath: m_TagString
+      value: Primary
       objectReference: {fileID: 0}
     - target: {fileID: 2774220344278030320, guid: 8a3bd1cfd9b800c48b1f9115cb22872d, type: 3}
       propertyPath: m_LocalScale.x
