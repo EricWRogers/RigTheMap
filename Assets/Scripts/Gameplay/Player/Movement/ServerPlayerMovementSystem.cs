@@ -959,7 +959,7 @@ namespace Unity.MP_FPS
 
                                     Quaternion surfaceRotation;
 
-                                    if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "OneWayWall") // Jury Rig solution - !!!
+                                    if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "OneWayWall" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Ice" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Honey" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Spike-Trap") // Jury Rig solution - !!!
                                     {
                                         surfaceRotation =
                                             Quaternion.FromToRotation(
