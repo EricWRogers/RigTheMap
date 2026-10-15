@@ -141,7 +141,7 @@ namespace Unity.MP_FPS.Client
 
         void Start()
         {
-
+            QualitySettings.vSyncCount = 1;
         }
 
         static void OnCreateGamePressed() => GameManager.Instance.StartGameAsync(CreationType.CreateOrJoin);
