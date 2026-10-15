@@ -53,7 +53,7 @@ namespace Unity.MP_FPS.Client
 
                 playerLabel.AddToClassList("lobby-player");
 
-                playerLabel.style.fontSize = 24;
+                playerLabel.style.fontSize = 40;
                 playerLabel.style.marginTop = 8;
                 playerLabel.style.color = Color.white;
 
