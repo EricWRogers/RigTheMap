@@ -39,6 +39,7 @@ public class GhostSpawner : MonoBehaviour
     {
         [field: SerializeField] public AssetReferenceGameObject GhostPrefab { get; set; }
         [field: SerializeField] public string AssetName {get; set;}
+        [field: SerializeField] public bool RotatesToSurface {get; set;}
 
         public Hash128 GhostGuid => m_GhostGuid;
         [SerializeField] [HideInInspector] private Hash128 m_GhostGuid;

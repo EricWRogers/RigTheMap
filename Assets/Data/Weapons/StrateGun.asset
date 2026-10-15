@@ -39,6 +39,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 0
@@ -53,6 +54,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: Ice
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 2795305235
@@ -66,6 +68,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Tower
+    <RotatesToSurface>k__BackingField: 1
     m_GhostGuid:
       Value:
         x: 2118496370
@@ -79,6 +82,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: Honey
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 918824684
@@ -92,6 +96,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Barricade
+    <RotatesToSurface>k__BackingField: 1
     m_GhostGuid:
       Value:
         x: 385874618
@@ -105,6 +110,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Jump-Pad
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 2542059602
@@ -118,6 +124,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Spike-Trap
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 153424862
@@ -131,19 +138,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: HealthPack
-    m_GhostGuid:
-      Value:
-        x: 2163940605
-        y: 1180163857
-        z: 731388092
-        w: 688682797
-  - <GhostPrefab>k__BackingField:
-      m_AssetGUID: dfc1bf0811fd7564cb8189b2d277c092
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    <AssetName>k__BackingField: HealthPack
+    <RotatesToSurface>k__BackingField: 1
     m_GhostGuid:
       Value:
         x: 2163940605
@@ -157,6 +152,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: OneWayWall
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 2995702130
@@ -171,6 +167,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 2332273166
@@ -185,6 +182,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 0

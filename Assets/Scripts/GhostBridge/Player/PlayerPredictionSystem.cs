@@ -294,7 +294,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         0,
                                         weaponData.PlacementGhostPrefabs.Count - 1);
 
-                                        if(weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "OneWayWall" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Ice" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Honey" && weaponData.PlacementGhostPrefabs[selectedIndex].AssetName != "Spike-Trap") // jury rig solution
+                                        if(!weaponData.PlacementGhostPrefabs[selectedIndex].RotatesToSurface) // jury rig solution
                                             surfaceRotation = GhostSpawner.FindGhostPrefab(weaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
 
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);

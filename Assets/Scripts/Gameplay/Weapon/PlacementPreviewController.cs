@@ -169,7 +169,7 @@ public class PlacementPreviewController : MonoBehaviour
             Vector3 position = hit.point + hit.normal * currentWeaponData.PlacementOffset;
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            if(currentWeaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "OneWayWall" || currentWeaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "Ice" || currentWeaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "Honey" || currentWeaponData.PlacementGhostPrefabs[selectedIndex].AssetName == "Spike-Trap") // extremely Jury rig
+            if(!currentWeaponData.PlacementGhostPrefabs[selectedIndex].RotatesToSurface) // extremely Jury rig
                 surfaceRotation = GhostSpawner.FindGhostPrefab(currentWeaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
 
             Quaternion rotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 0f);
