@@ -20,6 +20,7 @@ namespace Unity.MP_FPS.Client
             public const string StartHost = "StartHost";
             public const string ConnectToServer = "ConnectToServer";
             public const string QuitGame = "QuitButton";
+            public const string SurveyButton = "SurveyButton";
         }
 
         VisualElement m_MainMenu;
@@ -32,6 +33,7 @@ namespace Unity.MP_FPS.Client
         Button m_StartHostButton;
         Button m_ConnectToServerButton;
         Button m_QuitButton;
+        Button m_SurveyButton;
 
         void OnEnable()
         {
@@ -98,6 +100,9 @@ namespace Unity.MP_FPS.Client
             m_QuitButton = m_MainMenu.Q<Button>(UIElementNames.QuitGame);
             m_QuitButton.clicked += OnQuitPressed;
 
+            m_SurveyButton = m_MainMenu.Q<Button>(UIElementNames.SurveyButton);
+            m_SurveyButton.clicked += OnSurveyPressed;
+
             var hidingBackground = m_MainMenu.Q<VisualElement>(UIElementNames.HidingBackground);
             hidingBackground.SetBinding("style.display", new DataBinding
             {
@@ -115,6 +120,7 @@ namespace Unity.MP_FPS.Client
             m_ConnectionModeGroup.UnregisterValueChangedCallback(OnConnectionModeChanged);
             m_ConnectToServerButton.clicked -= OnConnectToServerPressed;
             m_QuitButton.clicked -= OnQuitPressed;
+            m_SurveyButton.clicked -= OnSurveyPressed;
         }
 
         void OnConnectionModeChanged(ChangeEvent<int> evt)
@@ -151,5 +157,10 @@ namespace Unity.MP_FPS.Client
         static void OnConnectToServerPressed() => GameManager.Instance.StartGameAsync(CreationType.ConnectAndJoin);
 
         static void OnQuitPressed() => GameManager.Instance.QuitAsync();
+
+        static void OnSurveyPressed()
+        {
+            Application.OpenURL("https://forms.gle/fATHHYG63Cs5Knuo9");
+        }
     }
 }

@@ -23,7 +23,9 @@
                     <ui:Button text="Connect to Server" name="ConnectToServer" tabindex="4" selectable="true" />
                     <ui:Button text="Matchmake" name="QuickJoin" tabindex="5" enabled="true" class="section-separator hidden" style="display: none;" />
                     <ui:VisualElement name="Seperator" style="flex-grow: 1; height: 16px;" />
-                    <ui:Button text="Quit" name="QuitButton" tabindex="6" />
+                    <ui:Button text="Respond to our survey!" name="SurveyButton" tabindex="6" />
+                    <ui:VisualElement name="Seperator" style="flex-grow: 1; height: 16px;" />
+                    <ui:Button text="Quit" name="QuitButton" tabindex="7" />
                     </ui:VisualElement>
                     <ui:VisualElement name="InstructionsPanel" class="instructions-panel">
                     <ui:Label text="Instructions" class="instructions-title" />
