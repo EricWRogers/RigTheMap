@@ -20,6 +20,7 @@ namespace Unity.MP_FPS
         private Label m_ReloadingLabel;
         private Label m_SelectedBuildingLabel;
         private Label m_LivesLabel;
+        private Label m_BuildingsRemainingLabel;
         private VisualElement m_Reticle;
         private VisualElement m_Hitmarker;
 
@@ -66,6 +67,7 @@ namespace Unity.MP_FPS
             m_Reticle = m_RootElement.Q<VisualElement>("player-reticle");
             m_SelectedBuildingLabel = m_RootElement.Q<Label>("selected-building-label");
             m_LivesLabel = m_RootElement.Q<Label>("lives-remaining-label");
+            m_BuildingsRemainingLabel = m_RootElement.Q<Label>("buildings-remaining-label");
         }
 
         private void InitializeEcs()
@@ -195,6 +197,18 @@ namespace Unity.MP_FPS
                 m_LivesLabel.style.fontSize = 40;
                 m_LivesLabel.style.color = Color.white;
                 m_LivesLabel.style.display = DisplayStyle.Flex;
+            }
+            if (m_BuildingsRemainingLabel != null)
+            {
+                int buildingsRemaining = Mathf.Max(0, 3 - playerData.BuildPlacementsUsed);
+
+                m_BuildingsRemainingLabel.text = $"Buildings Remaining: {buildingsRemaining} / 3";
+                m_BuildingsRemainingLabel.style.color = Color.white;
+                m_BuildingsRemainingLabel.style.display =
+                    weaponData != null && weaponData.IsPlacementWeapon
+                        && GameSettings.Instance.GameState == GlobalGameState.InGame
+                        ? DisplayStyle.Flex
+                        : DisplayStyle.None;
             }
 
             // Update Reticle
