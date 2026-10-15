@@ -24,8 +24,23 @@
                     <ui:Button text="Matchmake" name="QuickJoin" tabindex="5" enabled="true" class="section-separator hidden" style="display: none;" />
                     <ui:VisualElement name="Seperator" style="flex-grow: 1; height: 16px;" />
                     <ui:Button text="Quit" name="QuitButton" tabindex="6" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="InstructionsPanel" class="instructions-panel">
+                    <ui:Label text="Instructions" class="instructions-title" />
+                    <ui:Label text="Creating a Session" class="instructions-heading" />
+                    <ui:Label text="Select Relay under Connection Mode." class="instructions-text" />
+                    <ui:Label text="Enter a name in Session Name, then share it with your friends." class="instructions-text" />
+                    <ui:Label text="Mark yourself as Ready." class="instructions-text" />
+                    <ui:Label text="Start the match once everyone is Ready." class="instructions-text" />
+                    <ui:Label text="Joining a Session" class="instructions-heading" />
+                    <ui:Label text="Select Relay under Connection Mode." class="instructions-text" />
+                    <ui:Label text="Enter the name of the Session." class="instructions-text" />
+                    <ui:Label text="Hit Join to enter the Lobby." class="instructions-text" />
+                    <ui:Label text="Mark yourself as ready." class="instructions-text" />
+                    <ui:Label text="Wait for the Host to start the game." class="instructions-text" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
+
