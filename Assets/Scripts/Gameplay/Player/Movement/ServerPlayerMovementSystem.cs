@@ -782,6 +782,7 @@ namespace Unity.MP_FPS
                             int currentIndex =
                                 predictedPlayer.ValueRO.SelectedPlacementPrefabIndex;
                             
+                            
                             if (currentIndex < 0 ||
                                currentIndex >= prefabCount)
                             {

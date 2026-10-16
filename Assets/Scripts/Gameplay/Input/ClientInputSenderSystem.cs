@@ -41,6 +41,7 @@ public partial class ClientInputSenderSystem : SystemBase
 
                     commandInput.SetFrom(in input.ValueRO);
                     commandInput.UpdateFrom(inProgressCommandInput);
+                    commandInput.PlayerInput.WeaponScrollDelta = input.ValueRO.PlayerInput.WeaponScrollDelta;
                     buffer.AddCommandData(commandInput);
 
                     // we can now start a new inprogress input

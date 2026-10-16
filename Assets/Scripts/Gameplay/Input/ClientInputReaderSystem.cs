@@ -134,9 +134,10 @@ public partial class ClientInputReaderSystem : SystemBase
             Debug.Log("Select secondary requested");
         }
 
-    var scrollValue = controls.UI.ScrollWheel.ReadValue<Vector2>();
-        playerInput.WeaponScrollDelta = scrollValue.y;
-
+    if(controls.UI.ScrollWheel.WasPerformedThisFrame())
+        {
+            playerInput.WeaponScrollDelta = controls.UI.ScrollWheel.ReadValue<Vector2>().y;
+        }
         if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())
             _placementRotationDegrees -= 15f;
         if(controls.Player.RotatePlacementRight.WasPressedThisFrame())
