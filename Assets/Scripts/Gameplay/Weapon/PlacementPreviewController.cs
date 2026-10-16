@@ -167,12 +167,8 @@ public class PlacementPreviewController : MonoBehaviour
             placementMask))
         {
             Vector3 position = hit.point + hit.normal * currentWeaponData.PlacementOffset;
-            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-            if(!currentWeaponData.PlacementGhostPrefabs[selectedIndex].RotatesToSurface) // extremely Jury rig
-                surfaceRotation = GhostSpawner.FindGhostPrefab(currentWeaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
-
-            Quaternion rotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 0f);
+            Quaternion surfaceRotation = currentWeaponData.PlacementGhostPrefabs[selectedIndex]
+                .GetPlacementRotation(hit.normal, currentRotationDegrees);
             // if (gameObject.CompareTag("VW"))
             // {
             //     Quaternion VWRotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 90f);
@@ -180,7 +176,7 @@ public class PlacementPreviewController : MonoBehaviour
 
             // }
 
-            previewInstance.transform.SetPositionAndRotation(position, rotation);
+            previewInstance.transform.SetPositionAndRotation(position, surfaceRotation);
 
             previewInstance.SetActive(true);
         }

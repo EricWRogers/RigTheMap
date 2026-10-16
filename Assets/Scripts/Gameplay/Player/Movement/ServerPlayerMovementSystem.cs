@@ -957,19 +957,11 @@ namespace Unity.MP_FPS
                                         placementHit.normal *
                                         weaponData.PlacementOffset;
 
-                                    Quaternion surfaceRotation;
-
-                                    if(weaponData.PlacementGhostPrefabs[selectedIndex].RotatesToSurface) // Jury Rig solution - !!!
-                                    {
-                                        surfaceRotation =
-                                            Quaternion.FromToRotation(
-                                                Vector3.up,
-                                                placementHit.normal);
-                                    }
-                                    else
-                                    {
-                                        surfaceRotation = GhostSpawner.FindGhostPrefab(weaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
-                                    }
+                                    Quaternion surfaceRotation =
+                                        weaponData.PlacementGhostPrefabs[selectedIndex]
+                                            .GetPlacementRotation(
+                                                placementHit.normal,
+                                                commandInput.PlayerInput.PlacementRotationDegrees);
 
                                     var modelCorrection =
                                         Quaternion.Euler(
@@ -978,12 +970,7 @@ namespace Unity.MP_FPS
                                             0f);
 
                                     var placementRotation =
-                                        surfaceRotation *
-                                        Quaternion.Euler(
-                                            0f,
-                                            commandInput.PlayerInput.PlacementRotationDegrees,
-                                            0f) *
-                                        modelCorrection;
+                                        surfaceRotation * modelCorrection;
 
                                     selectedIndex =
                                         math.clamp(

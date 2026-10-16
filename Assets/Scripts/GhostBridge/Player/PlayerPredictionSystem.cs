@@ -294,17 +294,14 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         0,
                                         weaponData.PlacementGhostPrefabs.Count - 1);
 
-                                        if(!weaponData.PlacementGhostPrefabs[selectedIndex].RotatesToSurface) // jury rig solution
-                                            surfaceRotation = GhostSpawner.FindGhostPrefab(weaponData.PlacementGhostPrefabs[selectedIndex]).transform.rotation;
+                                        surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex]
+                                            .GetPlacementRotation(
+                                                placementHit.normal,
+                                                input.PlacementRotationDegrees);
 
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
                                         var placementRotation =
-                                            surfaceRotation *
-                                            Quaternion.Euler(
-                                                0f,
-                                                input.PlacementRotationDegrees,
-                                                0f) *
-                                            modelCorrection;
+                                            surfaceRotation * modelCorrection;
                                         // bool VerticalPlacement = placementHit.collider.CompareTag("VW")||placementHit.transform.CompareTag("VW");
 
                                         // if (VerticalPlacement)
