@@ -40,14 +40,32 @@ public class GhostSpawner : MonoBehaviour
         [field: SerializeField] public AssetReferenceGameObject GhostPrefab { get; set; }
         [field: SerializeField] public string AssetName {get; set;}
         [field: SerializeField] public bool RotatesToSurface {get; set;}
+        [field: SerializeField] public Vector3 FixedPlacementEuler { get; set; }
 
         public Hash128 GhostGuid => m_GhostGuid;
         [SerializeField] [HideInInspector] private Hash128 m_GhostGuid;
+
+        public Quaternion GetPlacementRotation(Vector3 surfaceNormal, float rotationDegrees)
+        {
+            var baseRotation = RotatesToSurface
+                ? Quaternion.FromToRotation(Vector3.up, surfaceNormal)
+                : Quaternion.Euler(FixedPlacementEuler.x, 0f, FixedPlacementEuler.z);
+
+            return baseRotation * Quaternion.Euler(0f, rotationDegrees, 0f);
+        }
 
         public bool OnValidate()
         {
             bool validReference = GhostPrefab != null && GhostPrefab.RuntimeKeyIsValid();
             m_GhostGuid = validReference ? new Hash128(GhostPrefab.AssetGUID) : new();
+
+#if UNITY_EDITOR
+            if (validReference && GhostPrefab.editorAsset != null)
+            {
+                var prefabEuler = GhostPrefab.editorAsset.transform.rotation.eulerAngles;
+                FixedPlacementEuler = new Vector3(prefabEuler.x, 0f, prefabEuler.z);
+            }
+#endif
 
             return validReference;
         }
