@@ -1,9 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.Entities;
-using Unity.NetCode;
-using Gameplay.Leaderboard;
-using DG.Tweening;
+using Unity.Netcode;
 
 namespace Unity.MP_FPS
 {

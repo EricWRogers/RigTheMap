@@ -4,7 +4,7 @@ using UnityEditor;
 using System;
 using System.Collections.Generic;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

@@ -1,0 +1,36 @@
+using System;
+using System.ComponentModel;
+using UnityEngine.ResourceManagement.Util;
+
+namespace UnityEngine.ResourceManagement.ResourceProviders
+{
+    /// <summary>
+    /// Converts ray binary data into the requested object.
+    /// </summary>
+    [DisplayName("Binary Asset Provider")]
+    internal class BinaryAssetProvider<TAdapter> : BinaryDataProvider where TAdapter : BinaryStorageBuffer.ISerializationAdapter, new()
+    {
+        /// <summary>
+        /// Initializes the provider with an id composed from the base provider name
+        /// and the adapter's type name, giving each adapter a unique ProviderId.
+        /// </summary>
+        public BinaryAssetProvider()
+        {
+            m_ProviderId = $"{kBinaryAssetProviderBaseId}<{typeof(TAdapter).FullName}>";
+        }
+
+        /// <summary>
+        /// Converts raw bytes into requested object type via BinaryStorageBuffer.ISerializationAdapter
+        /// </summary>
+        /// <param name="type">The object type the text is converted to.</param>
+        /// <param name="data">The data to convert.</param>
+        /// <returns>Returns the converted object.</returns>
+        public override object Convert(Type type, byte[] data)
+        {
+            // Do not dispose the Reader here: ContentCatalogData stashes it for lazy reads
+            // (Locate, ResourceLocation field reads, GetBytes). Lifetime is owned by
+            // ContentCatalogData.CleanData, which Disposes on release.
+            return new BinaryStorageBuffer.Reader(data, 1024, 0, new TAdapter()).ReadObject(type, 0, out _, false);
+        }
+    }
+}

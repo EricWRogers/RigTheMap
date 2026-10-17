@@ -1,0 +1,149 @@
+using System.Collections.Generic;
+using UnityEditor.AddressableAssets.Build.DataBuilders;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.Build.Pipeline;
+using UnityEngine.AddressableAssets.ResourceLocators;
+
+namespace UnityEditor.AddressableAssets.Build
+{
+    /// <summary>
+    /// The result of IDataBuilder.Build.
+    /// </summary>
+    public interface IDataBuilderResult
+    {
+        /// <summary>
+        /// Duration of the build in seconds.
+        /// </summary>
+        double Duration { get; set; }
+
+        /// <summary>
+        /// The number of addressable assets contained in the build.
+        /// </summary>
+        int LocationCount { get; set; }
+
+        /// <summary>
+        /// Error string, if any.  If Succeeded is true, this may be null.
+        /// </summary>
+        string Error { get; set; }
+
+        /// <summary>
+        /// Path of runtime settings file
+        /// </summary>
+        string OutputPath { get; set; }
+
+        /// <summary>
+        /// Registry of files created during the build
+        /// </summary>
+        FileRegistry FileRegistry { get; set; }
+    }
+
+    /// <summary>
+    /// Builds objects of type IDataBuilderResult.
+    /// </summary>
+    public interface IDataBuilder
+    {
+        /// <summary>
+        /// The name of the builder, used for GUI.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Can this builder build the type of data requested.
+        /// </summary>
+        /// <typeparam name="T">The data type.</typeparam>
+        /// <returns>True if the build can build it.</returns>
+        bool CanBuildData<T>() where T : IDataBuilderResult;
+
+        /// <summary>
+        /// Build the data of a specific type.
+        /// </summary>
+        /// <typeparam name="TResult">The data type.</typeparam>
+        /// <param name="builderInput">The builderInput used to build the data.</param>
+        /// <returns>The built data.</returns>
+        TResult BuildData<TResult>(AddressablesDataBuilderInput builderInput) where TResult : IDataBuilderResult;
+
+        /// <summary>
+        /// Clears all cached data.
+        /// </summary>
+        void ClearCachedData();
+    }
+
+    /// <summary>
+    /// Interface for schema builders that process specific AddressableAssetGroupSchema types during a build.
+    /// Implementations handle schema-specific build logic such as AssetBundle creation or Content Directory generation.
+    /// </summary>
+    public interface ISchemaBuilder
+    {
+
+        /// <summary>
+        /// The name of the schema builder, used for GUI.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// Determines whether this schema builder can process the given schema.
+        /// </summary>
+        /// <param name="schema">The schema to check.</param>
+        /// <returns>True if this builder can process the schema; otherwise, false.</returns>
+        bool CanBuildSchema(AddressableAssetGroupSchema schema);
+
+        /// <summary>
+        /// Initialize the schema builder.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="builderInput">The build input from the data builder that is running the build.</param>
+        /// <param name="buildContext">The Scriptable Build Pipeline context used during the build.</param>
+        /// <param name="dataBuilder">A reference to the parent data builder script.</param>
+        void Init(AddressableAssetsBuildContext aaContext,
+            AddressablesDataBuilderInput builderInput,
+            BuildContext buildContext,
+            IDataBuilder dataBuilder);
+
+        /// <summary>
+        /// Validates the schema instance for a group and collects information on how to build data.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="schema">The schema to verify. Use <c>schema.Group</c> to access the owning group.</param>
+        /// <returns>A message with an error string for the user, empty if successful.</returns>
+        string ProcessGroupSchema(AddressableAssetsBuildContext aaContext, AddressableAssetGroupSchema schema);
+
+        /// <summary>
+        /// Build data for the schema.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="addrResult">The Addressables result.</param>
+        void Build(AddressableAssetsBuildContext aaContext,
+            AddressablesPlayerBuildResult addrResult);
+
+        /// <summary>
+        /// Generate type stripping information for the player build.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="contentCatalog">The content catalog generated by GenerateCatalog.</param>
+        void GenerateTypeStrippingInfo(AddressableAssetsBuildContext aaContext,
+            ContentCatalogData contentCatalog);
+
+        /// <summary>
+        /// Generate catalog locations for the schema.
+        /// Returns a dictionary mapping catalog id to the list of
+        /// <see cref="ContentCatalogDataEntry"/> locations that belong to that catalog.
+        /// Implementations must <em>not</em> write any catalog file; the build script
+        /// (<see cref="BuildScriptSchemaDriven"/>) merges entries from all builders by
+        /// catalog id and writes a single catalog file per id.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="addrResult">The Addressables result.</param>
+        /// <returns>A dictionary of catalog id to catalog locations generated by the schema.</returns>
+        Dictionary<string, List<ContentCatalogDataEntry>> GenerateCatalogLocations(AddressableAssetsBuildContext aaContext,
+            AddressablesPlayerBuildResult addrResult);
+
+        /// <summary>
+        /// Handle content update logic for the schema.
+        /// </summary>
+        /// <param name="aaContext">The Addressable Asset context used to build the schema data.</param>
+        /// <param name="addrResult">The Addressables result.</param>
+        void GenerateContentUpdate(AddressableAssetsBuildContext aaContext,
+            AddressablesPlayerBuildResult addrResult);
+    }
+
+}

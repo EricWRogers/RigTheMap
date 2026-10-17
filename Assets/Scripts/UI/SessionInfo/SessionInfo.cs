@@ -6,7 +6,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Profiling;
 using Unity.Services.Multiplayer;
 using UnityEngine;

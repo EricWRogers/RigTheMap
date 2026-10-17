@@ -1,7 +1,7 @@
 using System;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.GhostBridge
