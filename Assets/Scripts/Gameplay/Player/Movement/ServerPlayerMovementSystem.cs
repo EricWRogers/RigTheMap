@@ -3,15 +3,16 @@ using Gameplay.Leaderboard;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
+using Unity.Netcode.NetcodeTime;
 using Unity.Transforms;
 using UnityEngine;
 
 namespace Unity.MP_FPS
 {
-    public class PlayerControllerLink : IComponentData
+    public struct PlayerControllerLink : IComponentData
     {
-        public FirstPersonController Controller;
+        public UnityObjectRef<FirstPersonController> Controller;
     }
 
     struct ProjectileSpawnData
@@ -109,10 +110,10 @@ namespace Unity.MP_FPS
                      query.ToEntityArray(Allocator.Temp))
             {
                 var controllerLink =
-                    SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(
+                    SystemAPI.GetComponent<PlayerControllerLink>(
                         entity);
 
-                controllerLink.Controller = null;
+                controllerLink.Controller = default;
 
                 EntityManager.SetComponentData(
                     entity,
@@ -451,12 +452,12 @@ namespace Unity.MP_FPS
                          .WithNone<PlayerControllerLink>())
             {
                 var gameObjectLink =
-                    SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(
+                    SystemAPI.GetComponent<GhostGameObjectLink>(
                         entity);
 
-                if (gameObjectLink.LinkedInstance != null)
+                if (gameObjectLink.LinkedInstance.Value != null)
                 {
-                    if (gameObjectLink.LinkedInstance.TryGetComponent<
+                    if (gameObjectLink.LinkedInstance.Value.TryGetComponent<
                             FirstPersonController>(
                             out var controller))
                     {
@@ -717,11 +718,11 @@ namespace Unity.MP_FPS
                          .WithAll<Simulate, GhostGameObjectLink>())
             {
                 var ghostLink =
-                    SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(
+                    SystemAPI.GetComponent<GhostGameObjectLink>(
                         entity);
 
                 var playerGhost =
-                    ghostLink.LinkedInstance.GetComponent<PlayerGhost>();
+                    ghostLink.LinkedInstance.Value.GetComponent<PlayerGhost>();
 
                 var predictedClient =
                     predictedClientInputComponentLookup[
@@ -1450,13 +1451,13 @@ namespace Unity.MP_FPS
                          .WithEntityAccess())
             {
                 var controllerLink =
-                    SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(
+                    SystemAPI.GetComponent<PlayerControllerLink>(
                         entity);
 
                 if (math.lengthsq(
                         predictedPlayer.ValueRO.AccumulatedMovement) > 0f)
                 {
-                    controllerLink.Controller.ApplyMovementUpdate(
+                    controllerLink.Controller.Value.ApplyMovementUpdate(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,

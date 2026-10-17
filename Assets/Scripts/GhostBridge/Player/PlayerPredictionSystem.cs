@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
+using Unity.Netcode.NetcodeTime;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.MP_FPS;
@@ -27,7 +28,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
     private int m_LastSeenUnityFrame;
 
     [FeatureToggle(Name = "prediction_checkforpredictionerrors", Default = false)]
-    public static readonly FeatureToggle CheckForPredictionErrors;
+    public static FeatureToggle CheckForPredictionErrors;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void Init()
@@ -53,8 +54,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
         var query = GetEntityQuery(typeof(PlayerControllerLink));
         foreach (var entity in query.ToEntityArray(Allocator.Temp))
         {
-            var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
-            controllerLink.Controller = null;
+            var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
+            controllerLink.Controller = default;
             EntityManager.SetComponentData(entity, controllerLink);
         }
     }
@@ -120,8 +121,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                      .WithAll<Simulate, GhostGameObjectLink>()
                      .WithNone<PlayerControllerLink>())
         {
-            var gameObjectLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-            if (gameObjectLink.LinkedInstance != null && gameObjectLink.LinkedInstance.TryGetComponent<FirstPersonController>(out var controller))
+            var gameObjectLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+            if (gameObjectLink.LinkedInstance.Value != null && gameObjectLink.LinkedInstance.Value.TryGetComponent<FirstPersonController>(out var controller))
             {
                 ecb.AddComponent(entity, new PlayerControllerLink { Controller = controller });
             }
@@ -191,7 +192,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                     .WithEntityAccess()
                     .WithAll<Simulate, PlayerControllerLink>())
         {
-            var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
+            var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
             // GameDebug.BurstLog("[PlayerPredictionSystem] PredictedPlayerGhost is Simulate");
 
             predictedPlayer.ValueRW.RequestApplyMovement = false;
@@ -248,7 +249,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                 
                                 predictedPlayer.ValueRW.LastShotTick = commandInput.Tick.TickIndexForValidTick;
 
-                                var playerGhost = controllerLink.Controller.GetComponent<PlayerGhost>();
+                                var playerGhost = controllerLink.Controller.Value.GetComponent<PlayerGhost>();
                                 var controllerState = predictedPlayer.ValueRO.ControllerState;
                                 var aimRotation = quaternion.Euler(
                                     math.radians(controllerState.PitchDegrees),
@@ -353,7 +354,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     var directionToTarget = (targetPoint - shotOriginPosition).normalized;
                                     var spawnRotation = Quaternion.LookRotation(directionToTarget);
 
-                                    controllerLink.Controller.SpawnPredictedProjectile(
+                                    controllerLink.Controller.Value.SpawnPredictedProjectile(
                                         commandInput.Tick.TickIndexForValidTick,
                                         predictedPlayer.ValueRO.EquippedWeaponID,
                                         shotOriginPosition,
@@ -416,7 +417,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                          RefRO<PredictedPlayerControllerConsts>>() 
                      .WithAll<PlayerControllerLink>().WithEntityAccess())
         {
-            var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
+            var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
             var controllerConsts = playerControllerConsts.ValueRO.ControllerConsts;
             var predictedPlayerGhostStates = predictedPlayerGhostStatesBufferLookup[entity];
             
@@ -424,7 +425,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
             {
                 if (math.lengthsq(predictedPlayer.ValueRO.AccumulatedMovement) > 0f)
                 {
-                    controllerLink.Controller.ApplyMovementUpdate(ref predictedPlayer.ValueRW.ControllerState,
+                    controllerLink.Controller.Value.ApplyMovementUpdate(ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
                         applyDT);
@@ -466,14 +467,14 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                 else
                 {
                     // we should just apply our current state
-                    controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
-                    controllerLink.Controller.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
+                    controllerLink.Controller.Value.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
+                    controllerLink.Controller.Value.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
                 }
             }
 
             if (isFinalPredictionTick)
             {
-                controllerLink.Controller.ApplyAnimatorState(in predictedPlayer.ValueRO.ControllerState, controllerConsts, frameDT);
+                controllerLink.Controller.Value.ApplyAnimatorState(in predictedPlayer.ValueRO.ControllerState, controllerConsts, frameDT);
             }
         }
 
@@ -481,7 +482,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
     }
     
     [FeatureToggle(Name = "prediction_enabletickbatching", Default = false)]
-    private static readonly FeatureToggle EnableTickBatching;
+    private static FeatureToggle EnableTickBatching;
 
     private static bool AllowPredictedTickBatching()
     {

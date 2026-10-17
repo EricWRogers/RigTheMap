@@ -1,0 +1,368 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
+using Unity.Netcode.Generators;
+using Debug = System.Diagnostics.Debug;
+
+namespace Unity.Netcode.GeneratorTests
+{
+    class TestSyntaxWalker : CSharpSyntaxWalker
+    {
+        public NetCodeSyntaxReceiver? Receiver;
+
+        public override void Visit(SyntaxNode? node)
+        {
+            Receiver?.OnVisitSyntaxNode(node);
+            base.Visit(node);
+        }
+    }
+
+    class InializationBlockWalker : CSharpSyntaxWalker
+    {
+        public InitializerExpressionSyntax? Intializer;
+        public override void VisitInitializerExpression(InitializerExpressionSyntax node)
+        {
+            Intializer ??= node;
+            base.VisitInitializerExpression(node);
+        }
+    }
+
+    class DictBasedConfigOptions : AnalyzerConfigOptions
+    {
+        private readonly Dictionary<string, string> m_Options;
+
+        public DictBasedConfigOptions(params KeyValuePair<string, string>[] optionsPairs)
+        {
+            m_Options = new Dictionary<string, string>(optionsPairs);
+        }
+
+        public override bool TryGetValue(string key, [MaybeNullWhen(false)] out string value)
+        {
+            return m_Options.TryGetValue(key, out value);
+        }
+
+        public void AddOrSet(string key, string value)
+        {
+            m_Options[key] = value;
+        }
+
+        public void Remove(string key)
+        {
+            m_Options.Remove(key);
+        }
+    }
+
+    class TestConfigOptionProvider : AnalyzerConfigOptionsProvider
+    {
+        private readonly AnalyzerConfigOptions globalOptions;
+
+        public TestConfigOptionProvider(AnalyzerConfigOptions global)
+        {
+            globalOptions = global;
+        }
+        public override AnalyzerConfigOptions GetOptions(SyntaxTree tree)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override AnalyzerConfigOptions GetOptions(AdditionalText textFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override AnalyzerConfigOptions GlobalOptions => globalOptions;
+    }
+
+    static class GeneratorTestHelpers
+    {
+        public const string GeneratedAssemblyName = "Unity.Netcode.Test";
+
+        /// <summary>
+        /// Randomly generated temp filepath where we can add generated files and logs during test runs.
+        /// <see cref="TestOutputCleanupFixture"/> will delete the folder after the test run.
+        /// </summary>
+        public static readonly string OutputFolder = Path.Combine(Path.GetTempPath(), $"TestOutput-{Guid.NewGuid():N}");
+        public static Compilation CreateCompilation(params SyntaxTree[] tree)
+        {
+            return CreateCompilationWithPreProcessorSymbols([], tree);
+        }
+
+        public static Compilation CreateCompilationWithPreProcessorSymbols(string [] preprocessorSymbols, params SyntaxTree[] tree)
+        {
+            var metaReferences = new List<SyntaxTree>();
+            metaReferences.AddRange(tree);
+            metaReferences.AddRange(GetUnityNetCodeMetaRefs(preprocessorSymbols));
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
+                    optimizationLevel: OptimizationLevel.Debug, allowUnsafe: true);
+
+            var directoryName = Path.GetDirectoryName(typeof(object).Assembly.Location);
+            Debug.Assert(directoryName != null, nameof(directoryName) + " != null");
+            var compilation = CSharpCompilation.Create(GeneratedAssemblyName, metaReferences, options: options).AddReferences(
+                MetadataReference.CreateFromFile(Path.Combine(directoryName, "netstandard.dll")),
+                    MetadataReference.CreateFromFile(Path.Combine(directoryName, "System.Runtime.dll")),
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+
+            //Enable this to check if there are some dependencies missing you don't expect.
+            //NOTE: is normal to have some depedencies from not present like RpcExecutor, burst, entities stuff etc.
+            //but for sake of this smoke testing they can be ignored
+
+            // foreach(var d in compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error))
+            //     Console.WriteLine(d.ToString());
+
+            return compilation;
+        }
+
+        public class InMemoryAdditionalFile : AdditionalText
+        {
+            private string m_Path;
+            private string m_Content;
+            public InMemoryAdditionalFile(string path, string content)
+            {
+                m_Path = path;
+                m_Content = content;
+            }
+            public override SourceText GetText(CancellationToken cancellationToken = new CancellationToken())
+            {
+                return SourceText.From(m_Content);
+            }
+            public override string Path => m_Path;
+        }
+
+        public static GeneratorDriver CreateGeneratorDriver(Dictionary<string, string>? customOptions = null, IEnumerable<string>? removedOptions = null, IEnumerable<AdditionalText>? extraAdditionalFiles = null)
+        {
+            var options = new DictBasedConfigOptions(
+                KeyValuePair.Create(GlobalOptions.ProjectPath, Environment.CurrentDirectory),
+                KeyValuePair.Create(GlobalOptions.OutputPath, OutputFolder),
+                KeyValuePair.Create(GlobalOptions.DisableRerencesChecks, "1"),
+                KeyValuePair.Create(GlobalOptions.TemplateFromAdditionalFiles, "1"));
+
+            if (customOptions != null)
+            {
+                foreach (var kv in customOptions)
+                    options.AddOrSet(kv.Key, kv.Value);
+            }
+
+            if (removedOptions != null)
+            {
+                foreach (var key in removedOptions)
+                    options.Remove(key);
+            }
+
+            var files = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory,
+                "../Templates"), "*.additionalfile", SearchOption.AllDirectories);
+            var additionalFiles = new List<AdditionalText>();
+            foreach (var f in files)
+                additionalFiles.Add(new InMemoryAdditionalFile(f, File.ReadAllText(f)));
+
+            if (extraAdditionalFiles != null)
+                additionalFiles.AddRange(extraAdditionalFiles);
+
+            GeneratorDriver driver = CSharpGeneratorDriver.Create([new NetCodeSourceGenerator()], optionsProvider: new TestConfigOptionProvider(options));
+            driver = driver.AddAdditionalTexts([..additionalFiles]);
+
+            return driver;
+        }
+
+        public static GeneratorRunResult RunGenerators(params SyntaxTree[] syntaxTree)
+        {
+            var compilation = CreateCompilation(syntaxTree);
+            var driver = CreateGeneratorDriver();
+            return driver.RunGenerators(compilation).GetRunResult().Results[0];
+        }
+
+        public static GeneratorRunResult RunGeneratorsWithPreprocessorSymbols(string[] preprocessorSymbols, params SyntaxTree[] syntaxTree)
+        {
+            var compilation = CreateCompilationWithPreProcessorSymbols(preprocessorSymbols, syntaxTree);
+            var driver = CreateGeneratorDriver();
+            return driver.RunGenerators(compilation).GetRunResult().Results[0];
+        }
+
+        public static GeneratorRunResult RunGeneratorsWithOptions(Dictionary<string, string>? customOptions, params SyntaxTree[] syntaxTree)
+        {
+            return RunGeneratorsWithAllOptions(customOptions, syntaxTree:syntaxTree);
+        }
+
+        public static GeneratorRunResult RunGeneratorsWithAllOptions(Dictionary<string, string>? customOptions = null, IEnumerable<string>? removedOptions = null, IEnumerable<AdditionalText>? extraAdditionalFiles = null, params SyntaxTree[] syntaxTree)
+        {
+            var compilation = CreateCompilation(syntaxTree);
+            var driver = CreateGeneratorDriver(customOptions, removedOptions, extraAdditionalFiles);
+            return driver.RunGenerators(compilation).GetRunResult().Results[0];
+        }
+
+        public static NetCodeSyntaxReceiver CreateSyntaxReceiver()
+        {
+            return new NetCodeSyntaxReceiver();
+        }
+
+        public static string CreateTempProjectDirectory()
+        {
+            return Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), $"netcode-projectpath-{Guid.NewGuid():N}")).FullName;
+        }
+
+        //Because we cannot have any Unity.XXX references here, let's embed our dependencies using some custom made code
+        //that just suit our need for sake of testing
+        private static SyntaxTree[] GetUnityNetCodeMetaRefs(string [] preprocessorSymbols)
+        {
+            string hackyUnityRefs = @"
+namespace Unity
+{
+    namespace Netcode
+    {
+        // Minimal stand-ins for the GameObject bridge types, so GhostBehaviour candidates resolve in tests.
+        public class GhostBehaviour
+        {
+        }
+        public struct GhostField<T>
+        {
+            public GhostField(T initialValue = default, FieldConfig fieldConfig = default) {}
+        }
+        public struct GhostComponentRef<T>
+        {
+        }
+    }
+    namespace Entities
+    {
+        public interface IComponentData
+        {
+        }
+
+        public interface IBufferElementData
+        {
+        }
+
+        public struct Entity
+        {
+        }
+    }
+    namespace Mathematics
+    {
+        public struct float2
+        {
+            public float x;
+            public float y;
+        }
+        public struct float3
+        {
+            public float x;
+            public float y;
+            public float z;
+
+            public float3 ShouldBeSkipped
+            {
+                get { return new float3();}
+                set {}
+            }
+            public float this[int index] { get {return 0.0f;} set {}}
+            public float3 xyz { get { return new float3(); } set {x = value.x; y = value.y; z = value.z; } }
+        }
+
+        public struct float4
+        {
+            public float x;
+            public float y;
+            public float z;
+            public float w;
+
+            public float4 ShouldBeSkipped
+            {
+                get { return new float4();}
+                set {}
+            }
+            public float this[int index] { get {return 0.0f;} set {}}
+            public float4 xyzw { get{ return new float4(); } set{} }
+        }
+
+        public struct quaternion
+        {
+            public float4 Value;
+        }
+    }
+    namespace Collections
+    {
+        public struct FixedString32Bytes
+        {
+        }
+        public struct FixedString64Bytes
+        {
+        }
+        public struct FixedString128Bytes
+        {
+        }
+        public struct FixedString512Bytes
+        {
+        }
+        public struct FixedString4096Bytes
+        {
+        }
+
+        public struct FixedList32Bytes<T> where T: unmanaged
+        {
+        }
+        public struct FixedList64Bytes<T> where T: unmanaged
+        {
+        }
+        public struct FixedList128Bytes<T> where T: unmanaged
+        {
+        }
+        public struct FixedList512Bytes<T> where T: unmanaged
+        {
+        }
+        public struct FixedList4096Bytes<T> where T: unmanaged
+        {
+        }
+    }
+    namespace Transforms
+    {
+        public struct LocalTransform : Entities.IComponentData
+        {
+            public Mathematics.float3 Position;
+            public float Scale;
+            public Mathematics.quaternion Rotation;
+        }
+    }
+}";
+            var parseOptions = preprocessorSymbols!=null ? new CSharpParseOptions(preprocessorSymbols: preprocessorSymbols) : new CSharpParseOptions();
+
+            return new[]
+            {
+                CSharpSyntaxTree.ParseText(hackyUnityRefs,parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/GhostFieldAttribute.cs")),parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/GhostFixedListCapacityAttribute.cs")),parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/GhostComponentAttribute.cs")),parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/GhostModifiers.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/GhostComponentVariation.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/DontSupportPrefabOverridesAttribute.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/SubTypes.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Command/ICommandData.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Rpc/IRpcCommand.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../GameObjectLayer/RPCs/ICustomMessage.cs")), parseOptions),
+                 CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/RPCAttribute.cs")),parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Authoring/UserDefinedTemplates.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../Command/IInputComponentData.cs")), parseOptions),
+                CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(Environment.CurrentDirectory,
+                    "../../PredictionTicking/NetworkTime.cs")), parseOptions),
+            };
+        }
+    }
+}

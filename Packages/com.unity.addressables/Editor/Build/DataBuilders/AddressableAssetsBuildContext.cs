@@ -1,0 +1,127 @@
+using System;
+using System.Collections.Generic;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.Build.Pipeline.Interfaces;
+using UnityEngine;
+using UnityEngine.AddressableAssets.Initialization;
+using UnityEngine.AddressableAssets.ResourceLocators;
+using static UnityEditor.AddressableAssets.Build.ContentUpdateScript;
+
+namespace UnityEditor.AddressableAssets.Build.DataBuilders
+{
+    /// <summary>
+    /// Interface for any Addressables specific context objects to be used in the Scriptable Build Pipeline context store
+    /// </summary>
+    public interface IAddressableAssetsBuildContext : IContextObject
+    {
+    }
+
+    /// <summary>
+    /// Simple context object for passing data through SBP, between different sections of Addressables code.
+    /// </summary>
+    public class AddressableAssetsBuildContext : IAddressableAssetsBuildContext
+    {
+        private AddressableAssetSettings m_Settings;
+
+        /// <summary>
+        /// The settings object to use.
+        /// </summary>
+        public AddressableAssetSettings Settings
+        {
+            get
+            {
+                if (m_Settings == null && !string.IsNullOrEmpty(m_SettingsAssetPath))
+                    m_Settings = AssetDatabase.LoadAssetAtPath<AddressableAssetSettings>(m_SettingsAssetPath);
+                return m_Settings;
+            }
+            set
+            {
+                m_Settings = value;
+                string guid;
+                if (m_Settings != null && AssetDatabase.TryGetGUIDAndLocalFileIdentifier(m_Settings, out guid, out long localId))
+                    m_SettingsAssetPath = AssetDatabase.GUIDToAssetPath(guid);
+                else
+                    m_SettingsAssetPath = null;
+            }
+        }
+
+        private string m_SettingsAssetPath;
+
+        /// <summary>
+        /// The input the build was started with.
+        /// </summary>
+        public AddressablesDataBuilderInput BuilderInput;
+
+        internal AddressableFolderEnumerator FolderEnumerator => BuilderInput?.FolderEnumerator;
+
+        /// <summary>
+        /// Indicates whether the build contains asset bundle data.
+        /// </summary>
+        public bool ContainsAssetBundleData = false;
+
+        /// <summary>
+        /// Indicates whether the build contains content directory data.
+        /// </summary>
+        public bool ContainsContentDirectoryData = false;
+
+        /// <summary>
+        /// The time the build started
+        /// </summary>
+        public DateTime buildStartTime;
+
+        /// <summary>
+        /// The current runtime data being built.
+        /// </summary>
+        public ResourceManagerRuntimeData runtimeData;
+
+        /// <summary>
+        /// The list of catalog locations.
+        /// </summary>
+        public List<ContentCatalogDataEntry> locations;
+
+        /// <summary>
+        /// Mapping of bundle name to group guid
+        /// </summary>
+        public Dictionary<string, string> bundleToAssetGroup;
+
+        /// <summary>
+        /// Mapping of asset group to bundles.
+        /// </summary>
+        public Dictionary<AddressableAssetGroup, List<string>> assetGroupToBundles;
+
+        /// <summary>
+        /// Mapping of asset bundle internal names to output names
+        /// </summary>
+        public Dictionary<string, string> internalToOutputBundleName;
+
+        /// <summary>
+        /// Set of provider types needed in this build.
+        /// </summary>
+        public HashSet<Type> providerTypes;
+
+        /// <summary>
+        /// The list of all AddressableAssetEntry objects.
+        /// </summary>
+        public List<AddressableAssetEntry> assetEntries;
+
+        /// <summary>
+        /// Mapping of AssetBundle to the direct dependencies.
+        /// </summary>
+        public Dictionary<string, List<string>> bundleToImmediateBundleDependencies;
+
+        /// <summary>
+        /// A mapping of AssetBundle to the full dependency tree, flattened into a single list.
+        /// </summary>
+        public Dictionary<string, List<string>> bundleToExpandedBundleDependencies;
+
+        /// <summary>
+        /// A mapping of Asset GUID's to resulting ContentCatalogDataEntry entries.
+        /// </summary>
+        public Dictionary<GUID, List<ContentCatalogDataEntry>> GuidToCatalogLocation = null;
+
+        /// <summary>
+        /// Cached asset state carried forward through the build for content update generation.
+        /// </summary>
+        public List<CachedAssetState> cachedState;
+    }
+}

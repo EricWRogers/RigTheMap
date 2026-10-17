@@ -17,7 +17,7 @@ public class GhostPrefabsBaker : Baker<GhostPrefabsAuthoring>
         s_BakedPrefabs = null;
     }
     
-    private static HashSet<int> s_BakedPrefabs = new();
+    private static HashSet<EntityId> s_BakedPrefabs = new();
 
     public override void Bake(GhostPrefabsAuthoring authoring)
     {
@@ -30,14 +30,14 @@ public class GhostPrefabsBaker : Baker<GhostPrefabsAuthoring>
             var prefab = ghosts[i].editorAsset;
             if (prefab != null)
             {
-                int hash = prefab.gameObject.GetInstanceID();
+                var entityId = prefab.gameObject.GetEntityId();
 
-                if (!s_BakedPrefabs.Contains(hash))
+                if (!s_BakedPrefabs.Contains(entityId))
                 {
                     // required to get prefab to be baked
                     GetEntity(prefab.gameObject, TransformUsageFlags.None);
 
-                    s_BakedPrefabs.Add(hash);
+                    s_BakedPrefabs.Add(entityId);
                 }
                 else
                 {

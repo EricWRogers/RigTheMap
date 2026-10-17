@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine.Scripting;
 
-using Unity.NetCode;
+using Unity.Netcode;
 
 /// <summary>
 /// The default serialization strategy for the <see cref="Unity.Transforms.LocalTransform"/> components provided by the NetCode package.

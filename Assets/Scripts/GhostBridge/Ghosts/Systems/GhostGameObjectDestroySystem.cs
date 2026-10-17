@@ -1,6 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 // This has to happen before any updates to ensure that partially deleted ghosts
@@ -59,8 +59,8 @@ public abstract partial class BaseGhostGameObjectDestroySystem : SystemBase
         
         foreach (var entity in ghostGameObjectDeferredActivationQuery.ToEntityArray(Allocator.Temp))
         {
-            var gameObjectLink = EntityManager.GetComponentObject<GhostGameObjectLink>(entity);
-            var obj = gameObjectLink.LinkedInstance;
+            var gameObjectLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+            var obj = gameObjectLink.LinkedInstance.Value;
             if (obj != null)
             {
                 if (obj.TryGetComponent<GhostGameObject>(out var ghostGameObject))
@@ -78,8 +78,8 @@ public abstract partial class BaseGhostGameObjectDestroySystem : SystemBase
         var ghostGameObjectLinkQuery = SystemAPI.QueryBuilder().WithAll<GhostGameObjectLink>().WithNone<GhostInstance, GhostGameObjectDeferredActivation>().Build();
         foreach (var entity in ghostGameObjectLinkQuery.ToEntityArray(Allocator.Temp))
         {
-            var gameObjectLink = EntityManager.GetComponentObject<GhostGameObjectLink>(entity);
-            var obj = gameObjectLink.LinkedInstance;
+            var gameObjectLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+            var obj = gameObjectLink.LinkedInstance.Value;
             if (obj != null)
             {
                 if (obj.TryGetComponent<GhostGameObject>(out var ghostGameObject))

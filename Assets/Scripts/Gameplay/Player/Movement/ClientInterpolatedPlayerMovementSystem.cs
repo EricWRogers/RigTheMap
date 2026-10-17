@@ -1,6 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Transforms;
 
 namespace Unity.MP_FPS
@@ -20,11 +20,11 @@ namespace Unity.MP_FPS
                          .WithNone<PlayerControllerLink, PredictedGhost>().WithAll<GhostGameObjectLink>()
                          .WithEntityAccess())
             {
-                var gameObjectLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                if (gameObjectLink.LinkedInstance != null)
+                var gameObjectLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                if (gameObjectLink.LinkedInstance.Value != null)
                 {
                     // get controller
-                    if (gameObjectLink.LinkedInstance.TryGetComponent<FirstPersonController>(out var controller))
+                    if (gameObjectLink.LinkedInstance.Value.TryGetComponent<FirstPersonController>(out var controller))
                     {
                         ecb.AddComponent(entity, new PlayerControllerLink { Controller = controller });
                     }
@@ -41,12 +41,12 @@ namespace Unity.MP_FPS
                          .WithEntityAccess()
                          .WithNone<PredictedGhost>().WithAll<PlayerControllerLink>())
             {
-                var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
-                controllerLink.Controller.ApplyInterpolatedClientState(ref predictedGhost.ValueRW.ControllerState,
+                var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
+                controllerLink.Controller.Value.ApplyInterpolatedClientState(ref predictedGhost.ValueRW.ControllerState,
                     controllerConsts.ValueRO.ControllerConsts, transform.ValueRO, deltaTime, true);
-                controllerLink.Controller.ApplyAnimatorState(predictedGhost.ValueRO.ControllerState,
+                controllerLink.Controller.Value.ApplyAnimatorState(predictedGhost.ValueRO.ControllerState,
                     controllerConsts.ValueRO.ControllerConsts, deltaTime);
-                controllerLink.Controller.UpdateGround(ref predictedGhost.ValueRW.ControllerState,
+                controllerLink.Controller.Value.UpdateGround(ref predictedGhost.ValueRW.ControllerState,
                     controllerConsts.ValueRO.ControllerConsts);
             }
         }
@@ -56,8 +56,8 @@ namespace Unity.MP_FPS
             var query = GetEntityQuery(typeof(PlayerControllerLink));
             foreach (var entity in query.ToEntityArray(Allocator.Temp))
             {
-                var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
-                controllerLink.Controller = null;
+                var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
+                controllerLink.Controller = default;
                 EntityManager.SetComponentData(entity, controllerLink);
             }
 

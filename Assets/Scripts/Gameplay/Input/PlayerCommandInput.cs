@@ -1,7 +1,7 @@
 using NUnit.Framework.Constraints;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
 
 public struct PlayerInput
 {

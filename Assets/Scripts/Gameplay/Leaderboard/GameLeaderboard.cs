@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 using Unity.MP_FPS;
 using Unity.MP_FPS.UI;

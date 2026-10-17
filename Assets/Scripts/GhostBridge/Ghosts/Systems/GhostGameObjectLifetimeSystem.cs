@@ -8,23 +8,23 @@ using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Jobs;
 using Hash128 = Unity.Entities.Hash128;
 using Object = UnityEngine.Object;
 
-public class GhostGameObjectLink : ICleanupComponentData
+public struct GhostGameObjectLink : ICleanupComponentData
 {
-    public GhostGameObject LinkedInstance;
+    public UnityObjectRef<GhostGameObject> LinkedInstance;
 }
 
-public class GhostGameObjectDeferredActivation : ICleanupComponentData
+public struct GhostGameObjectDeferredActivation : ICleanupComponentData
 {
 }
 
-public class GhostGameObjectActive : IComponentData
+public struct GhostGameObjectActive : IComponentData
 {
 }
 
@@ -98,8 +98,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         var query = GetEntityQuery(typeof(GhostGameObjectLink));
         foreach (var entity in query.ToEntityArray(Allocator.Temp))
         {
-            var ghostLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-            ghostLink.LinkedInstance = null;
+            var ghostLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+            ghostLink.LinkedInstance = default;
             EntityManager.SetComponentData(entity, ghostLink);
         }
 
@@ -314,8 +314,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             foreach (var entity in deferredGhostsQuery.ToEntityArray(Allocator.Temp))
             {
                 var ghostGuid = SystemAPI.GetComponent<GhostGameObjectGuid>(entity);
-                var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                var ghostGameObject = link.LinkedInstance;
+                var link = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                var ghostGameObject = link.LinkedInstance.Value;
 
                 if (ghostGameObject == null)
                 {
@@ -417,12 +417,12 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
         foreach (var entity in parentSetupQuery.ToEntityArray(Allocator.Temp))
         {
-            var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
+            var link = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
 
-            if (link.LinkedInstance != null &&
-                link.LinkedInstance.gameObject != null)
+            if (link.LinkedInstance.Value != null &&
+                link.LinkedInstance.Value.gameObject != null)
             {
-                link.LinkedInstance.UpdateParentReference();
+                link.LinkedInstance.Value.UpdateParentReference();
             }
             else
             {

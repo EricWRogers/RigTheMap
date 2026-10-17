@@ -6,7 +6,7 @@ using Unity.Burst;
 using Unity.CharacterController;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Physics;
 using Random = Unity.Mathematics.Random;
 using Unity.Transforms;
@@ -78,7 +78,7 @@ namespace Unity.MP_FPS
 
         void RefreshClientsMap(ref SystemState state, EntityCommandBuffer ecb,
             DynamicBuffer<ClientsMap> clientsMap,
-            NativeArray<NetCodeConnectionEvent>.ReadOnly connectionEventsForTick)
+            NativeArray<NetcodeConnectionEvent>.ReadOnly connectionEventsForTick)
         {
             //Maintain the clients map size
             foreach (var evt in connectionEventsForTick)

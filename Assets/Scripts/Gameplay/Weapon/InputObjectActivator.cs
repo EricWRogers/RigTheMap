@@ -1,5 +1,5 @@
 using Unity.MP_FPS;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 public class InputObjectActivator : MonoBehaviour

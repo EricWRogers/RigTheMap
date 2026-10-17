@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Unity.MP_FPS;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.Entities;

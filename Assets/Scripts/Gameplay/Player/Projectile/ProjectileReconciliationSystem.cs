@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
+using Unity.Netcode.NetcodeTime;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -93,17 +94,17 @@ namespace Unity.MP_FPS
             foreach (var (needsLinking, entity) in SystemAPI.Query<RefRO<NeedsLinking>>().WithAll<GhostGameObjectLink>()
                          .WithEntityAccess())
             {
-                var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                if (link.LinkedInstance != null && link.LinkedInstance.gameObject != null) // Check if instance is valid
+                var link = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                if (link.LinkedInstance.Value != null && link.LinkedInstance.Value.gameObject != null) // Check if instance is valid
                 {
                     // Ensure the GameObject is active if needed
-                    if (!link.LinkedInstance.gameObject.activeSelf)
+                    if (!link.LinkedInstance.Value.gameObject.activeSelf)
                     {
-                        link.LinkedInstance.gameObject.SetActive(true);
+                        link.LinkedInstance.Value.gameObject.SetActive(true);
                     }
 
                     // Call LinkGhost now that the component exists
-                    link.LinkedInstance.LinkGhost(World, entity, MultiplayerRole.ClientOwned);
+                    link.LinkedInstance.Value.LinkGhost(World, entity, MultiplayerRole.ClientOwned);
                 }
                 else
                 {

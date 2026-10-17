@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Unity.Entities;
 using Unity.GhostBridge;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using Unity.Services.Authentication.Server;

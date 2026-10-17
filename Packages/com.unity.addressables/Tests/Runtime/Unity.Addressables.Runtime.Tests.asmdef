@@ -1,0 +1,39 @@
+{
+    "name": "Unity.Addressables.Runtime.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.Addressables.Editor",
+        "Unity.ScriptableBuildPipeline",
+        "Unity.ScriptableBuildPipeline.Editor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "Unity.Services.Ccd.Management"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[2.0.0,4.0.0)",
+            "define": "ENABLE_CCD"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.6.0b1",
+            "define": "ENABLE_CONTENT_DIRECTORIES"
+        }
+    ],
+    "noEngineReferences": false
+}

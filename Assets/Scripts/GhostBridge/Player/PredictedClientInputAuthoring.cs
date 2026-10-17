@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Entities;
 using Unity.Mathematics;
 

@@ -1,0 +1,46 @@
+{
+    "name": "Unity.Addressables.DocExampleCode.Editor.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Addressables.Editor",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.ScriptableBuildPipeline.Editor",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[2.0.0,4.0.0)",
+            "define": "ENABLE_CCD"
+        },
+        {
+            "name": "com.unity.profiling.core",
+            "expression": "[1.0.2,3.0.0)",
+            "define": "ENABLE_ADDRESSABLE_PROFILER"
+        },
+        {
+            "name": "nuget.moq",
+            "expression": "2.0.0",
+            "define": "ENABLE_MOQ"
+        },
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[3.0.0,4.0.0)",
+            "define": "CCD_3_OR_NEWER"
+        }
+    ],
+    "noEngineReferences": false
+}

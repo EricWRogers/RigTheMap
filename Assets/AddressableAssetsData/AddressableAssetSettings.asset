@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetSettings
   m_DefaultGroup: 92b6b833b5f846f45bbe32bd85d5ee8d
-  m_currentHash:
-    serializedVersion: 2
-    Hash: 401d909c3a709a1747bb448d35d63980
+  m_ExtractTypeTreeData: 0
+  m_DisableWriteTypeTree: 0
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
+  m_BundleLocalCatalog: 0
   m_CatalogRequestsTimeout: 0
   m_DisableCatalogUpdateOnStart: 0
   m_InternalIdNamingMode: 0
@@ -29,12 +29,22 @@ MonoBehaviour:
   m_AssetBundleProviderType:
     m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+  m_GroupAssetEntryProviderType:
+    m_AssemblyName: Unity.Addressables
+    m_ClassName: UnityEngine.AddressableAssets.ResourceProviders.NativeContentAssetEntryProvider
+  m_ArchiveContentDirectories: 1
+  m_ContentDirectoryArchiveMode: 2
+  m_TargetArchiveSizeInMB: 2000
   m_IgnoreUnsupportedFilesInBuild: 0
   m_UniqueBundleIds: 0
   m_EnableJsonCatalog: 0
+  m_CatalogProviderType:
+    m_AssemblyName: Unity.Addressables
+    m_ClassName: UnityEngine.AddressableAssets.ResourceProviders.BinaryCatalogProvider
   m_NonRecursiveBuilding: 1
   m_AllowNestedBundleFolders: 0
   m_CCDEnabled: 0
+  m_ContentDirectoryGroupTemplateCreated: 1
   m_maxConcurrentWebRequests: 3
   m_UseUWRForLocalBundles: 0
   m_BundleTimeout: 0
@@ -44,7 +54,7 @@ MonoBehaviour:
   m_SharedBundleSettingsCustomGroupIndex: 0
   m_simulatedLoadDelay: 0.1
   m_ContiguousBundles: 1
-  m_StripUnityVersionFromBundleBuild: 0
+  mStripUnityVersion: 0
   m_DisableVisibleSubAssetRepresentations: 0
   m_BuiltInBundleNaming: 0
   mBuiltInBundleCustomNaming: 
@@ -104,13 +114,19 @@ MonoBehaviour:
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 3c6afcc97dba9d6478eb99220fe675e1, type: 2}
+  - {fileID: 11400000, guid: 682bf5effa6591245b25660efe419bf5, type: 2}
   m_InitializationObjects: []
   m_CertificateHandlerType:
     m_AssemblyName: 
     m_ClassName: 
-  m_ActivePlayerDataBuilderIndex: 2
+  m_ActivePlayerDataBuilderIndex: 3
   m_DataBuilders:
   - {fileID: 11400000, guid: a95ec67eda1f4144180fee316b3ea253, type: 2}
   - {fileID: 11400000, guid: 525e2f1a51aa21241a8558d4858a70f8, type: 2}
   - {fileID: 11400000, guid: 69eade3bd8272d4448e8de1ecace9549, type: 2}
+  - {fileID: 11400000, guid: 44787fb38bc6ace45bf19bfa5b0b4cbb, type: 2}
   m_ActiveProfileId: 8cf80d9749251d0468b87ebd8bc8b999
+  m_ContentDirectoryCatalogNameMigrated: 1
+  m_CatalogFormatMigrated: 1
+  m_ContentDirectoryArchiveModeMigrated: 1
+  m_CrcCachedBundleFlagMigrated: 1

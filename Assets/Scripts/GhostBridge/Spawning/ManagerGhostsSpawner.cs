@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Unity.GhostBridge;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 public interface IGhostManager

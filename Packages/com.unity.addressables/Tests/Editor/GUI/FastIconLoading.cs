@@ -1,0 +1,154 @@
+using System;
+using System.IO;
+using System.Reflection;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEditor.AddressableAssets.GUI;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Tests;
+using UnityEngine;
+
+namespace Tests.Editor.GUI
+{
+    public class FastIconLoading: AddressableAssetTestBase
+    {
+        private struct DisposableTestTexture : IDisposable
+        {
+            private string m_filePath;
+
+            public DisposableTestTexture(string filePath)
+            {
+                m_filePath = filePath;
+                var t2d = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+                t2d.SetPixel(0, 0, Color.red);
+                {
+                    using var fileStream = new FileStream(m_filePath, FileMode.Create);
+                    fileStream.Write(t2d.EncodeToPNG());
+                }
+                AssetDatabase.ImportAsset(m_filePath);
+            }
+
+            public void Dispose()
+            {
+                if (File.Exists(m_filePath))
+                    File.Delete(m_filePath);
+            }
+        }
+
+        private struct DisposableTestAsset : IDisposable
+        {
+            private string m_filePath;
+            public DisposableTestAsset(string filePath)
+            {
+                m_filePath = filePath;
+                var asset = ScriptableObject.CreateInstance(typeof(SomeScriptableObject));
+                AssetDatabase.CreateAsset(asset, filePath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+
+            public void Dispose()
+            {
+                if (File.Exists(m_filePath))
+                    File.Delete(m_filePath);
+            }
+        }
+
+        private struct DisposableTestPrefabPlusVariant : IDisposable
+        {
+            private string m_filePath;
+            private string m_variantPath;
+
+            public DisposableTestPrefabPlusVariant(string filePath, string variantPath)
+            {
+                m_filePath = filePath;
+                m_variantPath = variantPath;
+
+                var go = new GameObject("TestPrefab");
+                var prefab = PrefabUtility.SaveAsPrefabAsset(go, filePath);
+                var root = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                PrefabUtility.SaveAsPrefabAsset(root, variantPath);
+            }
+
+            public void Dispose()
+            {
+                if (File.Exists(m_filePath))
+                    File.Delete(m_filePath);
+                if (File.Exists(m_variantPath))
+                    File.Delete(m_variantPath);
+            }
+        }
+#if !UNITY_6000_6_OR_NEWER
+        [Test]
+        public void TestFastIcon_AssetGUID()
+        {
+            using var disposableTestAsset = new DisposableTestAsset("Assets/SomeAsset.asset");
+            var typeGuid = IconLazyLoad.GetTypeGuidFromAsset("Assets/SomeAsset.asset");
+                Assert.IsTrue(AssetDatabase.GUIDToAssetPath(typeGuid).EndsWith("SomeScriptableObject.cs"));
+        }
+#endif
+
+        [Test]
+        public void TestFastIcon_PrefabDetermination()
+        {
+            using var disposableTestPrefabs = new DisposableTestPrefabPlusVariant("Assets/Prefab.prefab", "Assets/PrefabVariant.prefab");
+            var isVariant = IconLazyLoad.PrefabIcons.IsPrefabVariant("Assets/Prefab.prefab");
+            Assert.IsFalse(isVariant);
+            isVariant = IconLazyLoad.PrefabIcons.IsPrefabVariant("Assets/PrefabVariant.prefab");
+            Assert.IsTrue(isVariant);
+        }
+
+        // don't do this for real, but helpful for us when testing icon validity
+        private static Texture CallIconLazyLoadWithPathOnly(string path, bool doFileRead)
+        {
+            var lazyLoader = new IconLazyLoad();
+            // We don't want to expose it internally but we need to test the icon
+            var methodHandle = typeof(IconLazyLoad).GetMethod("FastIconFromPath",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.IsNotNull(methodHandle);
+            return methodHandle.Invoke(lazyLoader, new object[] { path, doFileRead }) as Texture;
+        }
+
+        private static void TestPathIsLoadedSameFromAssetDBAsFastPath(string path, bool doFileRead, string expected)
+        {
+            var tex = CallIconLazyLoadWithPathOnly(path, doFileRead);
+            if (expected == null)
+            {
+                Assert.IsNull(tex);
+                return;
+            }
+            // ensure pass condition does not depend on which editor skin we use
+            var name = tex.name;
+            if (tex.name.StartsWith("d_"))
+                name = tex.name.Substring(2);
+            Assert.AreEqual(name, expected);
+        }
+
+        [Test]
+        public void TestFastIcon_ValidForPrefabsAndAssets()
+        {
+            using var testTexture = new DisposableTestTexture("Assets/SomeTexture.png");
+            using var disposableTestAsset = new DisposableTestAsset("Assets/SomeAsset.asset");
+            using var disposableTestPrefabs = new DisposableTestPrefabPlusVariant("Assets/Prefab.prefab", "Assets/PrefabVariant.prefab");
+
+            // Assets which we don't have a fast case for...
+            Assert.IsNull(CallIconLazyLoadWithPathOnly("Assets/SomeTexture.png", false), "Texture icon should be null as it cannot be fast loaded");
+            Assert.IsNull(CallIconLazyLoadWithPathOnly("Assets/SomeTexture.png", true), "Texture icon should be null as it cannot be fast loaded");
+
+#if UNITY_6000_6_OR_NEWER
+            // We expect the method to immediately return an icon for Scriptable Objects on 6.6+
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/SomeAsset.asset", false, "ScriptableObject Icon");
+#else
+            // We have no default icon for ScriptableObjects - we rely on MiniPreview, so it's Null
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/SomeAsset.asset", false, null);
+#endif
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/Prefab.prefab", false, "Prefab Icon");
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/PrefabVariant.prefab", false, "Prefab Icon");
+
+            // And, if we do perform file reads, we expect them to match AssetDB
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/SomeAsset.asset", true, "ScriptableObject Icon");
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/Prefab.prefab", true, "Prefab Icon");
+            TestPathIsLoadedSameFromAssetDBAsFastPath("Assets/PrefabVariant.prefab", true, "PrefabVariant Icon");
+        }
+    }
+}

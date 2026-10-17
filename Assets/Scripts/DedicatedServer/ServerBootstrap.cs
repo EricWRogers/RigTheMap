@@ -3,7 +3,7 @@
 using System;
 using Unity.Entities;
 using Unity.GhostBridge;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

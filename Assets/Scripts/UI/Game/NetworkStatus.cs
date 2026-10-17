@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 

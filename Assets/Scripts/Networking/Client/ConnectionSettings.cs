@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Networking.Transport;
 using Unity.Properties;
 using UnityEngine;

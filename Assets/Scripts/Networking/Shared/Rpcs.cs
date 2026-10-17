@@ -1,5 +1,5 @@
 using Unity.Collections;
-using Unity.NetCode;
+using Unity.Netcode;
 
 namespace Unity.MP_FPS
 {

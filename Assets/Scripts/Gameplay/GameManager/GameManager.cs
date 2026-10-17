@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Unity.Entities;
 using Unity.GhostBridge;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,6 +28,7 @@ namespace Unity.MP_FPS
         World m_LobbyServerWorld;
         World m_LobbyClientWorld;
         CancellationToken m_LobbyCancellationToken;
+        bool m_IsStartingGame;
 
         public bool IsLobbyHost { get; private set;}
 
@@ -138,6 +139,25 @@ namespace Unity.MP_FPS
         /// It is an asynchronous method because it is waiting on several API like <see cref="GameConnection"/> and <see cref="ScenesLoader"/>.
         /// </remarks>
         public async void StartGameAsync(CreationType creationType)
+        {
+            // This entry point can be invoked repeatedly while the host/join popup is open.
+            // Each invocation would otherwise continue after the same popup completes and
+            // create another server world that tries to bind the same NetworkDriver/port.
+            if (m_IsStartingGame)
+                return;
+
+            m_IsStartingGame = true;
+            try
+            {
+                await StartGameFlowAsync(creationType);
+            }
+            finally
+            {
+                m_IsStartingGame = false;
+            }
+        }
+
+        async Task StartGameFlowAsync(CreationType creationType)
         {
             await ScenesLoader.UnloadGameplayScenesAsync();
 
