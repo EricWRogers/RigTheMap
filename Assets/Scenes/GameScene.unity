@@ -2366,6 +2366,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 3501251966
@@ -2379,6 +2380,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 2016864717
@@ -35348,6 +35350,7 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
     m_GhostGuid:
       Value:
         x: 1969000126

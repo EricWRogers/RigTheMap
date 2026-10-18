@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5869001240653596464}
   - component: {fileID: 8033120090161341947}
   - component: {fileID: 7072408786571686050}
-  - component: {fileID: 4986803928399122332}
   m_Layer: 0
   m_Name: HealthPackManager
   m_TagString: Untagged
@@ -88,15 +87,3 @@ MonoBehaviour:
   Importance: 1
   MaxSendRate: 0
   prefabId: e9c81437f466b8f4ba1ee9abf50326d4
---- !u!114 &4986803928399122332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328391834410304706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa48867d5ec963e468d4ad1380ce3084, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthPackManager

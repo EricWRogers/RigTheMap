@@ -1,15 +1,9 @@
-using System;
-using Unity.Entities;
 using Unity.MP_FPS;
 using UnityEngine;
-using static GhostSpawner;
-
-using Hash128 = Unity.Entities.Hash128;
-
 
 public class HealthPack : GhostMonoBehaviour, IUpdateServer
 {
-    [SerializeField] private float m_HealAmount = 60f;
+    [SerializeField] private float m_HealAmount = 50f;
     [SerializeField] private float m_PickupRadius = 0.8f;
     [SerializeField] private LayerMask m_PlayerLayerMask;
 
@@ -50,22 +44,23 @@ public class HealthPack : GhostMonoBehaviour, IUpdateServer
             }
 
             var predicted = playerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
-            predicted.CurrentHealth = Mathf.Min(predicted.MaxHealth, predicted.CurrentHealth + m_HealAmount);
+
+            var previousHealth = predicted.CurrentHealth;
+            var newHealth = Mathf.Min(predicted.MaxHealth, previousHealth + m_HealAmount);
+
+            if (newHealth <= previousHealth)
+            {
+                continue;
+            }
+
+            predicted.CurrentHealth = newHealth;
             playerGhost.GhostGameObject.WriteGhostComponentData(predicted);
 
-            if (predicted.CurrentHealth  <=predicted.MaxHealth)
-            {
-                m_Collected = true;
-            }
-            if (m_Collected == true)
+            m_Collected = true;
+            if (m_Collected)
             {
                 GhostGameObject.DestroyEntity();
             }
         }
-    }
-
-    public static bool SpawnGhostPrefab(GhostReference ghostPrefab, Vector3 spawnPos, Quaternion spawnRot, Hash128 netGuid, float uniformScale = 1.0f, Action<Entity, EntityCommandBuffer> postSpawnSpecialisation = null)
-    {
-        return GhostSpawner.SpawnGhostPrefab(ghostPrefab, spawnPos, spawnRot, netGuid, uniformScale, postSpawnSpecialisation);
     }
 }

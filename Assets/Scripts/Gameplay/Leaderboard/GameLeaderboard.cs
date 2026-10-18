@@ -17,7 +17,6 @@ namespace Gameplay.Leaderboard
         public int CurrentRound => _currentRound;
         public float BuildTimer => _buildTimer ;
         private float _buildTimerSyncAccumulator;
-        public bool HealthPackSpawned { get; set; } = false;
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
         private bool _hasInvokedInitialBuildMode = false;
@@ -39,11 +38,6 @@ namespace Gameplay.Leaderboard
             public float BuildTimer;
         }
 
-        public struct HealthPackSpawnedRpc : IRpcCommand
-        {
-            public bool HealthPackSpawned;
-        }
-
         public struct BuyBuildItemRpc : IRpcCommand
         {
             public int NetworkId;
@@ -51,11 +45,9 @@ namespace Gameplay.Leaderboard
             public int Cost;
         }
 
+
         private int _currentRound = 1;
         private float _buildTimer = 40f;
-
-        [SerializeField] private GhostSpawner.GhostReference m_HealthPackPrefab;
-        [SerializeField] private Transform[] m_HealthPackSpawnPoints;
 
         private bool _initialBuildPhase = true;
 
@@ -310,7 +302,26 @@ namespace Gameplay.Leaderboard
                     $"[ROUND] Starting Round {_currentRound}"
                 );
 
-                SpawnHealthPack();
+                try //Health Packs spawn at round start after checking for their spawner
+                {
+                    var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
+                    if (healthSpawners != null && healthSpawners.Length > 0)
+                    {
+                        foreach (var sp in healthSpawners)
+                        {
+                            if (sp != null)
+                                sp.SpawnHealthPack();
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn health packs.");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[LeaderboardManager] Error while spawning health packs: {e}");
+                }
 
                 return;
             }
@@ -354,69 +365,26 @@ namespace Gameplay.Leaderboard
                 $"[ROUND] Starting Round {_currentRound}"
             );
 
-            SpawnHealthPack();
-        }
-
-        public void SpawnHealthPack()
-        {
-            if (Role != MultiplayerRole.Server)
-                return;
-
-            if (m_HealthPackPrefab == null || !m_HealthPackPrefab.GhostGuid.IsValid)
-                return;
-
-            if (Unity.GhostBridge.GhostBridgeManager.Instance == null ||
-                !Unity.GhostBridge.GhostBridgeManager.Instance.IsServerListening())
+            try //Health Packs spawn at round start after checking for their spawner
             {
-                Debug.LogWarning("[LeaderboardManager] Server not listening yet; delaying health pack spawn.");
-                return;
-            }
-
-            Vector3 spawnPos1;
-            Vector3 spawnPos2;
-
-            if (m_HealthPackSpawnPoints != null && m_HealthPackSpawnPoints.Length > 0)
-            {
-                if (m_HealthPackSpawnPoints.Length > 1)
+                var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
+                if (healthSpawners != null && healthSpawners.Length > 0)
                 {
-                    int idx1 = Random.Range(0, m_HealthPackSpawnPoints.Length);
-                    int idx2 = idx1;
-                    while (idx2 == idx1)
-                        idx2 = Random.Range(0, m_HealthPackSpawnPoints.Length);
-
-                    spawnPos1 = m_HealthPackSpawnPoints[idx1].position;
-                    spawnPos2 = m_HealthPackSpawnPoints[idx2].position;
+                    foreach (var sp in healthSpawners)
+                    {
+                        if (sp != null)
+                            sp.SpawnHealthPack();
+                    }
                 }
                 else
                 {
-                    spawnPos1 = m_HealthPackSpawnPoints[0].position;
-                    spawnPos2 = spawnPos1 + Vector3.right * 1.5f;
+                    Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn health packs.");
                 }
             }
-            else
+            catch (System.Exception e)
             {
-                spawnPos1 = this.transform.position + Vector3.up * 1.0f;
-                spawnPos2 = spawnPos1 + Vector3.right * 1.5f;
+                Debug.LogError($"[LeaderboardManager] Error while spawning health packs: {e}");
             }
-
-            var netGuid1 = GhostGameObject.GenerateRandomHash();
-            var spawned1 = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos1, Quaternion.identity, netGuid1);
-            if (!spawned1)
-            {
-                Debug.LogError("[LeaderboardManager] Failed to spawn first health pack.");
-            }
-
-            var netGuid2 = GhostGameObject.GenerateRandomHash();
-            var spawned2 = GhostSpawner.SpawnGhostPrefab(m_HealthPackPrefab, spawnPos2, Quaternion.identity, netGuid2);
-            if (!spawned2)
-            {
-                Debug.LogError("[LeaderboardManager] Failed to spawn second health pack.");
-            }
-
-            HealthPackSpawned = spawned1 || spawned2;
-
-            var hpRpc = new HealthPackSpawnedRpc { HealthPackSpawned = HealthPackSpawned };
-            GhostGameObject.BroadcastRPC(hpRpc);
         }
 
         public void AnnouncePlayerJoined(FixedString64Bytes playerName)
@@ -700,17 +668,12 @@ namespace Gameplay.Leaderboard
                     joinRpc.PlayerName.ToString());
             }
 
+
             while (GhostGameObject.ConsumeRPC(
                        out BuyBuildItemRpc purchaseRpc))
             {
                 //send a message to the action feed that the player bought an itme.
                 Debug.Log($"[Client] Player {purchaseRpc.NetworkId} purchased build item {purchaseRpc.BuildItemId} for {purchaseRpc.Cost} build points.");
-            }
-
-            while (GhostGameObject.ConsumeRPC(
-                       out HealthPackSpawnedRpc hpRpc))
-            {
-                HealthPackSpawned = hpRpc.HealthPackSpawned;
             }
         }
     }
