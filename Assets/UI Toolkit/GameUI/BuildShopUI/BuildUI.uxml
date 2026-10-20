@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="build-items-panel" style="flex-grow: 1;">
+        <ui:Label text="Points:" name="points-label"/>
+        <ui:ScrollView name="build-item-scrollview" mode="Horizontal" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" style="height: 419px;"/>
+    </ui:VisualElement>
+</ui:UXML>

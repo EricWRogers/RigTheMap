@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Gameplay.Leaderboard;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Unity.MP_FPS;
+using Unity.MP_FPS.UI;
 
 namespace Gameplay.BuildPoints.UI
 {
@@ -11,9 +13,8 @@ namespace Gameplay.BuildPoints.UI
         public VisualTreeAsset ShopItemTemplate; // UXML template for individual shop items
 
         private VisualElement _rootElement;
-        private ListView _listView;
+        private ScrollView _buildItemScrollView;
         private Label _pointsLabel;
-        private readonly List<ShopItemUiInfo> _items = new();
 
         [System.Serializable]
         public struct ShopItemDefinition
@@ -21,6 +22,7 @@ namespace Gameplay.BuildPoints.UI
             public int ItemId;
             public string ItemName;
             public int Cost;
+            public Sprite ItemIcon;
         }
 
         [Header("Shop Catalog")]
@@ -40,38 +42,36 @@ namespace Gameplay.BuildPoints.UI
         private void Awake()
         {
             var uiDocument = GetComponent<UIDocument>();
-            _rootElement = uiDocument.rootVisualElement;
-            _rootElement.style.display = DisplayStyle.None; // Hidden by default
-
-            _pointsLabel = _rootElement.Q<Label>("points-label");
-            _listView = _rootElement.Q<ListView>("shop-items-list");
-
-            if (_listView != null && ShopItemTemplate != null)
+            if (uiDocument != null)
             {
-                _listView.itemsSource = _items;
-                _listView.makeItem = () => ShopItemTemplate.Instantiate();
-                _listView.bindItem = (element, i) =>
+                _rootElement = uiDocument.rootVisualElement;
+                _rootElement.style.display = DisplayStyle.None; // Start hidden
+
+                _pointsLabel = _rootElement.Q<Label>("points-label");
+                _buildItemScrollView = _rootElement.Q<ScrollView>("build-item-scrollview");
+
+                if (_buildItemScrollView != null)
                 {
-                    var shopItem = _items[i];
-                    var nameLabel = element.Q<Label>("item-name");
-                    var costLabel = element.Q<Label>("item-cost");
-                    var buyButton = element.Q<Button>("buy-button");
-
-                    if (nameLabel != null) nameLabel.text = shopItem.ItemName;
-                    if (costLabel != null) costLabel.text = $"{shopItem.Cost} pts";
-
-                    if (buyButton != null)
-                    {
-                        buyButton.clicked -= shopItem.ClickAction; // Prevent multiple bindings
-                        shopItem.ClickAction = () => OnBuyItemClicked(shopItem.ItemId, shopItem.Cost);
-                        buyButton.clicked += shopItem.ClickAction;
-                    }
-                };
-                _listView.fixedItemHeight = 35;
-                _listView.selectionType = SelectionType.None;
+                    // Force the ScrollView mode to horizontal for the carousel effect
+                    _buildItemScrollView.mode = ScrollViewMode.Horizontal;
+                }
+                else
+                {
+                    Debug.LogError("[BuildShopUi] Could not find 'shop-scroll-view' in the UI Document!");
+                }
             }
+            else
+            {
+                Debug.LogError("[BuildShopUi] No UIDocument component found on this GameObject!");
+            }
+        }
 
-            LoadCatalogIntoList();
+        private void Start()
+        {
+            LoadCatalogIntoScrollView();
+
+            // Start a coroutine to wait for LeaderboardManager to exist and apply initial state
+            StartCoroutine(WaitForLeaderboardManager());
         }
 
         private void OnEnable()
@@ -88,58 +88,21 @@ namespace Gameplay.BuildPoints.UI
         {
             if (_rootElement != null)
             {
+                bool isInGame = GameSettings.Instance != null && GameSettings.Instance.GameState == GlobalGameState.InGame;
+                bool shouldShow = isBuildMode && isInGame;
                 _rootElement.style.display = isBuildMode ? DisplayStyle.Flex : DisplayStyle.None;
-            }
-        }
-
-        private void LoadCatalogIntoList()
-        {
-            _items.Clear();
-            foreach (var item in _availableItems)
-            {
-                _items.Add(new ShopItemUiInfo(item.ItemId, item.ItemName, item.Cost));
-            }
-            _listView?.RefreshItems();
-        }
-
-        private void Start()
-        {
-            var uiDocument = GetComponent<UIDocument>();
-            _rootElement = uiDocument.rootVisualElement;
-            _rootElement.style.display = DisplayStyle.None; // Start hidden
-
-            _pointsLabel = _rootElement.Q<Label>("points-label");
-            _listView = _rootElement.Q<ListView>("shop-items-list");
-
-            if (_listView != null && ShopItemTemplate != null)
-            {
-                _listView.itemsSource = _items;
-                _listView.makeItem = () => ShopItemTemplate.Instantiate();
-                _listView.bindItem = (element, i) =>
+                
+                if (shouldShow)
                 {
-                    var shopItem = _items[i];
-                    var nameLabel = element.Q<Label>("item-name");
-                    var costLabel = element.Q<Label>("item-cost");
-                    var buyButton = element.Q<Button>("buy-button");
-
-                    if (nameLabel != null) nameLabel.text = shopItem.ItemName;
-                    if (costLabel != null) costLabel.text = $"{shopItem.Cost} pts";
-
-                    if (buyButton != null)
-                    {
-                        buyButton.clicked -= shopItem.ClickAction; 
-                        shopItem.ClickAction = () => OnBuyItemClicked(shopItem.ItemId, shopItem.Cost);
-                        buyButton.clicked += shopItem.ClickAction;
-                    }
-                };
-                _listView.fixedItemHeight = 35;
-                _listView.selectionType = SelectionType.None;
+                    UnityEngine.Cursor.visible = true;
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
+                }
+                else if (isBuildMode)
+                {
+                    UnityEngine.Cursor.visible = false;
+                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                }
             }
-
-            LoadCatalogIntoList();
-
-            // Start a coroutine to wait for LeaderboardManager to exist
-            StartCoroutine(WaitForLeaderboardManager());
         }
 
         private System.Collections.IEnumerator WaitForLeaderboardManager()
@@ -155,9 +118,46 @@ namespace Gameplay.BuildPoints.UI
             HandleBuildModeChanged(isBuildMode);
         }
 
+        private void LoadCatalogIntoScrollView()
+        {
+            if (_buildItemScrollView == null || ShopItemTemplate == null) return;
+
+            // Clear any existing children
+            _buildItemScrollView.contentContainer.Clear();
+
+            foreach (var item in _availableItems)
+            {
+                // Instantiate your UXML template for each shop item
+                var itemElement = ShopItemTemplate.Instantiate();
+
+                var iconElement = itemElement.Q<VisualElement>("item-icon");
+                var nameLabel = itemElement.Q<Label>("item-name");
+                var costLabel = itemElement.Q<Label>("item-cost");
+                var buyButton = itemElement.Q<Button>("select-button");
+
+                if (iconElement != null && item.ItemIcon != null)
+                {
+                    iconElement.style.backgroundImage = new StyleBackground(item.ItemIcon);
+                }
+
+                if (nameLabel != null) nameLabel.text = item.ItemName;
+                if (costLabel != null) costLabel.text = $"{item.Cost} pts";
+
+                if (buyButton != null)
+                {
+                    int capturedId = item.ItemId;
+                    int capturedCost = item.Cost;
+                    buyButton.clicked += () => OnBuyItemClicked(capturedId, capturedCost);
+                }
+
+                // Add directly to the ScrollView content container
+                _buildItemScrollView.contentContainer.Add(itemElement);
+            }
+        }
+
         private void Update()
         {
-            if (_rootElement.style.display == DisplayStyle.Flex)
+            if (_rootElement != null && _rootElement.style.display == DisplayStyle.Flex)
             {
                 UpdateLocalPlayerPoints();
             }
@@ -186,21 +186,6 @@ namespace Gameplay.BuildPoints.UI
                 LeaderboardManager.Instance.RequestBuyBuildItem(localNetworkId, itemId, cost);
                 Debug.Log($"[BuildShopUi] Sent purchase request for item ID {itemId} costing {cost} points.");
             }
-        }
-    }
-
-    public class ShopItemUiInfo
-    {
-        public int ItemId;
-        public string ItemName;
-        public int Cost;
-        public System.Action ClickAction;
-
-        public ShopItemUiInfo(int id, string name, int cost)
-        {
-            ItemId = id;
-            ItemName = name;
-            Cost = cost;
         }
     }
 }
