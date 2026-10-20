@@ -37,7 +37,7 @@ namespace Unity.MP_FPS
             {
                 state.EntityManager.DestroyEntity(SystemAPI.GetSingletonEntity<DisableCharacterDynamicContacts>());
             }
-            UnityEngine.Debug.Log("[GAME CLIENT] OnUpdate running.");
+            // UnityEngine.Debug.Log("[GAME CLIENT] OnUpdate running.");
 
             HandleSendJoinRequest(ref state);
         }
@@ -49,7 +49,7 @@ namespace Unity.MP_FPS
             {
                 return;
             }
-            UnityEngine.Debug.Log("[GAME CLIENT] Passed lobby check. Attempting gameplay join.");
+            // UnityEngine.Debug.Log("[GAME CLIENT] Passed lobby check. Attempting gameplay join.");
             
             if (!SystemAPI.TryGetSingletonEntity<NetworkId>(out var clientEntity)
                 || SystemAPI.HasComponent<NetworkStreamInGame>(clientEntity))

@@ -697,4 +697,29 @@ namespace Gameplay.Leaderboard
         public float BuildTimer;
         public int WinningTeamId;
     }
+
+    [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateAfter(typeof(GhostGameObjectRPCReceiveSystem))]
+    [UpdateAfter(typeof(GhostGameObjectUpdateClientSystem))]
+    public partial struct BuildTimerRpcCleanupSystem : ISystem
+    {
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<LeaderboardManager.BuildTimerRpc>();
+        }
+
+        public void OnUpdate(ref SystemState state)
+        {
+            var query = SystemAPI.QueryBuilder()
+                .WithAll<LeaderboardManager.BuildTimerRpc, ReceiveRpcCommandRequest>()
+                .Build();
+
+            using var entities = query.ToEntityArray(Allocator.Temp);
+            foreach (var entity in entities)
+            {
+                state.EntityManager.DestroyEntity(entity);
+            }
+        }
+    }
 }
