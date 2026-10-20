@@ -125,6 +125,16 @@ namespace Unity.MP_FPS
                     ""priority"": 0
                 },
                 {
+                    ""name"": ""StickDelta"",
+                    ""type"": ""Value"",
+                    ""id"": ""76829f38-7808-4fa8-b47e-87d4baee34b2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
+                },
+                {
                     ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""6c2ab1b8-8984-453a-af3d-a3c78ae1679a"",
@@ -178,7 +188,7 @@ namespace Unity.MP_FPS
                     ""name"": ""Next"",
                     ""type"": ""Button"",
                     ""id"": ""b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false,
@@ -223,6 +233,26 @@ namespace Unity.MP_FPS
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildNext"",
+                    ""type"": ""Button"",
+                    ""id"": ""59e311b4-59e5-4df6-a1ac-3a95e1c1a71c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildPrevious"",
+                    ""type"": ""Button"",
+                    ""id"": ""56923fef-fe78-4ba8-b50b-9160aed301bd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -234,6 +264,17 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d77054c9-e8a1-4005-abd8-c8a1fb0f24a1"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=0.1,y=0.1)"",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""StickDelta"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -416,7 +457,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""143bb1cd-cc10-4eca-a2f0-a3664166fe91"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -493,7 +534,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""e15ca19d-e649-4852-97d5-7fe8ccc44e94"",
-                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -581,7 +622,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""25060bbd-a3a6-476e-8fba-45ae484aad05"",
-                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""path"": ""<Gamepad>/dpad/up"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -639,7 +680,18 @@ namespace Unity.MP_FPS
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""RotatePlacementRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6e421511-83f7-4a9c-a0ce-9815dba0e0ab"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""RotatePlacementRight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -650,7 +702,18 @@ namespace Unity.MP_FPS
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""RotatePlacementLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9be18b5-1569-4b86-b5b7-6c8b71b6143b"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""RotatePlacementLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -663,6 +726,50 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DebugToFightRound"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7660bd13-c25f-401b-af78-d9e26fb40872"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7435659-3349-4568-9073-0c175a87d63a"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77a585c9-c612-4eac-b340-11d6471ab656"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildPrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9baf0dd2-5ef8-4d51-af47-7165e0087df7"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildPrevious"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1549,6 +1656,7 @@ namespace Unity.MP_FPS
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_LookDelta = m_Player.FindAction("LookDelta", throwIfNotFound: true);
+            m_Player_StickDelta = m_Player.FindAction("StickDelta", throwIfNotFound: true);
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
@@ -1559,6 +1667,8 @@ namespace Unity.MP_FPS
             m_Player_RotatePlacementRight = m_Player.FindAction("RotatePlacementRight", throwIfNotFound: true);
             m_Player_RotatePlacementLeft = m_Player.FindAction("RotatePlacementLeft", throwIfNotFound: true);
             m_Player_DebugToFightRound = m_Player.FindAction("DebugToFightRound", throwIfNotFound: true);
+            m_Player_BuildNext = m_Player.FindAction("BuildNext", throwIfNotFound: true);
+            m_Player_BuildPrevious = m_Player.FindAction("BuildPrevious", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1666,6 +1776,7 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_LookDelta;
+        private readonly InputAction m_Player_StickDelta;
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Crouch;
@@ -1676,6 +1787,8 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_RotatePlacementRight;
         private readonly InputAction m_Player_RotatePlacementLeft;
         private readonly InputAction m_Player_DebugToFightRound;
+        private readonly InputAction m_Player_BuildNext;
+        private readonly InputAction m_Player_BuildPrevious;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1699,6 +1812,10 @@ namespace Unity.MP_FPS
             /// Provides access to the underlying input action "Player/LookDelta".
             /// </summary>
             public InputAction @LookDelta => m_Wrapper.m_Player_LookDelta;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/StickDelta".
+            /// </summary>
+            public InputAction @StickDelta => m_Wrapper.m_Player_StickDelta;
             /// <summary>
             /// Provides access to the underlying input action "Player/Attack".
             /// </summary>
@@ -1740,6 +1857,14 @@ namespace Unity.MP_FPS
             /// </summary>
             public InputAction @DebugToFightRound => m_Wrapper.m_Player_DebugToFightRound;
             /// <summary>
+            /// Provides access to the underlying input action "Player/BuildNext".
+            /// </summary>
+            public InputAction @BuildNext => m_Wrapper.m_Player_BuildNext;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/BuildPrevious".
+            /// </summary>
+            public InputAction @BuildPrevious => m_Wrapper.m_Player_BuildPrevious;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1774,6 +1899,9 @@ namespace Unity.MP_FPS
                 @LookDelta.started += instance.OnLookDelta;
                 @LookDelta.performed += instance.OnLookDelta;
                 @LookDelta.canceled += instance.OnLookDelta;
+                @StickDelta.started += instance.OnStickDelta;
+                @StickDelta.performed += instance.OnStickDelta;
+                @StickDelta.canceled += instance.OnStickDelta;
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
@@ -1804,6 +1932,12 @@ namespace Unity.MP_FPS
                 @DebugToFightRound.started += instance.OnDebugToFightRound;
                 @DebugToFightRound.performed += instance.OnDebugToFightRound;
                 @DebugToFightRound.canceled += instance.OnDebugToFightRound;
+                @BuildNext.started += instance.OnBuildNext;
+                @BuildNext.performed += instance.OnBuildNext;
+                @BuildNext.canceled += instance.OnBuildNext;
+                @BuildPrevious.started += instance.OnBuildPrevious;
+                @BuildPrevious.performed += instance.OnBuildPrevious;
+                @BuildPrevious.canceled += instance.OnBuildPrevious;
             }
 
             /// <summary>
@@ -1824,6 +1958,9 @@ namespace Unity.MP_FPS
                 @LookDelta.started -= instance.OnLookDelta;
                 @LookDelta.performed -= instance.OnLookDelta;
                 @LookDelta.canceled -= instance.OnLookDelta;
+                @StickDelta.started -= instance.OnStickDelta;
+                @StickDelta.performed -= instance.OnStickDelta;
+                @StickDelta.canceled -= instance.OnStickDelta;
                 @Attack.started -= instance.OnAttack;
                 @Attack.performed -= instance.OnAttack;
                 @Attack.canceled -= instance.OnAttack;
@@ -1854,6 +1991,12 @@ namespace Unity.MP_FPS
                 @DebugToFightRound.started -= instance.OnDebugToFightRound;
                 @DebugToFightRound.performed -= instance.OnDebugToFightRound;
                 @DebugToFightRound.canceled -= instance.OnDebugToFightRound;
+                @BuildNext.started -= instance.OnBuildNext;
+                @BuildNext.performed -= instance.OnBuildNext;
+                @BuildNext.canceled -= instance.OnBuildNext;
+                @BuildPrevious.started -= instance.OnBuildPrevious;
+                @BuildPrevious.performed -= instance.OnBuildPrevious;
+                @BuildPrevious.canceled -= instance.OnBuildPrevious;
             }
 
             /// <summary>
@@ -2349,6 +2492,13 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnLookDelta(InputAction.CallbackContext context);
             /// <summary>
+            /// Method invoked when associated input action "StickDelta" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnStickDelta(InputAction.CallbackContext context);
+            /// <summary>
             /// Method invoked when associated input action "Attack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -2418,6 +2568,20 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDebugToFightRound(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "BuildNext" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnBuildNext(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "BuildPrevious" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnBuildPrevious(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -102,6 +102,10 @@ namespace Unity.MP_FPS
 
         public async void SpawnMuzzleFlash(PlayerGhost player, uint weaponId, bool isFirstPerson)
         {
+            if(WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId).IsPlacementWeapon)
+                return;
+
+
             try
             {
                 if (player == null)

@@ -257,6 +257,10 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 float3 eyePosition = playerGhost.CameraTarget.position;
                                 var aimDirection = math.mul(aimRotation, new float3(0, 0, 1));
+
+                                if(weaponData.IsPlacementWeapon)
+                                    return;
+                                    
                                 var shotOriginPosition = playerGhost.VisualShotOrigin1P.position;
                                     
                                 if (VisualEffectManager.ClientInstance != null)

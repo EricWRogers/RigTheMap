@@ -23,7 +23,7 @@ public struct PlayerInput
     public bool Jump => (InputFlags & (uint)InputFlag.Jump) != 0;
     public bool Shoot => (InputFlags & (uint)InputFlag.Shoot) != 0;
     public bool Reload => (InputFlags & (uint)InputFlag.Reload) != 0;
-    public bool Sprint => (InputFlags & (uint)InputFlag.Sprint) != 0;
+    public bool Sprint => (InputFlags & (uint)InputFlag.Sprint) == 0; // Invert Sprint
     public bool SelectPrimary => (InputFlags & (uint)InputFlag.SelectPrimary) != 0;
     public bool SelectSecondary => (InputFlags & (uint)InputFlag.SelectSecondary) != 0;
     

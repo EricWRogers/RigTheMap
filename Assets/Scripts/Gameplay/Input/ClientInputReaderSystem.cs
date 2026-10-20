@@ -15,6 +15,10 @@ public partial class ClientInputReaderSystem : SystemBase
     public static event System.Action SelectSecondaryRequested;
 
     private float2 _accumulatedLook;
+    private float _lookStickHeldTime;
+    private const float LookStickAccelerationTime = 0.75f;
+    private const float LookStickMinMultiplier = 0.5f;
+    private const float LookStickMaxMultiplier = 2.0f;
     private float _placementRotationDegrees;
 
     private Entity _lastKnownPlayerEntity = Entity.Null;
@@ -82,19 +86,43 @@ public partial class ClientInputReaderSystem : SystemBase
                 float2 moveVector = controls.Player.Move.ReadValue<Vector2>();
                 playerInput.MoveInput = moveVector;
 
-                var addedDelta = (float2)controls.Player.LookDelta.ReadValue<Vector2>();
+                var stickInput = (float2)controls.Player.StickDelta.ReadValue<Vector2>();
+                var mouseInput = (float2)controls.Player.LookDelta.ReadValue<Vector2>();
 
-                const float sensitivity = 3.7f;
-                var lookDelta = addedDelta * sensitivity;
+                const float stickDeadzone = 0.0f;
+                const float mouseSensitivity = 3.7f;
+                const float stickSensitivity = 3.7f;
 
-                // Accumulate the delta to our persistent rotation value
+                float2 lookDelta;
+
+                if (math.lengthsq(stickInput) > stickDeadzone)
+                {
+                    _lookStickHeldTime += World.Time.DeltaTime;
+
+                    float acceleration = math.saturate(
+                        _lookStickHeldTime / LookStickAccelerationTime);
+
+                    float accelerationMultiplier = math.lerp(
+                        LookStickMinMultiplier,
+                        LookStickMaxMultiplier,
+                        acceleration);
+
+                    lookDelta = stickInput * stickSensitivity * accelerationMultiplier;
+                }
+                else
+                {
+                    _lookStickHeldTime = 0f;
+                    lookDelta = mouseInput * mouseSensitivity;
+                }
+
                 _accumulatedLook.x += lookDelta.x;
-                _accumulatedLook.y -= lookDelta.y; // Pitch is typically inverted
+                _accumulatedLook.y -= lookDelta.y;
 
-                // Clamp the vertical angle to prevent looking straight up/down and flipping
-                _accumulatedLook.y = math.clamp(_accumulatedLook.y, -85f, 85f);
+                _accumulatedLook.y = math.clamp(
+                    _accumulatedLook.y,
+                    -85f,
+                    85f);
 
-                // Assign the full, accumulated angle to the input struct
                 playerInput.LookYawPitchDegrees = _accumulatedLook;
 
                 input.ValueRW.SetInput(0, playerInput);
@@ -134,10 +162,12 @@ public partial class ClientInputReaderSystem : SystemBase
             Debug.Log("Select secondary requested");
         }
 
-    if(controls.UI.ScrollWheel.WasPerformedThisFrame())
+        if(controls.UI.ScrollWheel.WasPerformedThisFrame())
         {
             playerInput.WeaponScrollDelta = controls.UI.ScrollWheel.ReadValue<Vector2>().y;
         }
+        
+
         if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())
             _placementRotationDegrees -= 15f;
         if(controls.Player.RotatePlacementRight.WasPressedThisFrame())

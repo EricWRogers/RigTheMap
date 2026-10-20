@@ -158,14 +158,25 @@ public class InputSystemManager : Singleton<InputSystemManager>
 
     private void PairInitialUsers()
     {
+        InputUser user;
+
         if (Keyboard.current != null)
         {
-            var newUser = PairDeviceWithUser(Keyboard.current);
+            user = PairDeviceWithUser(Keyboard.current);
 
             if (Mouse.current != null)
             {
-                InputUser.PerformPairingWithDevice(Mouse.current, newUser);
+                InputUser.PerformPairingWithDevice(Mouse.current, user);
             }
+
+            if (Gamepad.current != null)
+            {
+                InputUser.PerformPairingWithDevice(Gamepad.current, user);
+            }
+        }
+        else if (Gamepad.current != null)
+        {
+            PairDeviceWithUser(Gamepad.current);
         }
 
         m_HasPairedInitialUserDevices = true;
