@@ -215,6 +215,11 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                             predictedPlayer.ValueRW.SelectWeapon(
                                 WeaponRegistry.SixShooterWeaponId,
                                 WeaponRegistry.SixShooterWeaponId);
+                            
+                        }
+                        else if (input.SelectSecondary)
+                        {
+                            input.PrimaryEquipped = true;
                         }
                         else if (input.SelectPrimary)
                         {
@@ -222,6 +227,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                 predictedPlayer.ValueRO.PrimaryWeaponID,
                                 WeaponRegistry.SixShooterWeaponId);
                         }
+
 
                         var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(predictedPlayer.ValueRO.EquippedWeaponID);
                         if (weaponData != null)
@@ -260,7 +266,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 if(weaponData.IsPlacementWeapon)
                                     return;
-                                    
+
                                 var shotOriginPosition = playerGhost.VisualShotOrigin1P.position;
                                     
                                 if (VisualEffectManager.ClientInstance != null)
