@@ -266,6 +266,24 @@ namespace Gameplay.Leaderboard
             BroadcastRoundState(true, false, winningTeamId);
         }
 
+        private void SpawnHealthPacks()
+        {
+            var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
+            if (healthSpawners == null || healthSpawners.Length == 0)
+            {
+                Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn heaelth packs.");
+                return;
+            }
+
+            foreach (var spawner in healthSpawners)
+            {
+                if (spawner != null)
+                {
+                    spawner.SpawnHealthPack();
+                }
+            }
+        }
+
         private void StartNextRound()
         {
             if (Role != MultiplayerRole.Server)
@@ -302,27 +320,7 @@ namespace Gameplay.Leaderboard
                     $"[ROUND] Starting Round {_currentRound}"
                 );
 
-                try //Health Packs spawn at round start after checking for their spawner
-                {
-                    var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
-                    if (healthSpawners != null && healthSpawners.Length > 0)
-                    {
-                        foreach (var sp in healthSpawners)
-                        {
-                            if (sp != null)
-                                sp.SpawnHealthPack();
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn health packs.");
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"[LeaderboardManager] Error while spawning health packs: {e}");
-                }
-
+                SpawnHealthPacks();
                 return;
             }
 
@@ -365,26 +363,7 @@ namespace Gameplay.Leaderboard
                 $"[ROUND] Starting Round {_currentRound}"
             );
 
-            try //Health Packs spawn at round start after checking for their spawner
-            {
-                var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
-                if (healthSpawners != null && healthSpawners.Length > 0)
-                {
-                    foreach (var sp in healthSpawners)
-                    {
-                        if (sp != null)
-                            sp.SpawnHealthPack();
-                    }
-                }
-                else
-                {
-                    Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn health packs.");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[LeaderboardManager] Error while spawning health packs: {e}");
-            }
+            SpawnHealthPacks();
         }
 
         public void AnnouncePlayerJoined(FixedString64Bytes playerName)
