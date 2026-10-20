@@ -1,7 +1,7 @@
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS
@@ -20,13 +20,10 @@ namespace Unity.MP_FPS
         Button m_MainMenuButton;
         Button m_QuitButton;
 
-        public InputAction escape;
-
         void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
-            // GameInput.Actions.UI.TogglePauseMenu.performed += TogglePauseMenuVisibility;
-            escape.Enable();
+            SetGameplayInputEnabled(!GameSettings.Instance.IsPauseMenuOpen);
 
             root.SetBinding("style.display", new DataBinding
             {
@@ -48,8 +45,6 @@ namespace Unity.MP_FPS
 
         void OnDisable()
         {
-            // GameInput.Actions.UI.TogglePauseMenu.performed -= TogglePauseMenuVisibility;
-            escape.Disable();
             m_ResumeButton.clicked -= OnResumePressed;
             m_MainMenuButton.clicked -= OnMainMenuPressed;
             m_QuitButton.clicked -= OnQuitPressed;
@@ -57,7 +52,7 @@ namespace Unity.MP_FPS
 
         void Update()
         {
-            if(escape.WasPressedThisFrame())
+            if (GameInput.Actions.UI.TogglePauseMenu.WasPressedThisFrame())
                 TogglePauseMenuVisibility();
         }
 
@@ -76,9 +71,39 @@ namespace Unity.MP_FPS
 
             // EventSystem.current.SetSelectedGameObject(transform.parent.GetComponentInChildren<PanelRaycaster>().gameObject);
             GameSettings.Instance.IsPauseMenuOpen = !GameSettings.Instance.IsPauseMenuOpen;
+            SetGameplayInputEnabled(!GameSettings.Instance.IsPauseMenuOpen);
         }
 
-        static void OnResumePressed() => GameSettings.Instance.IsPauseMenuOpen = false;
+        static void OnResumePressed()
+        {
+            GameSettings.Instance.IsPauseMenuOpen = false;
+            SetGameplayInputEnabled(true);
+        }
+
+        static void SetGameplayInputEnabled(bool enabled)
+        {
+            if (InputUser.all.Count == 0)
+            {
+                return;
+            }
+
+            var user = InputSystemManager.GetFirstInputUser();
+            if (user.actions is not InputSystem_Actions controls)
+            {
+                return;
+            }
+
+            if (enabled)
+            {
+                controls.Player.Enable();
+                controls.FPS.Enable();
+            }
+            else
+            {
+                controls.Player.Disable();
+                controls.FPS.Disable();
+            }
+        }
 
         static void OnMainMenuPressed()
         {

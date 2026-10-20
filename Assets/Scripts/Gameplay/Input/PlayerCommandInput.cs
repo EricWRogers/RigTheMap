@@ -2,6 +2,7 @@ using NUnit.Framework.Constraints;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.NetCode;
+using UnityEngine;
 
 public struct PlayerInput
 {
@@ -15,6 +16,8 @@ public struct PlayerInput
         SelectSecondary = 1 << 5
     }
 
+
+    public bool PrimaryEquipped {get; set;}
     public float2 MoveInput;
     public float2 LookYawPitchDegrees;
 
@@ -44,6 +47,7 @@ public struct PlayerInput
 
     public void UpdateFrom(in PlayerInput input)
     {
+        PrimaryEquipped = input.PrimaryEquipped;
         InputFlags |= input.InputFlags;
 
         if (input.WeaponScrollDelta != 0)

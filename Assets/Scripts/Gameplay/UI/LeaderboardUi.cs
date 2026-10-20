@@ -3,7 +3,6 @@ using Gameplay.Leaderboard;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS.UI
@@ -24,8 +23,6 @@ namespace Unity.MP_FPS.UI
         readonly List<ScoreUiPlayerInfo> _items = new();
 
         private float _timer;
-
-        public InputAction leaderBoard;
 
         void Awake()
         {
@@ -53,20 +50,6 @@ namespace Unity.MP_FPS.UI
             _listView.RefreshItems();
         }
 
-        void OnEnable()
-        {
-            leaderBoard.Enable();
-            // GameInput.Actions.UI.ShowLeaderboard.started += OnShowLeaderboard;
-            // GameInput.Actions.UI.ShowLeaderboard.canceled += OnHideLeaderboard;
-        }
-        
-        void OnDisable()
-        {
-            leaderBoard.Disable();
-            // GameInput.Actions.UI.ShowLeaderboard.started -= OnShowLeaderboard;
-            // GameInput.Actions.UI.ShowLeaderboard.canceled -= OnHideLeaderboard;
-        }
-        
         private void OnShowLeaderboard()
         {
             _rootElement.style.display = DisplayStyle.Flex;
@@ -115,9 +98,9 @@ namespace Unity.MP_FPS.UI
 
         void Update()
         {
-            if (leaderBoard.WasPressedThisFrame())
+            if (GameInput.Actions.UI.ShowLeaderboard.WasPressedThisFrame())
                 OnShowLeaderboard();
-            else if (leaderBoard.WasReleasedThisFrame())
+            else if (GameInput.Actions.UI.ShowLeaderboard.WasReleasedThisFrame())
                 OnHideLeaderboard();
 
             // Find the current ClientWorld, if any

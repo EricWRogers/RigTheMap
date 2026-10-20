@@ -17,8 +17,9 @@ public partial class ClientInputReaderSystem : SystemBase
     private float2 _accumulatedLook;
     private float _lookStickHeldTime;
     private const float LookStickAccelerationTime = 0.75f;
-    private const float LookStickMinMultiplier = 0.5f;
-    private const float LookStickMaxMultiplier = 2.0f;
+    private const float LookStickMinMultiplier = 1.0f;
+    private const float LookStickMaxMultiplier = 3.0f;
+    private bool _primaryEquipped = true;
     private float _placementRotationDegrees;
 
     private Entity _lastKnownPlayerEntity = Entity.Null;
@@ -79,8 +80,10 @@ public partial class ClientInputReaderSystem : SystemBase
                 var controls = (InputSystem_Actions)user.actions;
 
                 var playerInput = new PlayerInput();
+                playerInput.PrimaryEquipped = _primaryEquipped;
 
                 ProcessGameplayInput(controls, ref playerInput);
+                playerInput.PrimaryEquipped = _primaryEquipped;
 
                 // movement
                 float2 moveVector = controls.Player.Move.ReadValue<Vector2>();
@@ -151,6 +154,8 @@ public partial class ClientInputReaderSystem : SystemBase
         if(controls.Player.Previous.WasPressedThisFrame())
         {
             playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, true);
+            playerInput.SetFlag(PlayerInput.InputFlag.SelectSecondary, false);
+            _primaryEquipped = true;
             SelectPrimaryRequested?.Invoke();
             Debug.Log("Select primary requested");
         }
@@ -158,15 +163,45 @@ public partial class ClientInputReaderSystem : SystemBase
         if(controls.Player.Next.WasPressedThisFrame())
         {
             playerInput.SetFlag(PlayerInput.InputFlag.SelectSecondary, true);
+            playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, false);
+            _primaryEquipped = false;
             SelectSecondaryRequested?.Invoke();
             Debug.Log("Select secondary requested");
+        }
+
+        if (controls.Player.Swap.WasPressedThisFrame())
+        {
+            Debug.LogWarning(playerInput.PrimaryEquipped);
+            if(playerInput.PrimaryEquipped)
+            {
+                playerInput.SetFlag(PlayerInput.InputFlag.SelectSecondary, true);
+                playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, false);
+                _primaryEquipped = false;
+                SelectSecondaryRequested?.Invoke();
+                Debug.Log("Select secondary requested");
+            }
+            else
+            {
+                playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, true);
+                playerInput.SetFlag(PlayerInput.InputFlag.SelectSecondary, false);
+                _primaryEquipped = true;
+                SelectPrimaryRequested?.Invoke();
+                Debug.Log("Select primary requested");
+            }
         }
 
         if(controls.UI.ScrollWheel.WasPerformedThisFrame())
         {
             playerInput.WeaponScrollDelta = controls.UI.ScrollWheel.ReadValue<Vector2>().y;
         }
-        
+        else if (controls.Player.BuildNext.WasPerformedThisFrame())
+        {
+            playerInput.WeaponScrollDelta = 1.0f;
+        }
+        else if (controls.Player.BuildPrevious.WasPerformedThisFrame())
+        {
+            playerInput.WeaponScrollDelta = -1.0f;
+        }
 
         if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())
             _placementRotationDegrees -= 15f;
