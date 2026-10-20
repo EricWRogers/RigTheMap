@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="build-item-card" style="flex-grow: 1;">
+        <ui:VisualElement name="item-icon" style="flex-grow: 1; width: 350px; height: 342px; align-items: auto; align-content: auto; top: 70px; right: 0; position: absolute;"/>
+        <ui:Label text="Item Name" name="item-name"/>
+        <ui:Label text="Item Cost" name="item-cost"/>
+        <ui:Button text="Take" name="select-button" style="visibility: hidden; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; background-color: rgba(188, 188, 188, 0); scale: 1 1; align-content: auto; justify-content: center; align-items: auto; width: 350px; height: 350px;"/>
+    </ui:VisualElement>
+</ui:UXML>
