@@ -11,8 +11,8 @@ public class HealthPackSpawner : GhostMonoBehaviour
 {
     public bool HealthPackSpawned { get; set; }
 
-    [SerializeField] private GhostReference m_HealthPackPrefab;
-    [SerializeField] private Transform[] m_HealthPackSpawnPoint;
+    [SerializeField] public GhostReference m_HealthPackPrefab;
+    [SerializeField] public Transform[] m_HealthPackSpawnPoint;
 
     public static bool SpawnGhostPrefab(GhostReference ghostPrefab, Vector3 spawnPos, Quaternion spawnRot, Hash128 netGuid, float uniformScale = 1.0f,
         Action<Entity, EntityCommandBuffer> postSpawnSpecialisation = null)
