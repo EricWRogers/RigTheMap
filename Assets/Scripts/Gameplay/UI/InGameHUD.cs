@@ -2,6 +2,7 @@
 using UnityEngine.UIElements;
 using Unity.Entities;
 using Unity.NetCode;
+using Gameplay.Leaderboard;
 
 namespace Unity.MP_FPS
 {
@@ -24,8 +25,10 @@ namespace Unity.MP_FPS
         private VisualElement m_TutorialPanel;
         private Label m_TutorialTitle;
         private Label m_TutorialDescription;
+        private int m_LastTutorialRound = -1;
         private float m_TutorialTimer;
-        private bool m_BuildTutorialShown;
+        private uint m_LastTutorialWeaponId = uint.MaxValue;
+        private bool m_HasSeenCombatPhase;
         private VisualElement m_Reticle;
         private VisualElement m_Hitmarker;
 
@@ -81,6 +84,10 @@ namespace Unity.MP_FPS
         {
             m_TutorialPanel.style.display = DisplayStyle.None;
         }
+
+        LeaderboardManager.BuildModeChanged += OnBuildModeChanged;
+
+            InitializeEcs();
         }
 
         private void InitializeEcs()
@@ -134,17 +141,21 @@ namespace Unity.MP_FPS
 
             // Get the player's data directly from the ECS component
             PredictedPlayerGhost playerData = m_LocalPlayerQuery.GetSingleton<PredictedPlayerGhost>();
-            if (!m_BuildTutorialShown)
+            var leaderboard = LeaderboardManager.Instance;
+
+            if (leaderboard != null &&
+                leaderboard.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode &&
+                m_LastTutorialRound != leaderboard.CurrentRound)
             {
+                m_LastTutorialRound = leaderboard.CurrentRound;
+
                 ShowTutorial(
-                    "BUILD MODE",
-                    "Use scroll wheel to change between build items!"
+                    "Build Mode",
+                    "Use scroll wheel to change between build items!\n" +
+                    "Use them wisely, you only get 3 placements per round!"
                 );
-
-                m_BuildTutorialShown = true;
             }
-
-UpdateTutorialTimer();
+             UpdateTutorialTimer();
             
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(playerData.EquippedWeaponID);
             if(m_SelectedBuildingLabel != null)
@@ -167,6 +178,24 @@ UpdateTutorialTimer();
                 }
             }
 
+            if (leaderboard != null && leaderboard.CurrentPhase == LeaderboardManager.RoundPhase.Fighting)
+            {
+                if (!m_HasSeenCombatPhase)
+                {
+                    m_HasSeenCombatPhase = true;
+                    m_LastTutorialWeaponId = uint.MaxValue;
+                }
+                if (weaponData != null && !weaponData.IsPlacementWeapon && playerData.EquippedWeaponID != m_LastTutorialWeaponId)
+                {
+                    m_LastTutorialWeaponId = playerData.EquippedWeaponID;
+
+                    ShowTutorial($"Your Weapon: {weaponData.WeaponName}", weaponData.WeaponDescription);
+                }
+            }
+            else
+            {
+                m_HasSeenCombatPhase = false;
+            }
 
             // Update Health Bar
             if (m_HealthBar != null)
@@ -364,6 +393,19 @@ UpdateTutorialTimer();
 
             if (m_TutorialTimer <= 0f && m_TutorialPanel != null)
                 m_TutorialPanel.style.display = DisplayStyle.None;
+        }
+        private void OnBuildModeChanged(bool isBuildMode)
+        {
+            if(isBuildMode)
+            {
+                ShowTutorial("Build Mode", 
+                "Use scroll wheel to change between build items!");
+            }
+        }
+
+        private void OnDisable()
+        {
+            LeaderboardManager.BuildModeChanged -= OnBuildModeChanged;
         }
 
     }

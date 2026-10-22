@@ -24,6 +24,8 @@ namespace Unity.MP_FPS
     {
         [Header("General")]
         public string WeaponName = "Assault Rifle";
+        [TextArea(2,4)]
+        public string WeaponDescription ="Weapon Description";
         public WeaponType Type = WeaponType.Hitscan;
         public ReticleType ReticleType = ReticleType.TCross;
 
