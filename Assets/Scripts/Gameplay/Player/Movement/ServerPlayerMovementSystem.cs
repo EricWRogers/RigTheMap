@@ -800,10 +800,6 @@ namespace Unity.MP_FPS
                             // Debug.Log(
                             //     $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
                             //     $"scrolled to build item index {nextIndex}.");
-
-                            
-
-                    
                         }
                     }
 

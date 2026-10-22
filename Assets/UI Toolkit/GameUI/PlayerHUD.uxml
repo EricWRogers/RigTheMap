@@ -24,6 +24,11 @@
             <ui:VisualElement name="hit-marker-bar-b" picking-mode="Ignore"/>
             <ui:VisualElement name="hit-marker-bar-c" picking-mode="Ignore"/>
             <ui:VisualElement name="hit-marker-bar-d" picking-mode="Ignore"/>
-        </ui:VisualElement>        
+        </ui:VisualElement>  
+        <ui:VisualElement name="tutorial-panel" style="position: absolute; top: 15%; left: 50%; translate: -50% 0; width: 520px; padding: 20px; background-color: rgba(10, 15, 25, 0.9); border-width: 2px; border-color: rgb(255, 255, 255); border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; display: none;">
+            <ui:Label name="tutorial-title" text="Build Mode" style="font-size: 30px; -unity-font-style: bold; color: rgb(131, 180, 222); -unity-text-align: middle-center; margin-bottom: 10px;" />
+            <ui:Label name="tutorial-description" text="Use scroll wheel to change between build items!" style="font-size: 22px; color: white; -unity-text-align: middle-center; white-space: normal;" />
+
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

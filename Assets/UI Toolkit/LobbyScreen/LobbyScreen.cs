@@ -30,6 +30,11 @@ namespace Unity.MP_FPS.Client
 
             RefreshPlayerList();
             UpdateStartGameButton();
+
+            if (m_ReadyButton != null)
+            {
+                m_ReadyButton.text = LobbyRoster.LocalPlayerReady ? "Cancel" : "Ready";
+            }
         }
 
         void RefreshPlayerList()
@@ -112,6 +117,11 @@ namespace Unity.MP_FPS.Client
 
             if (m_ReadyButton != null)
                 m_ReadyButton.clicked += OnReadyPressed;
+            
+            if (m_ReadyButton != null)
+            {
+                m_ReadyButton.text = "Ready";
+            }
         }
 
        

@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 684136248}
   - component: {fileID: 684136249}
   - component: {fileID: 684136250}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,7 +331,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: 5c62f99c56dafb646950dd9cfc028828, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: d86788cab2b968142b51f7bc96d69bc2, type: 3}
-  m_SortingOrder: 50
+  m_SortingOrder: 200
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -351,24 +351,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77b782d7864d064d91b9f1cc9ed70d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.PauseMenu
-  escape:
-    m_Name: Escape
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: a691a1e6-dd59-42a6-88b9-ee3ffa023cfe
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: f39db168-b7be-4944-9a0d-154e3ca8ccbc
-      m_Path: <Keyboard>/escape
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Escape
-      m_Flags: 0
-    m_Flags: 0
-    m_Priority: 0
 --- !u!1 &844471872
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,7 +362,7 @@ GameObject:
   - component: {fileID: 844471873}
   - component: {fileID: 844471875}
   - component: {fileID: 844471874}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: LobbyScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -446,6 +428,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 316593676404671401, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 316593676404671401, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -456,6 +442,10 @@ PrefabInstance:
     - target: {fileID: 2636359527622379653, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4571240859535065018, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5169997198457494746, guid: a3a985a5b25a4f24589850e194a8566f, type: 3}
       propertyPath: m_IsActive
@@ -643,7 +633,7 @@ GameObject:
   - component: {fileID: 1531180912}
   - component: {fileID: 1531180914}
   - component: {fileID: 1531180915}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BuildMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -679,8 +669,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: 5c62f99c56dafb646950dd9cfc028828, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: e815184028b7f7244a13117323392114, type: 3}
-  m_SortingOrder: 200
+  sourceAsset: {fileID: 9197481963319205126, guid: 9659a349dcfc3994eb36f6fbed8523a6, type: 3}
+  m_SortingOrder: 1
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
@@ -700,35 +690,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f799b6a820cdc174cba00481652d77a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.BuildPoints.UI.BuildShopUI
-  ShopItemTemplate: {fileID: 9197481963319205126, guid: bc8b6b2324eec354ea218c47e72e55eb, type: 3}
+  ShopItemTemplate: {fileID: 9197481963319205126, guid: 5ea6c3c6b6d29ab46ba2f5f9c297495d, type: 3}
   _availableItems:
   - ItemId: 1
-    ItemName: Wall
-    Cost: 5
-  - ItemId: 2
-    ItemName: Bounce Pad
-    Cost: 3
-  - ItemId: 3
-    ItemName: Spike Trap
-    Cost: 7
-  - ItemId: 4
-    ItemName: Health Pack
-    Cost: 3
-  - ItemId: 5
-    ItemName: One Way Wall
-    Cost: 8
-  - ItemId: 6
-    ItemName: Honey
-    Cost: 4
-  - ItemId: 7
     ItemName: Ice
-    Cost: 6
-  - ItemId: 8
-    ItemName: Tower
-    Cost: 10
-  - ItemId: 9
-    ItemName: TrenchBarricade
     Cost: 5
+    ItemIcon: {fileID: 21300000, guid: e27c3bc673648304d93313bed50b0ee7, type: 3}
+  - ItemId: 9
+    ItemName: Tower
+    Cost: 5
+    ItemIcon: {fileID: 21300000, guid: c234a27557e97fa4c95a8966c6c17716, type: 3}
+  - ItemId: 2
+    ItemName: Honey
+    Cost: 3
+    ItemIcon: {fileID: 21300000, guid: 39fd089cb7ab14a4ca1eb88ceb850b9d, type: 3}
+  - ItemId: 3
+    ItemName: Trench Barricade
+    Cost: 7
+    ItemIcon: {fileID: 21300000, guid: 3f750f896a8a7074d9c02bc220747cd4, type: 3}
+  - ItemId: 4
+    ItemName: Jump Pad
+    Cost: 3
+    ItemIcon: {fileID: 21300000, guid: fc601b1af50dd3d4db3b8896eb8402c1, type: 3}
+  - ItemId: 5
+    ItemName: Spike Trap
+    Cost: 8
+    ItemIcon: {fileID: 21300000, guid: b42cb99165ed0b046b4984770de72fe4, type: 3}
+  - ItemId: 6
+    ItemName: Healthpack
+    Cost: 4
+    ItemIcon: {fileID: 21300000, guid: 873fbe5bb4e28524398ed3eac7afc517, type: 3}
+  - ItemId: 7
+    ItemName: Healthpack
+    Cost: 4
+    ItemIcon: {fileID: 21300000, guid: 873fbe5bb4e28524398ed3eac7afc517, type: 3}
+  - ItemId: 8
+    ItemName: OWW
+    Cost: 10
+    ItemIcon: {fileID: 21300000, guid: fd1a04382badca8429f53002bb967f99, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

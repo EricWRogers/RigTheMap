@@ -253,6 +253,16 @@ namespace Unity.MP_FPS
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Swap"",
+                    ""type"": ""Button"",
+                    ""id"": ""c14ad8cf-221b-4e6a-a795-256569c38525"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -533,17 +543,6 @@ namespace Unity.MP_FPS
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e15ca19d-e649-4852-97d5-7fe8ccc44e94"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Next"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""f2e9ba44-c423-42a7-ad56-f20975884794"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
@@ -621,17 +620,6 @@ namespace Unity.MP_FPS
                 },
                 {
                     ""name"": """",
-                    ""id"": ""25060bbd-a3a6-476e-8fba-45ae484aad05"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Previous"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""1c04ea5f-b012-41d1-a6f7-02e963b52893"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -688,7 +676,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""6e421511-83f7-4a9c-a0ce-9815dba0e0ab"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -710,7 +698,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""a9be18b5-1569-4b86-b5b7-6c8b71b6143b"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/dpad/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -732,7 +720,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""7660bd13-c25f-401b-af78-d9e26fb40872"",
-                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""path"": ""<Gamepad>/dpad/up"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -754,7 +742,7 @@ namespace Unity.MP_FPS
                 {
                     ""name"": """",
                     ""id"": ""77a585c9-c612-4eac-b340-11d6471ab656"",
-                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -770,6 +758,17 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""BuildPrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d4204e78-cf9e-404d-bbb3-8b91c11a2355"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Swap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -803,7 +802,7 @@ namespace Unity.MP_FPS
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""15cef263-9014-4fd5-94d9-4e4a6234a6ef"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false,
@@ -1332,6 +1331,17 @@ namespace Unity.MP_FPS
                 },
                 {
                     ""name"": """",
+                    ""id"": ""a34ebaa3-c5dc-4849-80a1-4d791c2b3325"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""TogglePauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""903d3bdb-a02c-456f-979d-d9b8d9be86a4"",
                     ""path"": ""<Keyboard>/tab"",
                     ""interactions"": """",
@@ -1433,6 +1443,17 @@ namespace Unity.MP_FPS
                 },
                 {
                     ""name"": """",
+                    ""id"": ""6d2ce1f6-20d4-4a0b-bf0b-15d2c4e6e5ce"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ShootSingle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""fed218b7-dcaf-46ae-9c47-413e51f9bf47"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -1460,6 +1481,17 @@ namespace Unity.MP_FPS
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1f1a1eb1-e1c3-47ea-b276-a5f9b6ee807c"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1669,6 +1701,7 @@ namespace Unity.MP_FPS
             m_Player_DebugToFightRound = m_Player.FindAction("DebugToFightRound", throwIfNotFound: true);
             m_Player_BuildNext = m_Player.FindAction("BuildNext", throwIfNotFound: true);
             m_Player_BuildPrevious = m_Player.FindAction("BuildPrevious", throwIfNotFound: true);
+            m_Player_Swap = m_Player.FindAction("Swap", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1789,6 +1822,7 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_DebugToFightRound;
         private readonly InputAction m_Player_BuildNext;
         private readonly InputAction m_Player_BuildPrevious;
+        private readonly InputAction m_Player_Swap;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1865,6 +1899,10 @@ namespace Unity.MP_FPS
             /// </summary>
             public InputAction @BuildPrevious => m_Wrapper.m_Player_BuildPrevious;
             /// <summary>
+            /// Provides access to the underlying input action "Player/Swap".
+            /// </summary>
+            public InputAction @Swap => m_Wrapper.m_Player_Swap;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1938,6 +1976,9 @@ namespace Unity.MP_FPS
                 @BuildPrevious.started += instance.OnBuildPrevious;
                 @BuildPrevious.performed += instance.OnBuildPrevious;
                 @BuildPrevious.canceled += instance.OnBuildPrevious;
+                @Swap.started += instance.OnSwap;
+                @Swap.performed += instance.OnSwap;
+                @Swap.canceled += instance.OnSwap;
             }
 
             /// <summary>
@@ -1997,6 +2038,9 @@ namespace Unity.MP_FPS
                 @BuildPrevious.started -= instance.OnBuildPrevious;
                 @BuildPrevious.performed -= instance.OnBuildPrevious;
                 @BuildPrevious.canceled -= instance.OnBuildPrevious;
+                @Swap.started -= instance.OnSwap;
+                @Swap.performed -= instance.OnSwap;
+                @Swap.canceled -= instance.OnSwap;
             }
 
             /// <summary>
@@ -2582,6 +2626,13 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnBuildPrevious(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Swap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSwap(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
