@@ -271,7 +271,7 @@ namespace Gameplay.Leaderboard
             var healthSpawners = Object.FindObjectsByType<HealthPackSpawner>(FindObjectsSortMode.None);
             if (healthSpawners == null || healthSpawners.Length == 0)
             {
-                Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn heaelth packs.");
+                Debug.Log("[LeaderboardManager] No HealthPackSpawner found to spawn health packs.");
                 return;
             }
 
