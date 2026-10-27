@@ -947,18 +947,26 @@ namespace Unity.MP_FPS
                                         weaponData.HitscanRange,
                                         placementMask))
                                 {
-                                    
-
                                     var placementPosition =
                                         placementHit.point +
                                         placementHit.normal *
                                         weaponData.PlacementOffset;
 
+                                    var selectedPrefab =
+                                        weaponData.PlacementGhostPrefabs[selectedIndex];
+                                    if (selectedPrefab == null ||
+                                        selectedPrefab.GhostPrefab == null ||
+                                        !selectedPrefab.GhostGuid.IsValid)
+                                    {
+                                        Debug.LogWarning(
+                                            $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} selected an invalid placement prefab.");
+                                        continue;
+                                    }
+
                                     Quaternion surfaceRotation =
-                                        weaponData.PlacementGhostPrefabs[selectedIndex]
-                                            .GetPlacementRotation(
-                                                placementHit.normal,
-                                                commandInput.PlayerInput.PlacementRotationDegrees);
+                                        selectedPrefab.GetPlacementRotation(
+                                            placementHit.normal,
+                                            commandInput.PlayerInput.PlacementRotationDegrees);
 
                                     var modelCorrection =
                                         Quaternion.Euler(
@@ -975,30 +983,22 @@ namespace Unity.MP_FPS
                                             0,
                                             weaponData.PlacementGhostPrefabs.Count - 1);
 
-                                    var selectedPrefab =
-                                        weaponData.PlacementGhostPrefabs[
-                                            selectedIndex];
+                                    placementSpawnList.Add(
+                                        (
+                                            placementPosition,
+                                            placementRotation,
+                                            selectedPrefab
+                                        ));
 
-                                    if (selectedPrefab.GhostPrefab != null &&
-                                        selectedPrefab.GhostGuid.IsValid)
-                                    {
-                                        placementSpawnList.Add(
-                                            (
-                                                placementPosition,
-                                                placementRotation,
-                                                selectedPrefab
-                                            ));
+                                    predictedPlayer.ValueRW.BuildPlacementsUsed++;
 
-                                        predictedPlayer.ValueRW.BuildPlacementsUsed++;
+                                    Debug.Log(
+                                        $"[Build Mode] Player has used " +
+                                        $"{predictedPlayer.ValueRO.BuildPlacementsUsed}/3 placements.");
 
-                                        Debug.Log(
-                                            $"[Build Mode] Player has used " +
-                                            $"{predictedPlayer.ValueRO.BuildPlacementsUsed}/3 placements.");
-
-                                        Debug.Log(
-                                            "[Server] Purple death orb placed at " +
-                                            placementPosition.ToString());
-                                    }
+                                    Debug.Log(
+                                        "[Server] Purple death orb placed at " +
+                                        placementPosition.ToString());
                                 }
 
                                 continue;
@@ -1456,6 +1456,13 @@ namespace Unity.MP_FPS
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
+                        deltaTime);
+                }
+                else
+                {
+                    controllerLink.Controller.GroundedCheck(
+                        ref predictedPlayer.ValueRW.ControllerState,
+                        controllerConsts.ValueRO.ControllerConsts,
                         deltaTime);
                 }
 

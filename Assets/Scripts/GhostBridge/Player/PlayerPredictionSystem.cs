@@ -1,6 +1,5 @@
 // #define PREDICTION_DEBUG_LOGGING
 
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -196,8 +195,6 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
             predictedPlayer.ValueRW.RequestApplyMovement = false;
 
-            var placementSpawns = new List<(Vector3 Position, Quaternion Rotation, GhostSpawner.GhostReference Prefab)>();
-
             if (commands.Length > 0)
             {
                 float accumulateDT = dt;
@@ -264,16 +261,6 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                 float3 eyePosition = playerGhost.CameraTarget.position;
                                 var aimDirection = math.mul(aimRotation, new float3(0, 0, 1));
 
-                                if(weaponData.IsPlacementWeapon)
-                                    return;
-
-                                var shotOriginPosition = playerGhost.VisualShotOrigin1P.position;
-                                    
-                                if (VisualEffectManager.ClientInstance != null)
-                                {
-                                    VisualEffectManager.ClientInstance.SpawnMuzzleFlash(playerGhost, predictedPlayer.ValueRO.EquippedWeaponID, true);
-                                }
-
                                 if (weaponData.IsPlacementWeapon)
                                 {
                                     if (predictedPlayer.ValueRO.BuildPlacementsUsed >= 3)
@@ -304,10 +291,17 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         0,
                                         weaponData.PlacementGhostPrefabs.Count - 1);
 
-                                        surfaceRotation = weaponData.PlacementGhostPrefabs[selectedIndex]
-                                            .GetPlacementRotation(
-                                                placementHit.normal,
-                                                input.PlacementRotationDegrees);
+                                        var placementPrefab = weaponData.PlacementGhostPrefabs[selectedIndex];
+                                        if (placementPrefab == null ||
+                                            placementPrefab.GhostPrefab == null ||
+                                            !placementPrefab.GhostGuid.IsValid)
+                                        {
+                                            continue;
+                                        }
+
+                                        surfaceRotation = placementPrefab.GetPlacementRotation(
+                                            placementHit.normal,
+                                            input.PlacementRotationDegrees);
 
                                         var modelCorrection = Quaternion.Euler(0f, 0f, 0f);
                                         var placementRotation =
@@ -319,19 +313,26 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         //     placementRotation = Quaternion.Euler(90f, input.PlacementRotationDegrees, 0f);
                                         // }
 
-                                        Debug.DrawLine(shotOriginPosition, placementPos, Color.green, 0.5f);
+                                        Debug.DrawLine(eyePosition, placementPos, Color.green, 0.5f);
 
                                        
-                                        var placementPrefab = weaponData.PlacementGhostPrefabs[selectedIndex];
-
-                                        if (placementPrefab.GhostPrefab != null && placementPrefab.GhostGuid.IsValid)
-                                        {
-                                            placementSpawns.Add((placementPos, placementRotation, placementPrefab));
-                                        }
                                     }
 
                                     continue;
                                 }  
+
+                                var shotOrigin = playerGhost.VisualShotOrigin1P != null
+                                    ? playerGhost.VisualShotOrigin1P
+                                    : playerGhost.CameraTarget != null
+                                        ? playerGhost.CameraTarget
+                                        : playerGhost.transform;
+                                var shotOriginPosition = shotOrigin.position;
+
+                                if (VisualEffectManager.ClientInstance != null)
+                                {
+                                    VisualEffectManager.ClientInstance.SpawnMuzzleFlash(playerGhost, predictedPlayer.ValueRO.EquippedWeaponID, true);
+                                }
+
                                 if (weaponData.Type == WeaponType.Hitscan)
                                 {
                                     Vector3 endPoint;
@@ -389,15 +390,6 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                             }
                         }
                     }
-                }
-
-                foreach (var placement in placementSpawns)
-                {
-                    GhostSpawner.SpawnGhostPrefab(
-                        placement.Prefab,
-                        placement.Position,
-                        placement.Rotation,
-                        GhostGameObject.GenerateRandomHash());
                 }
 
                 // apply

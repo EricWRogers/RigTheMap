@@ -319,3 +319,8 @@ ProgressBar .unity-progress-bar__progress {
     margin-bottom: 15px;
     white-space: normal;
 }
+
+.lobby-player {
+    align-self: stretch;
+    -unity-text-align: middle-left;
+}
