@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.MP_FPS;
 using Unity.MP_FPS.UI;
+using Unity.Entities;
+using Unity.NetCode;
 
 namespace Gameplay.BuildPoints.UI
 {
@@ -185,7 +187,43 @@ namespace Gameplay.BuildPoints.UI
                 int localNetworkId = scores[0].NetworkId;
                 LeaderboardManager.Instance.RequestBuyBuildItem(localNetworkId, itemId, cost);
                 Debug.Log($"[BuildShopUi] Sent purchase request for item ID {itemId} costing {cost} points.");
+                UpdateLocalPlayerSelection(itemId);
             }
+        }
+
+        private void UpdateLocalPlayerSelection(int itemId)
+        {
+            int targetIndex = Mathf.Max(0, itemId - 1);
+
+            var world = World.DefaultGameObjectInjectionWorld;
+            if (world == null) return;
+
+            var entityManager = world.EntityManager;
+
+            EntityQuery playerQuery = entityManager.CreateEntityQuery(
+                typeof(PredictedPlayerGhost),
+                typeof(Unity.NetCode.GhostOwner)
+            );
+
+            if (!playerQuery.IsEmpty)
+            {
+                using var entities = playerQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
+                foreach (var entity in entities)
+                {
+                    var ghostOwner = entityManager.GetComponentData<Unity.NetCode.GhostOwner>(entity);
+
+                    if (entityManager.HasComponent<Unity.NetCode.GhostOwnerIsLocal>(entity))
+                    {
+                        var playerData = entityManager.GetComponentData<PredictedPlayerGhost>(entity);
+                        playerData.SelectedPlacementPrefabIndex = targetIndex;
+                        entityManager.SetComponentData(entity, playerData);
+
+                        Debug.Log($"[BuildShopUI] Updated SelectedPlacementPrefabIndex to {targetIndex} for item ID {itemId}");
+                        break;
+                    }
+                }
+            }
+            playerQuery.Dispose();
         }
     }
 }

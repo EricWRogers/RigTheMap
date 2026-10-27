@@ -119,7 +119,131 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &160666460
+--- !u!1001 &80868112
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (16)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &80868113 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 80868112}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &87536937
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 103.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.1800003
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &87536938 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 87536937}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &106266780
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,92 +251,234 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 160666463}
-  - component: {fileID: 160666462}
-  - component: {fileID: 160666461}
+  - component: {fileID: 106266781}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Tree01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!154 &160666461
-TerrainCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160666460}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: f482586f908d0264d90b58f99367f278, type: 2}
-  m_EnableTreeColliders: 1
---- !u!218 &160666462
-Terrain:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160666460}
-  m_Enabled: 1
-  serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: f482586f908d0264d90b58f99367f278, type: 2}
-  m_TreeDistance: 5000
-  m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
-  m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
-  m_HeightmapMinimumLODSimplification: 0
-  m_HeightmapMaximumLOD: 0
-  m_ShadowCastingMode: 2
-  m_DrawHeightmap: 1
-  m_DrawInstanced: 0
-  m_DrawTreesAndFoliage: 1
-  m_StaticShadowCaster: 0
-  m_IgnoreQualitySettings: 0
-  m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
-  m_BakeLightProbesForTrees: 1
-  m_PreserveTreePrototypeLayers: 0
-  m_DeringLightProbesForTrees: 1
-  m_ReceiveGI: 1
-  m_ScaleInLightmap: 0.0256
-  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
-  m_GroupingID: 0
-  m_RenderingLayerMask: 1
-  m_AllowAutoConnect: 1
-  m_EnableHeightmapRayTracing: 1
-  m_EnableTreesAndDetailsRayTracing: 0
-  m_EnableHeightmapLODFrustumCulling: 1
-  m_TreeMotionVectorModeOverride: 3
---- !u!4 &160666463
+--- !u!4 &106266781
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160666460}
+  m_GameObject: {fileID: 106266780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.7}
+  m_LocalPosition: {x: -69.88, y: 0.074999675, z: 97.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1925638754}
+  - {fileID: 863473121}
+  - {fileID: 1908910027}
+  - {fileID: 87536938}
+  - {fileID: 989819375}
+  - {fileID: 1640261333}
+  - {fileID: 1618124484}
+  - {fileID: 165073965}
+  - {fileID: 117158778}
+  - {fileID: 1294566347}
+  - {fileID: 901488340}
+  - {fileID: 1321741664}
+  - {fileID: 798785703}
+  - {fileID: 1545898464}
+  - {fileID: 660314744}
+  - {fileID: 748270984}
+  - {fileID: 1677916453}
+  - {fileID: 723129297}
+  - {fileID: 80868113}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &117158777
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 70.32
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.2799988
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (18)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &117158778 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 117158777}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &165073964
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 76.549995
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.2799988
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (17)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &165073965 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 165073964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &211388998
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 52.61
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.1600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (16)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &211388999 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 211388998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &306639459
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,6 +516,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 3501251966
@@ -263,6 +531,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2016864717
@@ -284,6 +554,254 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &312459133
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 32.85
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.15000153
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (19)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &312459134 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 312459133}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &336875493
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.8999977
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.3199997
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (23)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &336875494 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 336875493}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &356628553
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 115.34
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.4900055
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &356628554 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 356628553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &407303262
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 122.92
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.6600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &407303263 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 407303262}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &456073838
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,6 +929,254 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1001 &470465461
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 21.309998
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.2300034
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (21)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &470465462 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 470465461}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &483038000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 134.98
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.6600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &483038001 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 483038000}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &485047867
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 68.18
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.2300034
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (13)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &485047868 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 485047867}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &608348023
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 29.599998
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.4100037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (20)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &608348024 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 608348023}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &631034388
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +1222,1542 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &652587170
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 78.61
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (10)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &652587171 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 652587170}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &660314743
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 31.339996
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12999725
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (12)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &660314744 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 660314743}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &723129296
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.0999985
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.1500015
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (15)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &723129297 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 723129296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &748270983
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 18.21
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12999725
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (13)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &748270984 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 748270983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &798785702
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 45.28
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.65999603
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (10)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &798785703 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 798785702}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &863473120
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 128.29999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.29999542
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &863473121 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 863473120}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &901488339
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 60.449997
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.29000092
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (8)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &901488340 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 901488339}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &954074300
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (26)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &954074301 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 954074300}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &967722161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967722165}
+  - component: {fileID: 967722164}
+  - component: {fileID: 967722163}
+  - component: {fileID: 967722162}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &967722162
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967722161}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &967722163
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967722161}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &967722164
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967722161}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &967722165
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967722161}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 150, y: 0.15, z: 200}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &989819374
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 93.45
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.7600021
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &989819375 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 989819374}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1028778884
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 41.85
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.1600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (17)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1028778885 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1028778884}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1074020031
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 105.04
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.3199997
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (5)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1074020032 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1074020031}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1105824875
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 102.91
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -7.0599976
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (6)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1105824876 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1105824875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1209613999
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 89.619995
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.45999908
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (9)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1209614000 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1209613999}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1213576576
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.74
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.459999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1213576577 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1213576576}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1247840237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1247840238}
+  m_Layer: 0
+  m_Name: Tree02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1247840238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247840237}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -63.55, y: 0.0750001, z: 97.86}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 483038001}
+  - {fileID: 2035728432}
+  - {fileID: 407303263}
+  - {fileID: 356628554}
+  - {fileID: 1213576577}
+  - {fileID: 1074020032}
+  - {fileID: 1105824876}
+  - {fileID: 1881517471}
+  - {fileID: 2068734710}
+  - {fileID: 1209614000}
+  - {fileID: 1932020388}
+  - {fileID: 652587171}
+  - {fileID: 1760256505}
+  - {fileID: 1783244810}
+  - {fileID: 485047868}
+  - {fileID: 1549947980}
+  - {fileID: 1860018144}
+  - {fileID: 1662167296}
+  - {fileID: 211388999}
+  - {fileID: 1028778885}
+  - {fileID: 1959731644}
+  - {fileID: 312459134}
+  - {fileID: 608348024}
+  - {fileID: 470465462}
+  - {fileID: 1554469440}
+  - {fileID: 336875494}
+  - {fileID: 1418563501}
+  - {fileID: 1825933074}
+  - {fileID: 954074301}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1294566346
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 67.21999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.4700012
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (7)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1294566347 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1294566346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1321741663
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 53.21
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.7399979
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (9)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1321741664 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1321741663}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1418563500
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.9799995
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8899994
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (24)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1418563501 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1418563500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1545898463
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 42.839996
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.3099976
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (11)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1545898464 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1545898463}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1549947979
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 66.49
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.51000214
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (27)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1549947980 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1549947979}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1554469439
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 16.84
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.080002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (22)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1554469440 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1554469439}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1618124483
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 82.549995
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.1500015
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (6)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1618124484 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1618124483}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1640261332
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 87.78999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.1500015
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (5)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1640261333 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1640261332}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1653455640
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,6 +2795,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 1969000126
@@ -518,6 +2822,130 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1662167295
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 58.73
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.1600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (15)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1662167296 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1662167295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1677916452
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 14.159996
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8399963
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (14)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1677916453 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1677916452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1707420447
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +2999,688 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1760256504
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 83.02
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12999725
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (11)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1760256505 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1760256504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1783244809
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 74.35
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.12999725
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (12)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1783244810 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1783244809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1825933073
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.59
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8899994
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (25)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1825933074 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1825933073}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1860018143
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 72.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.830002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (14)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1860018144 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1860018143}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1881517470
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 97.74
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.040000916
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (7)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1881517471 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1881517470}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1908910026
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 118.35
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.29999542
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01 (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1908910027 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1908910026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1925638753
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 106266781}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 137.19
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.0599976
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree01
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+--- !u!4 &1925638754 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d5156d3d3b1de68439b77db787c8be9c, type: 3}
+  m_PrefabInstance: {fileID: 1925638753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1932020387
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 86.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.360001
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (28)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1932020388 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1932020387}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1959731643
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 44.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.15000153
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (18)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &1959731644 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 1959731643}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2035728431
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 128.34
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.0400009
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &2035728432 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 2035728431}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2068734709
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1247840238}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 93.229996
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.6600037
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+      propertyPath: m_Name
+      value: ClubHouse_Arena_Tree02 (8)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+--- !u!4 &2068734710 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6e7bcd781479efc41833aca84ec1d69a, type: 3}
+  m_PrefabInstance: {fileID: 2068734709}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2141124584
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,9 +3800,11 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 456073840}
-  - {fileID: 160666463}
   - {fileID: 2141124588}
   - {fileID: 1707420449}
   - {fileID: 1653455642}
   - {fileID: 306639461}
   - {fileID: 631034390}
+  - {fileID: 967722165}
+  - {fileID: 106266781}
+  - {fileID: 1247840238}

@@ -263,6 +263,16 @@ namespace Unity.MP_FPS
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""PauseMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""5211612a-8201-4b71-9386-d22dafe8b41a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -769,6 +779,28 @@ namespace Unity.MP_FPS
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Swap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f1b5809-1948-4159-9619-44d77fd2674c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ac93b5e-9902-4dce-929f-79aa802f31cf"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1702,6 +1734,7 @@ namespace Unity.MP_FPS
             m_Player_BuildNext = m_Player.FindAction("BuildNext", throwIfNotFound: true);
             m_Player_BuildPrevious = m_Player.FindAction("BuildPrevious", throwIfNotFound: true);
             m_Player_Swap = m_Player.FindAction("Swap", throwIfNotFound: true);
+            m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1823,6 +1856,7 @@ namespace Unity.MP_FPS
         private readonly InputAction m_Player_BuildNext;
         private readonly InputAction m_Player_BuildPrevious;
         private readonly InputAction m_Player_Swap;
+        private readonly InputAction m_Player_PauseMenu;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1903,6 +1937,10 @@ namespace Unity.MP_FPS
             /// </summary>
             public InputAction @Swap => m_Wrapper.m_Player_Swap;
             /// <summary>
+            /// Provides access to the underlying input action "Player/PauseMenu".
+            /// </summary>
+            public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
+            /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
             public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1979,6 +2017,9 @@ namespace Unity.MP_FPS
                 @Swap.started += instance.OnSwap;
                 @Swap.performed += instance.OnSwap;
                 @Swap.canceled += instance.OnSwap;
+                @PauseMenu.started += instance.OnPauseMenu;
+                @PauseMenu.performed += instance.OnPauseMenu;
+                @PauseMenu.canceled += instance.OnPauseMenu;
             }
 
             /// <summary>
@@ -2041,6 +2082,9 @@ namespace Unity.MP_FPS
                 @Swap.started -= instance.OnSwap;
                 @Swap.performed -= instance.OnSwap;
                 @Swap.canceled -= instance.OnSwap;
+                @PauseMenu.started -= instance.OnPauseMenu;
+                @PauseMenu.performed -= instance.OnPauseMenu;
+                @PauseMenu.canceled -= instance.OnPauseMenu;
             }
 
             /// <summary>
@@ -2633,6 +2677,13 @@ namespace Unity.MP_FPS
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSwap(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PauseMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPauseMenu(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
