@@ -1,6 +1,7 @@
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using UnityEngine.UIElements;
 
@@ -52,8 +53,21 @@ namespace Unity.MP_FPS
 
         void Update()
         {
-            if (GameInput.Actions.UI.TogglePauseMenu.WasPressedThisFrame())
+            bool pausePressed =
+                Keyboard.current != null &&
+                Keyboard.current.escapeKey.wasPressedThisFrame;
+
+            if (!pausePressed &&
+                Gamepad.current != null &&
+                Gamepad.current.startButton.wasPressedThisFrame)
+            {
+                pausePressed = true;
+            }
+
+            if (pausePressed)
+            {
                 TogglePauseMenuVisibility();
+            }
         }
 
         void TogglePauseMenuVisibility()

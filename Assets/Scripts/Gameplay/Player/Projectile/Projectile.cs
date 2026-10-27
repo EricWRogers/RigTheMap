@@ -25,9 +25,9 @@ namespace Unity.MP_FPS
             [GhostField] public uint SpawnTick;
             [GhostField] public uint WeaponID;
 
-            [GhostField] public float HomingDirectionX;
-            [GhostField] public float HomingDirectionY;
-            [GhostField] public float HomingDirectionZ;
+            [GhostField(Quantization = 1000)] public float HomingDirectionX;
+            [GhostField(Quantization = 1000)] public float HomingDirectionY;
+            [GhostField(Quantization = 1000)] public float HomingDirectionZ;
             [GhostField] public bool HasHomingDirection;
         }
 

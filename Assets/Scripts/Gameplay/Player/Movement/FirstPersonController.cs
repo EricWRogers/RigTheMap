@@ -282,9 +282,9 @@ public class FirstPersonController : MonoBehaviour
     public void ApplyMovementUpdate(ref ControllerState state, in ControllerConsts consts,
         in float3 accumulatedMovement, float deltaTime)
     {
-        UpdateGround(ref state, consts);
+        UpdateGround(ref state, consts, deltaTime);
         ApplyMove(ref state, consts, accumulatedMovement, deltaTime);
-        GroundedCheck(ref state, consts);
+        GroundedCheck(ref state, consts, deltaTime);
 
         // cache latest values for access outside of entity data
         CachedJumpFallSpeed = state.JumpFallSpeed;
@@ -443,7 +443,7 @@ public class FirstPersonController : MonoBehaviour
         return origin;
     }
 
-    private bool UpdateGround(in ControllerState state, in ControllerConsts consts,
+    private bool UpdateGround(in ControllerState state, in ControllerConsts consts, float deltaTime,
         out GroundCollisionVariables groundCollision)
     {
         if (ShouldUpdateGround(state.MovementType))
@@ -457,7 +457,7 @@ public class FirstPersonController : MonoBehaviour
             float extraDistance = 0f;
             if(state.MovementType == MovementType.Falling && state.JumpFallSpeed < 0f)
             {
-               extraDistance = -state.JumpFallSpeed * Time.fixedDeltaTime;
+               extraDistance = -state.JumpFallSpeed * deltaTime;
             } 
             float groundCheckDistance = GroundedOffset + extraDistance;
             var numHits = Physics.SphereCastNonAlloc(testStart, testRadius, Vector3.down,
@@ -532,9 +532,9 @@ public class FirstPersonController : MonoBehaviour
         return false;
     }
 
-    public void UpdateGround(ref ControllerState state, in ControllerConsts consts)
+    public void UpdateGround(ref ControllerState state, in ControllerConsts consts, float deltaTime)
     {
-        if (UpdateGround(state, consts, out var groundCollision))
+        if (UpdateGround(state, consts, deltaTime, out var groundCollision))
         {
             GroundPhysicsMaterial = groundCollision.surfaceHit;
             state.GroundNormal = groundCollision.FlattestHitNormal;
@@ -547,9 +547,11 @@ public class FirstPersonController : MonoBehaviour
         // Debug.Log($"[GRound] isGrounded");
     }
 
-    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts)
+    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts, float deltaTime)
     {
-        bool isGrounded = UpdateGround(state, consts, out var groundCollision);
+        bool isGrounded = UpdateGround(state, consts, deltaTime, out var groundCollision);
+
+        #if ENABLE_MOVEMENT_DIAGNOSTICS
         if (state.isBounce || state.MovementType != MovementType.Standing)
         {
              Debug.Log(
@@ -558,8 +560,10 @@ public class FirstPersonController : MonoBehaviour
         $"Y={state.CurrentPosition.y:F3}, " +
         $"VerticalSpeed={state.JumpFallSpeed:F3}");
         }
+        #endif
 
-        bool isLanded = isGrounded && state.MovementType == MovementType.Falling;
+        bool wasFalling = state.MovementType == MovementType.Falling;
+        bool isLanded = isGrounded && wasFalling;
 
         bool landedFromBounce = isLanded && state.isBounce;
 
@@ -575,7 +579,9 @@ public class FirstPersonController : MonoBehaviour
             state.LandTriggered = true;
             state.Jump = false;
             state.Fall = false;
+            #if ENABLE_MOVEMENT_DIAGNOSTICS
             Debug.Log("[Clear] jump clear here");
+            #endif
             state.isBounce = false;
             state.BounceVelocity = float3.zero;
             state.JumpFallSpeed = consts.StandingFallSpeed;
@@ -592,7 +598,15 @@ public class FirstPersonController : MonoBehaviour
         }
         else if (!isGrounded && state.MovementType == MovementType.Standing)
         {
-            SetMovementType(ref state, MovementType.Falling);
+            state.FallTimeoutDelta += deltaTime;
+            if (state.FallTimeoutDelta >= consts.FallTimeout)
+            {
+                SetMovementType(ref state, MovementType.Falling);
+            }
+        }
+        else if (isGrounded)
+        {
+            state.FallTimeoutDelta = 0f;
         }
         else if (state.Land && state.TimeInState >= consts.LandingTimeout) {
             state.Land = false;
@@ -604,7 +618,10 @@ public class FirstPersonController : MonoBehaviour
             GroundPhysicsMaterial = groundCollision.surfaceHit;
             if (shouldBounce)// Launch player
             {
+                #if ENABLE_MOVEMENT_DIAGNOSTICS
                 Debug.Log("Bouncing");
+                #endif
+                
                 float BounceHeight = consts.BounceHeight;
                 float launchSpeed = math.sqrt(BounceHeight * -0.6f * consts.Gravity);//how high the player can go
                 float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);

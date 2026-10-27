@@ -1,12 +1,14 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/GameUI/GameUIStyleSheet.uss?fileID=7433441132597879392&amp;guid=35b9b2a65173fdb47ad41dfdb0b5a02a&amp;type=3#GameUIStyleSheet" />
     <ui:VisualElement name="LobbyRoot" style="flex-grow: 1; padding-top: 30px; padding-right: 30px; padding-bottom: 30px; padding-left: 30px; justify-content: center; align-items: center;">
         <ui:VisualElement name="LobbyPanel" style="flex-grow: 1; width: 900px; height: 500px; background-color: rgba(29, 29, 29, 0.914); padding-top: 30px; padding-right: 35px; padding-bottom: 30px; padding-left: 35px; border-top-width: 5px; border-right-width: 5px; border-bottom-width: 5px; border-left-width: 5px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px;">
+            <ui:Label text="Join Code:" name="JoinCode" style="position: absolute; bottom: 95px; left: 0; right: 0; font-size: 45px; color: rgb(255, 255, 255); -unity-text-align: middle-center;"/>
             <ui:Label text="Game Lobby" name="LobbyTitle" style="font-size: 40px; -unity-text-align: upper-center; -unity-font-style: bold; color: rgb(255, 255, 255);"/>
             <ui:VisualElement name="PlayerList" style="flex-grow: 1; margin-top: 30px; margin-bottom: 20px; margin-right: 40px; padding-right: 0; width: auto; justify-content: flex-start; align-items: stretch; align-self: stretch;">
-                <ui:Label text="Players" name="PlayerHeading" style="font-size: 50px; -unity-font-style: bold; margin-bottom: 10px; color: rgb(255, 255, 255);"/>
+                <ui:Label text="Players" name="PlayerHeading" style="font-size: 50px; -unity-font-style: bold; margin-bottom: 10px; margin-left: 35px; color: rgb(255, 255, 255);"/>
             </ui:VisualElement>
-            <ui:Button text="Start Game" name="StartGameButton" style="width: 180px; height: 55px; align-self: flex-end; bottom: -60px; font-size: 30px"/>
-            <ui:Button text="Ready" name="ReadyButton" style="width: 180px; height: 55px; align-self: flex-start; bottom: 0; font-size: 30px"/>
+            <ui:Button text="Start Game" tabindex="1" name="StartGameButton" style="width: 180px; height: 55px; align-self: flex-end; bottom: -60px; font-size: 30px"/>
+            <ui:Button text="Ready" tabindex="0" name="ReadyButton" style="width: 180px; height: 55px; align-self: flex-start; bottom: 0; font-size: 30px"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
