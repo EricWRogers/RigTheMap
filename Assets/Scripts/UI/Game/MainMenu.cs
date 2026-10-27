@@ -1,5 +1,6 @@
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS.Client
@@ -143,6 +144,19 @@ namespace Unity.MP_FPS.Client
                 m_CreateGameButton.style.display = DisplayStyle.None;;
                 m_StartHostButton.style.display = m_ConnectToServerButton.style.display = DisplayStyle.Flex;
             }
+        }
+
+        void Update()
+        {
+            if (!GameInput.Actions.UI.Navigate.WasPressedThisFrame() ||
+                GameInput.Actions.UI.Navigate.activeControl?.device is not Gamepad ||
+                m_MainMenu.panel?.focusController.focusedElement is Button ||
+                !m_CreateGameButton.enabledInHierarchy)
+            {
+                return;
+            }
+
+            m_CreateGameButton.Focus();
         }
 
         void Start()

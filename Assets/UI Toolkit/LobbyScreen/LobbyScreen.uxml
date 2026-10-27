@@ -5,8 +5,8 @@
             <ui:VisualElement name="PlayerList" style="flex-grow: 1; margin-top: 30px; margin-bottom: 20px; margin-right: 40px; padding-right: 0; width: auto; justify-content: flex-start; align-items: stretch; align-self: stretch;">
                 <ui:Label text="Players" name="PlayerHeading" style="font-size: 50px; -unity-font-style: bold; margin-bottom: 10px; color: rgb(255, 255, 255);"/>
             </ui:VisualElement>
-            <ui:Button text="Start Game" name="StartGameButton" style="width: 180px; height: 55px; align-self: flex-end; bottom: -60px; font-size: 30px"/>
-            <ui:Button text="Ready" name="ReadyButton" style="width: 180px; height: 55px; align-self: flex-start; bottom: 0; font-size: 30px"/>
+            <ui:Button text="Start Game" tabindex="1" name="StartGameButton" style="width: 180px; height: 55px; align-self: flex-end; bottom: -60px; font-size: 30px"/>
+            <ui:Button text="Ready" tabindex="0" name="ReadyButton" style="width: 180px; height: 55px; align-self: flex-start; bottom: 0; font-size: 30px"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
