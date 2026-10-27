@@ -105,10 +105,16 @@ namespace Unity.MP_FPS.Client
             }
 
             // Debug Scenes to remove
+            #if !UNITY_EDITOR
             sceneNames.Remove("MainMenu");
             sceneNames.Remove("GameResourcesSubScene");
             sceneNames.Remove("Persistents");
             sceneNames.Remove("SpawnPointsSubScene");
+            sceneNames.Remove("CamsScene");
+            sceneNames.Remove("ChloesScene");
+            sceneNames.Remove("FarmSpawnPoints");
+            sceneNames.Remove("ElijahsScene");
+            #endif
                 
 
             if (sceneNames.Count == 0)
