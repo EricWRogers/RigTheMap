@@ -471,9 +471,9 @@ MonoBehaviour:
   RollbackPredictionOnStructuralChanges: 1
   DefaultGhostMode: 0
   SupportedGhostModes: 3
-  OptimizationMode: 0
+  OptimizationMode: 1
   Importance: 200
-  MaxSendRate: 0
+  MaxSendRate: 10
   prefabId: 250c4879b1be34d43a9780c67da32ff7
 --- !u!1 &4166555290265454927 stripped
 GameObject:

@@ -95,6 +95,12 @@ namespace Unity.MP_FPS.Client
 
         void Update()
         {
+            if (GameSettings.Instance.GameState == GlobalGameState.MainMenu &&
+                (!UnityEngine.Cursor.visible || UnityEngine.Cursor.lockState != CursorLockMode.None))
+            {
+                Utils.SetCursorVisible(true);
+            }
+
             if (!GameInput.Actions.UI.Navigate.WasPressedThisFrame() ||
                 GameInput.Actions.UI.Navigate.activeControl?.device is not Gamepad ||
                 m_MainMenu.panel?.focusController.focusedElement is Button ||
@@ -104,6 +110,7 @@ namespace Unity.MP_FPS.Client
             }
 
             m_CreateGameButton.Focus();
+            Utils.SetCursorVisible(true);
         }
 
         void Start()
