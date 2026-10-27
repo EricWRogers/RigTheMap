@@ -173,6 +173,45 @@ Button:disabled {
     scale: 1;
 }
 
+DropdownField {
+    height: var(--height-element);
+    margin-top: var(--button-top-margin);
+    background-color: var(--color-primary);
+    border-color: var(--color-border);
+    border-width: var(--border-width);
+    transition: scale;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
+}
+
+DropdownField .unity-base-field__input {
+    background-color: var(--color-primary);
+}
+
+DropdownField:active,
+DropdownField:active .unity-base-field__input {
+    background-color: var(--color-active);
+    scale: 1.03;
+}
+
+DropdownField:hover,
+DropdownField:hover .unity-base-field__input {
+    background-color: var(--color-hovered);
+    scale: 1.03;
+}
+
+DropdownField:focus {
+    border-color: var(--color-border-focused);
+    scale: 1.03;
+}
+
+DropdownField:disabled,
+DropdownField:disabled .unity-base-field__input {
+    background-color: var(--color-inactive);
+    border-color: var(--color-inactive);
+    scale: 1;
+}
+
 ProgressBar .unity-progress-bar__background {
     min-height: var(--height-progress-bar);
     background-color: var(--color-input-background);

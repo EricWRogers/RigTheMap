@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using System.IO;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS.Client
@@ -21,7 +24,7 @@ namespace Unity.MP_FPS.Client
         }
 
         VisualElement m_MainMenu;
-        TextField m_MapNameField;
+        DropdownField m_MapNameField;
         Button m_CreateGameButton;
         Button m_JoinGameButton;
         TextField m_JoinCodeField;
@@ -47,8 +50,9 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.TwoWay,
             });
 
-            var mapInputField = m_MainMenu.Q<TextField>(UIElementNames.MapInputField);
-            mapInputField.SetBinding("value", new DataBinding
+            m_MapNameField = m_MainMenu.Q<DropdownField>(UIElementNames.MapInputField);
+            m_MapNameField.choices = GetBuildSceneNames();
+            m_MapNameField.SetBinding("value", new DataBinding
             {
                 dataSource = GameSettings.Instance,
                 dataSourcePath = new PropertyPath(nameof(GameSettings.MapName)),
@@ -83,6 +87,34 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.ToTarget,
             });
 
+        }
+
+        static List<string> GetBuildSceneNames()
+        {
+            var sceneNames = new List<string>();
+            for (var buildIndex = 0; buildIndex < SceneManager.sceneCountInBuildSettings; buildIndex++)
+            {
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+                if (string.IsNullOrEmpty(scenePath))
+                {
+                    Debug.LogWarning($"Build scene at index {buildIndex} has no path and will not be available as a map.");
+                    continue;
+                }
+
+                sceneNames.Add(Path.GetFileNameWithoutExtension(scenePath));
+            }
+
+            // Debug Scenes to remove
+            sceneNames.Remove("MainMenu");
+            sceneNames.Remove("GameResourcesSubScene");
+            sceneNames.Remove("Persistents");
+            sceneNames.Remove("SpawnPointsSubScene");
+                
+
+            if (sceneNames.Count == 0)
+                Debug.LogError("No scenes are enabled in Build Settings, so no maps are available.");
+
+            return sceneNames;
         }
 
         void OnDisable()
