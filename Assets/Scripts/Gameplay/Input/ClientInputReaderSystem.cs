@@ -203,10 +203,10 @@ public partial class ClientInputReaderSystem : SystemBase
             playerInput.WeaponScrollDelta = -1.0f;
         }
 
-        if(controls.Player.RotatePlacementLeft.WasPressedThisFrame())
-            _placementRotationDegrees -= 15f;
-        if(controls.Player.RotatePlacementRight.WasPressedThisFrame())
-            _placementRotationDegrees += 15f;
+        if(controls.Player.RotatePlacementLeft.IsPressed())
+            _placementRotationDegrees -= 70f * World.Time.DeltaTime;
+        if(controls.Player.RotatePlacementRight.IsPressed())
+            _placementRotationDegrees += 70f * World.Time.DeltaTime;
 
         _placementRotationDegrees = Mathf.Repeat(_placementRotationDegrees, 360f);
         PlacementRotationDegrees = _placementRotationDegrees;
