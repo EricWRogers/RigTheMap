@@ -22,7 +22,7 @@ MonoBehaviour:
   IsPlacementWeapon: 1
   PlacementLayerMask:
     serializedVersion: 2
-    m_Bits: 640
+    m_Bits: 1664
   <PlacementPreviewPrefab>k__BackingField:
     m_AssetGUID: 
     m_SubObjectName: 
