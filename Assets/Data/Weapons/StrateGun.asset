@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: StrateGun
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   WeaponName: StrateGun
+  WeaponDescription: Weapon Description
   Type: 0
   ReticleType: 0
   CooldownInMs: 1
@@ -21,7 +22,7 @@ MonoBehaviour:
   IsPlacementWeapon: 1
   PlacementLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 640
   <PlacementPreviewPrefab>k__BackingField:
     m_AssetGUID: 
     m_SubObjectName: 
@@ -40,6 +41,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: 0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 0
@@ -55,6 +57,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: Ice
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2795305235
@@ -69,6 +72,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Tower
     <RotatesToSurface>k__BackingField: 1
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2118496370
@@ -83,6 +87,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: Honey
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 918824684
@@ -97,6 +102,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Barricade
     <RotatesToSurface>k__BackingField: 1
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 385874618
@@ -111,6 +117,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Jump-Pad
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: 3.3332213e-12, y: 0, z: 0.60588926}
     m_GhostGuid:
       Value:
         x: 2542059602
@@ -125,6 +132,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: Spike-Trap
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: -0}
     m_GhostGuid:
       Value:
         x: 153424862
@@ -139,6 +147,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: HealthPackSpawnPoint
     <RotatesToSurface>k__BackingField: 1
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 101370453
@@ -153,6 +162,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: OneWayWall
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2995702130
@@ -168,6 +178,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     <AssetName>k__BackingField: 
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2332273166
@@ -183,6 +194,7 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
     <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: 0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 0
@@ -204,20 +216,3 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 10
   HammerGroundRange: 3
-  IsHotPotato: 0
-  HotPotatoDuration: 7
-  HotPotatoVfxPrefab:
-    <GhostPrefab>k__BackingField:
-      m_AssetGUID: 
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    <AssetName>k__BackingField: 
-    <RotatesToSurface>k__BackingField: 0
-    m_GhostGuid:
-      Value:
-        x: 0
-        y: 0
-        z: 0
-        w: 0

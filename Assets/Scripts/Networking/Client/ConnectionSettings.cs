@@ -28,9 +28,10 @@ namespace Unity.MP_FPS
 
      public enum CreationType
      {
-         CreateOrJoin = 0,
-         Host = 1,
-         ConnectAndJoin = 2
+         CreateRelay = 0,
+         JoinRelay = 1,
+         Host = 2,
+         ConnectAndJoin = 3
      }
 
      public class ConnectionSettings : INotifyBindablePropertyChanged

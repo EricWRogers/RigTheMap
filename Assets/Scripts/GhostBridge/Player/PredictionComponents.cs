@@ -52,19 +52,19 @@ public struct PredictedPlayerGhost : IComponentData
 
     [GhostField] public ControllerState ControllerState;
 
-    [GhostField] public float CurrentHealth;
-    [GhostField] public float MaxHealth;
+    [GhostField(Quantization = 100)] public float CurrentHealth;
+    [GhostField(Quantization = 100)] public float MaxHealth;
 
     [GhostField] public uint EquippedWeaponID;
     [GhostField] public uint PrimaryWeaponID;
     [GhostField] public int PrimaryWeaponAmmo;
     [GhostField] public int SecondaryWeaponAmmo;
-    [GhostField] public float WeaponCooldown;
+    [GhostField(Quantization = 100)] public float WeaponCooldown;
 
     [GhostField] public int SelectedPlacementPrefabIndex;
 
     [GhostField] public int CurrentAmmo;
-    [GhostField] public float LastDamageAmount;
+    [GhostField(Quantization = 100)] public float LastDamageAmount;
     [GhostField] public uint LastHitTick;
     [GhostField] public uint LastSharkHitTick;
     [GhostField] public uint LastconfirmedHitTick;
@@ -73,7 +73,7 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public uint LastLandTick;
     [GhostField] public uint LastReloadTick;
     [GhostField] public uint LastGrenadeShotTick;
-    [GhostField] public float ReloadTimer;
+    [GhostField(Quantization = 100)] public float ReloadTimer;
 
     [GhostField] public int BuildItem0;
     [GhostField] public int BuildItem1;

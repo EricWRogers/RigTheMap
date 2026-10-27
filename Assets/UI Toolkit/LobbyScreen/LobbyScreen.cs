@@ -10,6 +10,7 @@ namespace Unity.MP_FPS.Client
         static class UIElementNames
         {
             public const string LobbyTitle = "LobbyTitle";
+            public const string JoinCode = "JoinCode";
             public const string PlayerList = "PlayerList";
             public const string PlayersHeading = "PlayerHeading";
             public const string StartGameButton = "StartGameButton";
@@ -19,6 +20,7 @@ namespace Unity.MP_FPS.Client
         VisualElement m_Root;
         VisualElement m_PlayerList;
         Label m_LobbyTitle;
+        Label m_JoinCode;
         Button m_StartGameButton;
         Button m_ReadyButton;
         int m_LastRosterCount = -1;
@@ -30,6 +32,13 @@ namespace Unity.MP_FPS.Client
 
             RefreshPlayerList();
             UpdateStartGameButton();
+            if (m_JoinCode != null)
+                m_JoinCode.text = $"Join Code: {ConnectionSettings.Instance.SessionCode}";
+
+            if (m_ReadyButton != null)
+            {
+                m_ReadyButton.text = LobbyRoster.LocalPlayerReady ? "Cancel" : "Ready";
+            }
         }
 
         void RefreshPlayerList()
@@ -100,18 +109,27 @@ namespace Unity.MP_FPS.Client
             });
 
             m_LobbyTitle = m_Root.Q<Label>(UIElementNames.LobbyTitle);
+            m_JoinCode = m_Root.Q<Label>(UIElementNames.JoinCode);
             m_PlayerList = m_Root.Q<VisualElement>(UIElementNames.PlayerList);
             m_StartGameButton = m_Root.Q<Button>(UIElementNames.StartGameButton);
             m_ReadyButton = m_Root.Q<Button>(UIElementNames.ReadyButton);
 
             if (m_LobbyTitle != null)
-                m_LobbyTitle.text = $"{GameSettings.Instance.SessionName}'s Lobby";
+                m_LobbyTitle.text = "Game Lobby";
+
+            if (m_JoinCode != null)
+                m_JoinCode.text = $"Join Code: {ConnectionSettings.Instance.SessionCode}";
 
             if (m_StartGameButton != null)
                 m_StartGameButton.clicked += OnStartGamePressed;
 
             if (m_ReadyButton != null)
                 m_ReadyButton.clicked += OnReadyPressed;
+            
+            if (m_ReadyButton != null)
+            {
+                m_ReadyButton.text = "Ready";
+            }
         }
 
        

@@ -159,7 +159,10 @@ public class PlacementPreviewController : MonoBehaviour
 
         Vector3 aimDirection = aimRotation * Vector3.forward;
 
-        if(Physics.Raycast(
+        if(playerData.BuildPlacementsUsed >= 3)
+            previewInstance.SetActive(false);
+            
+        else if(Physics.Raycast(
             localPlayer.CameraTarget.position,
             aimDirection,
             out RaycastHit hit,

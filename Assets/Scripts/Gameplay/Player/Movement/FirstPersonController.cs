@@ -210,7 +210,7 @@ public class FirstPersonController : MonoBehaviour
     public GameObject CinemachineCameraTarget { get; private set; }
 
     [SerializeField, Tooltip("A small offset for the grounded spherecast. Should be a small positive value.")]
-    private float GroundedOffset = 0.2f;
+    private float GroundedOffset = 0.35f;
 
     public PhysicsMaterial GroundPhysicsMaterial { get; private set; }
 
@@ -282,9 +282,9 @@ public class FirstPersonController : MonoBehaviour
     public void ApplyMovementUpdate(ref ControllerState state, in ControllerConsts consts,
         in float3 accumulatedMovement, float deltaTime)
     {
-        UpdateGround(ref state, consts);
+        UpdateGround(ref state, consts, deltaTime);
         ApplyMove(ref state, consts, accumulatedMovement, deltaTime);
-        GroundedCheck(ref state, consts);
+        GroundedCheck(ref state, consts, deltaTime);
 
         // cache latest values for access outside of entity data
         CachedJumpFallSpeed = state.JumpFallSpeed;
@@ -427,7 +427,9 @@ public class FirstPersonController : MonoBehaviour
     }
     private bool ShouldUpdateGround(MovementType movementType)
     {
+        
         return movementType != MovementType.Jumping;
+        
     }
 
     private static Vector3 GetGroundRaycastOrigin(in ControllerState state, in CharacterController controller)
@@ -441,7 +443,7 @@ public class FirstPersonController : MonoBehaviour
         return origin;
     }
 
-    private bool UpdateGround(in ControllerState state, in ControllerConsts consts,
+    private bool UpdateGround(in ControllerState state, in ControllerConsts consts, float deltaTime,
         out GroundCollisionVariables groundCollision)
     {
         if (ShouldUpdateGround(state.MovementType))
@@ -452,8 +454,14 @@ public class FirstPersonController : MonoBehaviour
             var testRadius = m_Controller.radius;
             var testStart = new Vector3(currentPos.x + controllerCentre.x, currentPos.y + +controllerCentre.y,
                 currentPos.z + controllerCentre.z);
+            float extraDistance = 0f;
+            if(state.MovementType == MovementType.Falling && state.JumpFallSpeed < 0f)
+            {
+               extraDistance = -state.JumpFallSpeed * deltaTime;
+            } 
+            float groundCheckDistance = GroundedOffset + extraDistance;
             var numHits = Physics.SphereCastNonAlloc(testStart, testRadius, Vector3.down,
-                m_GroundCheckRaycastResults, GroundedOffset, consts.GroundLayers, QueryTriggerInteraction.Ignore);
+                m_GroundCheckRaycastResults, groundCheckDistance, consts.GroundLayers, QueryTriggerInteraction.Ignore);
 
 
             // Choose the best hit
@@ -480,7 +488,7 @@ public class FirstPersonController : MonoBehaviour
 
                 float dot = math.dot(raycastResult.normal, k_UpVector);
 
-                if (dot > largestDot) //select the most upright normal to avoid issues with corner collisions looking like a slope
+                if (dot > 0.5f && dot > largestDot) //select the most upright normal to avoid issues with corner collisions looking like a slope
                 {
                     largestDot = dot;
                     flattestHitIndex = i;
@@ -524,9 +532,9 @@ public class FirstPersonController : MonoBehaviour
         return false;
     }
 
-    public void UpdateGround(ref ControllerState state, in ControllerConsts consts)
+    public void UpdateGround(ref ControllerState state, in ControllerConsts consts, float deltaTime)
     {
-        if (UpdateGround(state, consts, out var groundCollision))
+        if (UpdateGround(state, consts, deltaTime, out var groundCollision))
         {
             GroundPhysicsMaterial = groundCollision.surfaceHit;
             state.GroundNormal = groundCollision.FlattestHitNormal;
@@ -539,15 +547,29 @@ public class FirstPersonController : MonoBehaviour
         // Debug.Log($"[GRound] isGrounded");
     }
 
-    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts)
+    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts, float deltaTime)
     {
-        bool isGrounded = UpdateGround(state, consts, out var groundCollision);
-        if (state.BounceCooldown > 0f)
-            state.BounceCooldown -= Time.deltaTime;
-        bool isLanded = isGrounded && state.MovementType == MovementType.Falling && state.BounceCooldown <= 0f;
+        bool isGrounded = UpdateGround(state, consts, deltaTime, out var groundCollision);
+
+        #if ENABLE_MOVEMENT_DIAGNOSTICS
+        if (state.isBounce || state.MovementType != MovementType.Standing)
+        {
+             Debug.Log(
+        $"Grounded={isGrounded}, " +
+        $"State={state.MovementType}, " +
+        $"Y={state.CurrentPosition.y:F3}, " +
+        $"VerticalSpeed={state.JumpFallSpeed:F3}");
+        }
+        #endif
+
+        bool wasFalling = state.MovementType == MovementType.Falling;
+        bool isLanded = isGrounded && wasFalling;
+
         bool landedFromBounce = isLanded && state.isBounce;
+
         GroundSurfaceType surfaceType = isGrounded ? GetGroundSurfaceType(groundCollision.surfaceHit) : GroundSurfaceType.Normal;
-        bool shouldBounce = isLanded && !landedFromBounce && surfaceType == GroundSurfaceType.Bounce;
+
+        bool shouldBounce = isLanded && !landedFromBounce && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce;
 
         if (isLanded)
         {
@@ -555,23 +577,36 @@ public class FirstPersonController : MonoBehaviour
             state.LandingTimeRemaining = consts.LandingTimeout;
             state.Land = true;
             state.LandTriggered = true;
-            if (!state.isBounce)
-                state.Jump = false;
+            state.Jump = false;
+            state.Fall = false;
+            #if ENABLE_MOVEMENT_DIAGNOSTICS
             Debug.Log("[Clear] jump clear here");
+            #endif
             state.isBounce = false;
+            state.BounceVelocity = float3.zero;
+            state.JumpFallSpeed = consts.StandingFallSpeed;
             SetMovementType(ref state, MovementType.Standing);
 
 
-            bool isClientOwned = (m_PlayerGhost.Role == MultiplayerRole.ClientOwned);
-            if (isClientOwned)
+            bool isClientOwned = m_PlayerGhost.Role == MultiplayerRole.ClientOwned;
+            if (isClientOwned && m_Animator_1P != null)
             {
-                Unity.MP_FPS.EventHandler eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
-                eventHandler.onFootDown = true;
+                var eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
+                if(eventHandler != null)
+                    eventHandler.onFootDown = true;
             }
         }
         else if (!isGrounded && state.MovementType == MovementType.Standing)
         {
-            SetMovementType(ref state, MovementType.Falling);
+            state.FallTimeoutDelta += deltaTime;
+            if (state.FallTimeoutDelta >= consts.FallTimeout)
+            {
+                SetMovementType(ref state, MovementType.Falling);
+            }
+        }
+        else if (isGrounded)
+        {
+            state.FallTimeoutDelta = 0f;
         }
         else if (state.Land && state.TimeInState >= consts.LandingTimeout) {
             state.Land = false;
@@ -583,6 +618,10 @@ public class FirstPersonController : MonoBehaviour
             GroundPhysicsMaterial = groundCollision.surfaceHit;
             if (shouldBounce)// Launch player
             {
+                #if ENABLE_MOVEMENT_DIAGNOSTICS
+                Debug.Log("Bouncing");
+                #endif
+                
                 float BounceHeight = consts.BounceHeight;
                 float launchSpeed = math.sqrt(BounceHeight * -0.6f * consts.Gravity);//how high the player can go
                 float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);
@@ -590,7 +629,6 @@ public class FirstPersonController : MonoBehaviour
                 state.BounceVelocity = bounceVelocity;
                 state.JumpFallSpeed = bounceVelocity.y;
                 state.isBounce = true;
-                state.BounceCooldown = 0.2f;
                 SetMovementType(ref state, MovementType.Jumping);
                 state.Jump = true;
                 state.Fall = false;
@@ -869,7 +907,6 @@ public class FirstPersonController : MonoBehaviour
     {
         moveDelta.y += state.JumpFallSpeed;
         moveDelta.xz += state.BounceVelocity.xz;
-        state.BounceVelocity = float3.zero;
     }
 
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)

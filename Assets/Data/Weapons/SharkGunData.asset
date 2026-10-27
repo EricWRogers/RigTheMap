@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SharkGunData
   m_EditorClassIdentifier: Assembly-CSharp::Unity.MP_FPS.WeaponData
   WeaponName: Shark Gun
+  WeaponDescription: 'Fires a shark that will track the target player! Use [1] and
+    [2] to switch between weapons! '
   Type: 1
   ReticleType: 1
   CooldownInMs: 2
@@ -39,6 +41,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 1605990968
@@ -54,6 +58,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 2609882012
@@ -68,6 +74,8 @@ MonoBehaviour:
       m_SubObjectGUID: 
       m_EditorAssetChanged: 0
     <AssetName>k__BackingField: 
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
     m_GhostGuid:
       Value:
         x: 1127248733

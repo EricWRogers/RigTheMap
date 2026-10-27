@@ -108,7 +108,8 @@ namespace Unity.MP_FPS
         static void OnMainMenuPressed()
         {
             GameManager.Instance.ReturnToMainMenuAsync();
-            Utils.SetCursorVisible(true);            
+            Utils.SetCursorVisible(true);  
+            LobbyRoster.Clear();          
         }
 
         static void OnQuitPressed() => GameManager.Instance.QuitAsync();

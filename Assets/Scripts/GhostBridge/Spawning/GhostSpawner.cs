@@ -504,6 +504,9 @@ public class GhostSpawner : MonoBehaviour
    
     public static Entity FindGhostPrefabEntity(GhostReference ghostReference)
     {
+        if (ghostReference == null || ghostReference.GhostPrefab == null || !ghostReference.GhostGuid.IsValid)
+            return Entity.Null;
+
         return FindGhostPrefabEntity(ghostReference.GhostGuid);
     }
 
@@ -542,6 +545,12 @@ public class GhostSpawner : MonoBehaviour
 
     public static bool SpawnGhostPrefab(GhostReference ghostPrefab, Vector3 spawnPos, Quaternion spawnRot, Hash128 netGuid, float uniformScale = 1.0f, Action<Entity, EntityCommandBuffer> postSpawnSpecialisation = null)
     {
+        if (ghostPrefab == null || ghostPrefab.GhostPrefab == null || !ghostPrefab.GhostGuid.IsValid)
+        {
+            Debug.LogError("SpawnGhostPrefab received an invalid ghost prefab reference.");
+            return false;
+        }
+
         var prefabEntity = FindGhostPrefabEntity(ghostPrefab);
 
         if (prefabEntity != Entity.Null)

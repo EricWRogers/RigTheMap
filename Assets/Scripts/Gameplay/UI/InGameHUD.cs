@@ -2,6 +2,7 @@
 using UnityEngine.UIElements;
 using Unity.Entities;
 using Unity.NetCode;
+using Gameplay.Leaderboard;
 
 namespace Unity.MP_FPS
 {
@@ -21,6 +22,13 @@ namespace Unity.MP_FPS
         private Label m_SelectedBuildingLabel;
         private Label m_LivesLabel;
         private Label m_BuildingsRemainingLabel;
+        private VisualElement m_TutorialPanel;
+        private Label m_TutorialTitle;
+        private Label m_TutorialDescription;
+        private int m_LastTutorialRound = -1;
+        private float m_TutorialTimer;
+        private uint m_LastTutorialWeaponId = uint.MaxValue;
+        private bool m_HasSeenCombatPhase;
         private VisualElement m_Reticle;
         private VisualElement m_Hitmarker;
 
@@ -68,6 +76,18 @@ namespace Unity.MP_FPS
             m_SelectedBuildingLabel = m_RootElement.Q<Label>("selected-building-label");
             m_LivesLabel = m_RootElement.Q<Label>("lives-remaining-label");
             m_BuildingsRemainingLabel = m_RootElement.Q<Label>("buildings-remaining-label");
+            m_TutorialPanel = m_RootElement.Q<VisualElement>("tutorial-panel");
+            m_TutorialTitle = m_RootElement.Q<Label>("tutorial-title");
+            m_TutorialDescription = m_RootElement.Q<Label>("tutorial-description");
+
+        if (m_TutorialPanel != null)
+        {
+            m_TutorialPanel.style.display = DisplayStyle.None;
+        }
+
+        LeaderboardManager.BuildModeChanged += OnBuildModeChanged;
+
+            InitializeEcs();
         }
 
         private void InitializeEcs()
@@ -121,6 +141,21 @@ namespace Unity.MP_FPS
 
             // Get the player's data directly from the ECS component
             PredictedPlayerGhost playerData = m_LocalPlayerQuery.GetSingleton<PredictedPlayerGhost>();
+            var leaderboard = LeaderboardManager.Instance;
+
+            if (leaderboard != null &&
+                leaderboard.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode &&
+                m_LastTutorialRound != leaderboard.CurrentRound)
+            {
+                m_LastTutorialRound = leaderboard.CurrentRound;
+
+                ShowTutorial(
+                    "Build Mode",
+                    "Use scroll wheel to change between build items!\n" +
+                    "Use them wisely, you only get 3 placements per round!"
+                );
+            }
+             UpdateTutorialTimer();
             
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(playerData.EquippedWeaponID);
             if(m_SelectedBuildingLabel != null)
@@ -143,6 +178,24 @@ namespace Unity.MP_FPS
                 }
             }
 
+            if (leaderboard != null && leaderboard.CurrentPhase == LeaderboardManager.RoundPhase.Fighting)
+            {
+                if (!m_HasSeenCombatPhase)
+                {
+                    m_HasSeenCombatPhase = true;
+                    m_LastTutorialWeaponId = uint.MaxValue;
+                }
+                if (weaponData != null && !weaponData.IsPlacementWeapon && playerData.EquippedWeaponID != m_LastTutorialWeaponId)
+                {
+                    m_LastTutorialWeaponId = playerData.EquippedWeaponID;
+
+                    ShowTutorial($"Your Weapon: {weaponData.WeaponName}", weaponData.WeaponDescription);
+                }
+            }
+            else
+            {
+                m_HasSeenCombatPhase = false;
+            }
 
             // Update Health Bar
             if (m_HealthBar != null)
@@ -318,5 +371,42 @@ namespace Unity.MP_FPS
                 default: return "";
             }
         }
+        
+        private void ShowTutorial(string title, string description)
+        {
+            if (m_TutorialPanel == null)
+                return;
+
+            m_TutorialTitle.text = title;
+            m_TutorialDescription.text = description;
+
+            m_TutorialPanel.style.display = DisplayStyle.Flex;
+            m_TutorialTimer = 10f;
+        }
+
+        private void UpdateTutorialTimer()
+        {
+            if (m_TutorialTimer <= 0f)
+                return;
+
+            m_TutorialTimer -= Time.deltaTime;
+
+            if (m_TutorialTimer <= 0f && m_TutorialPanel != null)
+                m_TutorialPanel.style.display = DisplayStyle.None;
+        }
+        private void OnBuildModeChanged(bool isBuildMode)
+        {
+            if(isBuildMode)
+            {
+                ShowTutorial("Build Mode", 
+                "Use scroll wheel to change between build items!");
+            }
+        }
+
+        private void OnDisable()
+        {
+            LeaderboardManager.BuildModeChanged -= OnBuildModeChanged;
+        }
+
     }
 }

@@ -1,5 +1,9 @@
+using System.Collections.Generic;
+using System.IO;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS.Client
@@ -11,27 +15,19 @@ namespace Unity.MP_FPS.Client
         {
             public const string HidingBackground = "HidingBackground";
             public const string NameInputField = "PlayerNameField";
-            // public const string ChooseCharacterOption = "ChooseCharacterOption";
             public const string MapInputField = "MapNameField";
-            public const string ConnectionModeOption = "ConnetionModeOption";
-            public const string SessionNameLabel = "SessionName";
-            public const string SessionInputField = "SessionNameField";
-            public const string CreateGame = "CreateJoinGame";
-            public const string StartHost = "StartHost";
-            public const string ConnectToServer = "ConnectToServer";
+            public const string CreateGame = "CreateGame";
+            public const string JoinGame = "JoinGame";
+            public const string JoinCodeField = "JoinCodeField";
             public const string QuitGame = "QuitButton";
             public const string SurveyButton = "SurveyButton";
         }
 
         VisualElement m_MainMenu;
-        // RadioButtonGroup m_ChosseCharacterGroup;
-        RadioButtonGroup m_ConnectionModeGroup;
-        Label m_SessionNameLabel;
-        TextField m_SessionNameField;
-        TextField m_MapNameField;
+        DropdownField m_MapNameField;
         Button m_CreateGameButton;
-        Button m_StartHostButton;
-        Button m_ConnectToServerButton;
+        Button m_JoinGameButton;
+        TextField m_JoinCodeField;
         Button m_QuitButton;
         Button m_SurveyButton;
 
@@ -54,48 +50,28 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.TwoWay,
             });
 
-            var mapInputField = m_MainMenu.Q<TextField>(UIElementNames.MapInputField);
-            mapInputField.SetBinding("value", new DataBinding
+            m_MapNameField = m_MainMenu.Q<DropdownField>(UIElementNames.MapInputField);
+            m_MapNameField.choices = GetBuildSceneNames();
+            m_MapNameField.SetBinding("value", new DataBinding
             {
                 dataSource = GameSettings.Instance,
                 dataSourcePath = new PropertyPath(nameof(GameSettings.MapName)),
                 bindingMode = BindingMode.TwoWay,
             });
 
-            //m_ChosseCharacterGroup = m_MainMenu.Q<RadioButtonGroup>(UIElementNames.ChooseCharacterOption);
-            // m_ChosseCharacterGroup.SetBinding("value", new DataBinding
-            // {
-            //     dataSource = GameSettings.Instance,
-            //     dataSourcePath = new PropertyPath(nameof(GameSettings.PlayerCharacter)),
-            //     bindingMode = BindingMode.TwoWay,
-            // });
-            
-            m_SessionNameLabel = m_MainMenu.Q<Label>(UIElementNames.SessionNameLabel);
-            var connectionMode = m_ConnectionModeGroup = m_MainMenu.Q<RadioButtonGroup>(UIElementNames.ConnectionModeOption);
-            connectionMode.SetBinding("value", new DataBinding
+            m_JoinCodeField = m_MainMenu.Q<TextField>(UIElementNames.JoinCodeField);
+            m_JoinCodeField.SetBinding("value", new DataBinding
             {
-                dataSource = GameSettings.Instance,
-                dataSourcePath = new PropertyPath(nameof(GameSettings.ConnectionMode)),
-                bindingMode = BindingMode.TwoWay,
-            });
-            m_ConnectionModeGroup.RegisterValueChangedCallback(OnConnectionModeChanged);
-
-            var sessionInputField = m_SessionNameField = m_MainMenu.Q<TextField>(UIElementNames.SessionInputField);
-            sessionInputField.SetBinding("value", new DataBinding
-            {
-                dataSource = GameSettings.Instance,
-                dataSourcePath = new PropertyPath(nameof(GameSettings.SessionName)),
+                dataSource = ConnectionSettings.Instance,
+                dataSourcePath = new PropertyPath(nameof(ConnectionSettings.SessionCode)),
                 bindingMode = BindingMode.TwoWay,
             });
 
             m_CreateGameButton = m_MainMenu.Q<Button>(UIElementNames.CreateGame);
             m_CreateGameButton.clicked += OnCreateGamePressed;
 
-            m_StartHostButton = m_MainMenu.Q<Button>(UIElementNames.StartHost);
-            m_StartHostButton.clicked += OnStartHostPressed;
-
-            m_ConnectToServerButton = m_MainMenu.Q<Button>(UIElementNames.ConnectToServer);
-            m_ConnectToServerButton.clicked += OnConnectToServerPressed;
+            m_JoinGameButton = m_MainMenu.Q<Button>(UIElementNames.JoinGame);
+            m_JoinGameButton.clicked += OnJoinGamePressed;
 
             m_QuitButton = m_MainMenu.Q<Button>(UIElementNames.QuitGame);
             m_QuitButton.clicked += OnQuitPressed;
@@ -111,38 +87,68 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.ToTarget,
             });
 
-            ToggleConnectionModeDisplay();
+        }
+
+        static List<string> GetBuildSceneNames()
+        {
+            var sceneNames = new List<string>();
+            for (var buildIndex = 0; buildIndex < SceneManager.sceneCountInBuildSettings; buildIndex++)
+            {
+                var scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+                if (string.IsNullOrEmpty(scenePath))
+                {
+                    Debug.LogWarning($"Build scene at index {buildIndex} has no path and will not be available as a map.");
+                    continue;
+                }
+
+                sceneNames.Add(Path.GetFileNameWithoutExtension(scenePath));
+            }
+
+            // Debug Scenes to remove
+            #if !UNITY_EDITOR
+            sceneNames.Remove("MainMenu");
+            sceneNames.Remove("GameResourcesSubScene");
+            sceneNames.Remove("Persistents");
+            sceneNames.Remove("SpawnPointsSubScene");
+            sceneNames.Remove("CamsScene");
+            sceneNames.Remove("ChloesScene");
+            sceneNames.Remove("FarmSpawnPoints");
+            sceneNames.Remove("ElijahsScene");
+            #endif
+                
+
+            if (sceneNames.Count == 0)
+                Debug.LogError("No scenes are enabled in Build Settings, so no maps are available.");
+
+            return sceneNames;
         }
 
         void OnDisable()
         {
             m_CreateGameButton.clicked -= OnCreateGamePressed;
-            m_ConnectionModeGroup.UnregisterValueChangedCallback(OnConnectionModeChanged);
-            m_ConnectToServerButton.clicked -= OnConnectToServerPressed;
+            m_JoinGameButton.clicked -= OnJoinGamePressed;
             m_QuitButton.clicked -= OnQuitPressed;
             m_SurveyButton.clicked -= OnSurveyPressed;
         }
 
-        void OnConnectionModeChanged(ChangeEvent<int> evt)
+        void Update()
         {
-            GameSettings.Instance.ConnectionMode = evt.newValue;
-            ToggleConnectionModeDisplay();
-        }
+            if (GameSettings.Instance.GameState == GlobalGameState.MainMenu &&
+                (!UnityEngine.Cursor.visible || UnityEngine.Cursor.lockState != CursorLockMode.None))
+            {
+                Utils.SetCursorVisible(true);
+            }
 
-        void ToggleConnectionModeDisplay()
-        {
-            if (GameSettings.Instance.ConnectionMode == 0)
+            if (!GameInput.Actions.UI.Navigate.WasPressedThisFrame() ||
+                GameInput.Actions.UI.Navigate.activeControl?.device is not Gamepad ||
+                m_MainMenu.panel?.focusController.focusedElement is Button ||
+                !m_CreateGameButton.enabledInHierarchy)
             {
-                m_SessionNameLabel.style.display = m_SessionNameField.style.display = DisplayStyle.Flex;
-                m_CreateGameButton.style.display = DisplayStyle.Flex;
-                m_StartHostButton.style.display = m_ConnectToServerButton.style.display = DisplayStyle.None;
+                return;
             }
-            else
-            {
-                m_SessionNameLabel.style.display = m_SessionNameField.style.display = DisplayStyle.None;
-                m_CreateGameButton.style.display = DisplayStyle.None;;
-                m_StartHostButton.style.display = m_ConnectToServerButton.style.display = DisplayStyle.Flex;
-            }
+
+            m_CreateGameButton.Focus();
+            Utils.SetCursorVisible(true);
         }
 
         void Start()
@@ -150,11 +156,21 @@ namespace Unity.MP_FPS.Client
             QualitySettings.vSyncCount = 1;
         }
 
-        static void OnCreateGamePressed() => GameManager.Instance.StartGameAsync(CreationType.CreateOrJoin);
+        static void OnCreateGamePressed() => GameManager.Instance.StartGameAsync(CreationType.CreateRelay);
 
-        static void OnStartHostPressed() => GameManager.Instance.StartGameAsync(CreationType.Host);
+        void OnJoinGamePressed()
+        {
+            ConnectionSettings.Instance.SessionCode =
+                (ConnectionSettings.Instance.SessionCode ?? string.Empty).Trim().ToUpperInvariant();
 
-        static void OnConnectToServerPressed() => GameManager.Instance.StartGameAsync(CreationType.ConnectAndJoin);
+            if (!ConnectionSettings.Instance.IsSessionCodeFormatValid)
+            {
+                Debug.LogWarning("A valid six-character join code is required.");
+                return;
+            }
+
+            GameManager.Instance.StartGameAsync(CreationType.JoinRelay);
+        }
 
         static void OnQuitPressed() => GameManager.Instance.QuitAsync();
 

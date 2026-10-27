@@ -13,13 +13,13 @@ namespace Unity.MP_FPS.Client
         {
             public const string ConnectionStatus = "ConnectionStatus";
             public const string NetworkingRole = "NetworkingRole";
-            public const string SessionName = "SessionName";
+            public const string SessionCode = "SessionCode";
         }
 
         VisualElement m_Root;
         Label m_ConnectionStatus;
         Label m_NetworkingRole;
-        Label m_SessionName;
+        Label m_SessionCode;
 
         void OnEnable()
         {
@@ -27,7 +27,7 @@ namespace Unity.MP_FPS.Client
 
             m_ConnectionStatus = m_Root.Q<Label>(UIElementNames.ConnectionStatus);
             m_NetworkingRole = m_Root.Q<Label>(UIElementNames.NetworkingRole);
-            m_SessionName = m_Root.Q<Label>(UIElementNames.SessionName);
+            m_SessionCode = m_Root.Q<Label>(UIElementNames.SessionCode);
 
             StartCoroutine(UpdateNetworkStatusInfo());
         }
@@ -47,11 +47,11 @@ namespace Unity.MP_FPS.Client
                 {
                     case ConnectionState.State.Disconnected:
                         m_ConnectionStatus.text += "Offline";
-                        m_NetworkingRole.text = m_SessionName.text = string.Empty;
+                        m_NetworkingRole.text = m_SessionCode.text = string.Empty;
                         break;
                     case ConnectionState.State.Connecting:
                         m_ConnectionStatus.text += "Connecting ...";
-                        m_NetworkingRole.text = m_SessionName.text = string.Empty;
+                        m_NetworkingRole.text = m_SessionCode.text = string.Empty;
                         break;
                     case ConnectionState.State.Connected:
                         m_ConnectionStatus.text += "Connected";
@@ -65,15 +65,7 @@ namespace Unity.MP_FPS.Client
                             m_NetworkingRole.text += "Client";
                         }
 
-                        if (GameManager.GameConnection != null &&
-                            GameManager.GameConnection.Session != null)
-                        {
-                            m_SessionName.text = $"Session: {GameManager.GameConnection.Session.Name}";
-                        }
-                        else
-                        {
-                            m_SessionName.text = string.Empty;
-                        }
+                        m_SessionCode.text = $"Join Code: {ConnectionSettings.Instance.SessionCode}";
 
 
                         break;

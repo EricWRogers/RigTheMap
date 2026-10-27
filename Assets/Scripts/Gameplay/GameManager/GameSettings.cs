@@ -41,16 +41,12 @@ namespace Unity.MP_FPS
         const string k_PlayerNameKey = "PlayerName";
         const string k_MapNameKey = "MapName";
         const string k_PlayerCharacterKey = "PlayerCharacer";
-        const string k_ConnectionModeKey = "ConnectionMode";
-        const string k_SessionNameKey = "SessionName";
 
         GameSettings()
         {
             m_PlayerName = PlayerPrefs.GetString(k_PlayerNameKey, Environment.UserName);
             m_MapName = PlayerPrefs.GetString(k_MapNameKey, "GameScene");
             m_PlayerCharacter = PlayerPrefs.GetInt(k_PlayerCharacterKey, 0);  
-            m_ConnectionMode = PlayerPrefs.GetInt(k_ConnectionModeKey, 0);
-            m_SessionName = PlayerPrefs.GetString(k_SessionNameKey, "default-session");
         }
 
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
@@ -235,36 +231,6 @@ namespace Unity.MP_FPS
             }
         }
         
-        int m_ConnectionMode = 0;
-        [CreateProperty]
-        public int ConnectionMode
-        {
-            get => m_ConnectionMode;
-            set
-            {
-                if (m_ConnectionMode == value)
-                    return;
-
-                m_ConnectionMode = value;
-                PlayerPrefs.SetInt(k_ConnectionModeKey, value);
-            }
-        }
-
-        string m_SessionName = "default-session";
-        [CreateProperty]
-        public string SessionName
-        {
-            get => m_SessionName;
-            set
-            {
-                if (m_SessionName == value)
-                    return;
-
-                m_SessionName = value;
-                PlayerPrefs.SetString(k_SessionNameKey, value);
-            }
-        }
-
         public static readonly string MainMenuSceneLoadedPropertyName = nameof(MainMenuSceneLoadedStyle);
         [CreateProperty]
         DisplayStyle MainMenuSceneLoadedStyle => m_MainMenuSceneLoaded ? DisplayStyle.None : DisplayStyle.Flex;
