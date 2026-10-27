@@ -12,27 +12,19 @@ namespace Unity.MP_FPS.Client
         {
             public const string HidingBackground = "HidingBackground";
             public const string NameInputField = "PlayerNameField";
-            // public const string ChooseCharacterOption = "ChooseCharacterOption";
             public const string MapInputField = "MapNameField";
-            public const string ConnectionModeOption = "ConnetionModeOption";
-            public const string SessionNameLabel = "SessionName";
-            public const string SessionInputField = "SessionNameField";
-            public const string CreateGame = "CreateJoinGame";
-            public const string StartHost = "StartHost";
-            public const string ConnectToServer = "ConnectToServer";
+            public const string CreateGame = "CreateGame";
+            public const string JoinGame = "JoinGame";
+            public const string JoinCodeField = "JoinCodeField";
             public const string QuitGame = "QuitButton";
             public const string SurveyButton = "SurveyButton";
         }
 
         VisualElement m_MainMenu;
-        // RadioButtonGroup m_ChosseCharacterGroup;
-        RadioButtonGroup m_ConnectionModeGroup;
-        Label m_SessionNameLabel;
-        TextField m_SessionNameField;
         TextField m_MapNameField;
         Button m_CreateGameButton;
-        Button m_StartHostButton;
-        Button m_ConnectToServerButton;
+        Button m_JoinGameButton;
+        TextField m_JoinCodeField;
         Button m_QuitButton;
         Button m_SurveyButton;
 
@@ -63,40 +55,19 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.TwoWay,
             });
 
-            //m_ChosseCharacterGroup = m_MainMenu.Q<RadioButtonGroup>(UIElementNames.ChooseCharacterOption);
-            // m_ChosseCharacterGroup.SetBinding("value", new DataBinding
-            // {
-            //     dataSource = GameSettings.Instance,
-            //     dataSourcePath = new PropertyPath(nameof(GameSettings.PlayerCharacter)),
-            //     bindingMode = BindingMode.TwoWay,
-            // });
-            
-            m_SessionNameLabel = m_MainMenu.Q<Label>(UIElementNames.SessionNameLabel);
-            var connectionMode = m_ConnectionModeGroup = m_MainMenu.Q<RadioButtonGroup>(UIElementNames.ConnectionModeOption);
-            connectionMode.SetBinding("value", new DataBinding
+            m_JoinCodeField = m_MainMenu.Q<TextField>(UIElementNames.JoinCodeField);
+            m_JoinCodeField.SetBinding("value", new DataBinding
             {
-                dataSource = GameSettings.Instance,
-                dataSourcePath = new PropertyPath(nameof(GameSettings.ConnectionMode)),
-                bindingMode = BindingMode.TwoWay,
-            });
-            m_ConnectionModeGroup.RegisterValueChangedCallback(OnConnectionModeChanged);
-
-            var sessionInputField = m_SessionNameField = m_MainMenu.Q<TextField>(UIElementNames.SessionInputField);
-            sessionInputField.SetBinding("value", new DataBinding
-            {
-                dataSource = GameSettings.Instance,
-                dataSourcePath = new PropertyPath(nameof(GameSettings.SessionName)),
+                dataSource = ConnectionSettings.Instance,
+                dataSourcePath = new PropertyPath(nameof(ConnectionSettings.SessionCode)),
                 bindingMode = BindingMode.TwoWay,
             });
 
             m_CreateGameButton = m_MainMenu.Q<Button>(UIElementNames.CreateGame);
             m_CreateGameButton.clicked += OnCreateGamePressed;
 
-            m_StartHostButton = m_MainMenu.Q<Button>(UIElementNames.StartHost);
-            m_StartHostButton.clicked += OnStartHostPressed;
-
-            m_ConnectToServerButton = m_MainMenu.Q<Button>(UIElementNames.ConnectToServer);
-            m_ConnectToServerButton.clicked += OnConnectToServerPressed;
+            m_JoinGameButton = m_MainMenu.Q<Button>(UIElementNames.JoinGame);
+            m_JoinGameButton.clicked += OnJoinGamePressed;
 
             m_QuitButton = m_MainMenu.Q<Button>(UIElementNames.QuitGame);
             m_QuitButton.clicked += OnQuitPressed;
@@ -112,38 +83,14 @@ namespace Unity.MP_FPS.Client
                 bindingMode = BindingMode.ToTarget,
             });
 
-            ToggleConnectionModeDisplay();
         }
 
         void OnDisable()
         {
             m_CreateGameButton.clicked -= OnCreateGamePressed;
-            m_ConnectionModeGroup.UnregisterValueChangedCallback(OnConnectionModeChanged);
-            m_ConnectToServerButton.clicked -= OnConnectToServerPressed;
+            m_JoinGameButton.clicked -= OnJoinGamePressed;
             m_QuitButton.clicked -= OnQuitPressed;
             m_SurveyButton.clicked -= OnSurveyPressed;
-        }
-
-        void OnConnectionModeChanged(ChangeEvent<int> evt)
-        {
-            GameSettings.Instance.ConnectionMode = evt.newValue;
-            ToggleConnectionModeDisplay();
-        }
-
-        void ToggleConnectionModeDisplay()
-        {
-            if (GameSettings.Instance.ConnectionMode == 0)
-            {
-                m_SessionNameLabel.style.display = m_SessionNameField.style.display = DisplayStyle.Flex;
-                m_CreateGameButton.style.display = DisplayStyle.Flex;
-                m_StartHostButton.style.display = m_ConnectToServerButton.style.display = DisplayStyle.None;
-            }
-            else
-            {
-                m_SessionNameLabel.style.display = m_SessionNameField.style.display = DisplayStyle.None;
-                m_CreateGameButton.style.display = DisplayStyle.None;;
-                m_StartHostButton.style.display = m_ConnectToServerButton.style.display = DisplayStyle.Flex;
-            }
         }
 
         void Update()
@@ -164,11 +111,21 @@ namespace Unity.MP_FPS.Client
             QualitySettings.vSyncCount = 1;
         }
 
-        static void OnCreateGamePressed() => GameManager.Instance.StartGameAsync(CreationType.CreateOrJoin);
+        static void OnCreateGamePressed() => GameManager.Instance.StartGameAsync(CreationType.CreateRelay);
 
-        static void OnStartHostPressed() => GameManager.Instance.StartGameAsync(CreationType.Host);
+        void OnJoinGamePressed()
+        {
+            ConnectionSettings.Instance.SessionCode =
+                (ConnectionSettings.Instance.SessionCode ?? string.Empty).Trim().ToUpperInvariant();
 
-        static void OnConnectToServerPressed() => GameManager.Instance.StartGameAsync(CreationType.ConnectAndJoin);
+            if (!ConnectionSettings.Instance.IsSessionCodeFormatValid)
+            {
+                Debug.LogWarning("A valid six-character join code is required.");
+                return;
+            }
+
+            GameManager.Instance.StartGameAsync(CreationType.JoinRelay);
+        }
 
         static void OnQuitPressed() => GameManager.Instance.QuitAsync();
 

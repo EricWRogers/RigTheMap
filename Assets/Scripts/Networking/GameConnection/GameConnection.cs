@@ -36,7 +36,7 @@ namespace Unity.MP_FPS
         public NetworkEndpoint ConnectEndpoint { get; private set; }
         public NetworkType SessionConnectionType { get; private set; }
 
-        public static async Task<GameConnection> CreateorJoinGameAsync()
+        public static async Task<GameConnection> CreateGameAsync()
         {
             var gameConnection = new GameConnection();
             await StartServicesAsync();
@@ -44,10 +44,9 @@ namespace Unity.MP_FPS
             var networkHandler = new EntityNetworkHandler();
             var options = new SessionOptions()
             {
-                Name = GameSettings.Instance.SessionName,
                 MaxPlayers = GameManager.MaxPlayer
             }.WithRelayNetwork().WithNetworkHandler(networkHandler);
-            gameConnection.Session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(options.Name, options);
+            gameConnection.Session = await MultiplayerService.Instance.CreateSessionAsync(options);
 
             gameConnection.ConnectEndpoint = await networkHandler.ConnectEndpoint;
             gameConnection.ListenEndpoint = await networkHandler.ListenEndpoint;

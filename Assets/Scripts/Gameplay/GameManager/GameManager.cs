@@ -254,9 +254,14 @@ namespace Unity.MP_FPS
             LoadingData.Instance.UpdateLoading(LoadingData.LoadingSteps.InitializeConnection);
             switch (creationType)
             {
-                case (CreationType.CreateOrJoin): //Relay
+                case (CreationType.CreateRelay):
                     {
-                        GameConnection = await GameConnection.CreateorJoinGameAsync();
+                        GameConnection = await GameConnection.CreateGameAsync();
+                        break;
+                    }
+                case (CreationType.JoinRelay):
+                    {
+                        GameConnection = await GameConnection.JoinGameAsync();
                         break;
                     }
                 case (CreationType.Host): //Direct connection - host
@@ -282,7 +287,7 @@ namespace Unity.MP_FPS
             }
             else
             {
-                CreateEntityWorlds(creationType == CreationType.Host, out server, out client);
+                CreateEntityWorlds(creationType == CreationType.Host || creationType == CreationType.CreateRelay, out server, out client);
             }
 
             // If the server was created successfully, start listening.
