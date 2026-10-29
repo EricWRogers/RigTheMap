@@ -480,7 +480,7 @@ namespace Unity.MP_FPS
             }
 
             // Kill players who fall below the Y-level threshold (e.g., -50)
-            float killYThreshold = -50f;
+            float killYThreshold = -10f;
 
             foreach (var (predictedPlayer, transform) in
                      SystemAPI.Query<
