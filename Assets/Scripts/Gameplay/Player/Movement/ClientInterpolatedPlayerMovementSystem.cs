@@ -46,8 +46,6 @@ namespace Unity.MP_FPS
                     controllerConsts.ValueRO.ControllerConsts, transform.ValueRO, deltaTime, true);
                 controllerLink.Controller.ApplyAnimatorState(predictedGhost.ValueRO.ControllerState,
                     controllerConsts.ValueRO.ControllerConsts, deltaTime);
-                controllerLink.Controller.UpdateGround(ref predictedGhost.ValueRW.ControllerState,
-                    controllerConsts.ValueRO.ControllerConsts, deltaTime);
             }
         }
 

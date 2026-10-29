@@ -441,7 +441,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                     controllerLink.Controller.ApplyMovementUpdate(ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
-                        applyDT);
+                        applyDT,
+                        performPhysicsCheck: false);
 
                     if (predictedPlayer.ValueRW.ControllerState.CurrentPosition.y < -20f && (LeaderboardManager.Instance == null || LeaderboardManager.Instance == null || LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode))
                     {
@@ -481,7 +482,11 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                 {
                     // we should just apply our current state
                     controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
-                    controllerLink.Controller.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts, dt);
+                    controllerLink.Controller.GroundedCheck(
+                        ref predictedPlayer.ValueRW.ControllerState,
+                        controllerConsts,
+                        dt,
+                        performPhysicsCheck: false);
                 }
             }
 
