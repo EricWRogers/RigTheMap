@@ -133,6 +133,8 @@ public class FirstPersonController : MonoBehaviour
         public float MovementSpeed;
         public float JumpFallSpeed;
         public float3 BounceVelocity;
+        [GhostField(Quantization =100)]
+        public float3 KnockbackVelocity;
         public Vector3 slipperyVelocity;
         public float AnimatorTargetSpeed; // _animIDSpeed
         public float AnimatorTargetSpeedChangeRate;
@@ -907,6 +909,8 @@ public class FirstPersonController : MonoBehaviour
     {
         moveDelta.y += state.JumpFallSpeed;
         moveDelta.xz += state.BounceVelocity.xz;
+        //shotgun knockback
+        moveDelta.xz += state.KnockbackVelocity.xz;
     }
 
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)
@@ -988,6 +992,12 @@ public class FirstPersonController : MonoBehaviour
         }
 
         accumulatedMovement += moveDelta * deltaTime;
+        // reduce knockback velocity gradually
+        state.KnockbackVelocity *= math.exp(-8f * deltaTime);
+        if (math.lengthsq(state.KnockbackVelocity) < 0.01f)
+        {
+            state.KnockbackVelocity = float3.zero;
+        }
         state.MovementRequest = accumulatedMovement;
 
 #if DEBUG_RENDER_MOVEMENT

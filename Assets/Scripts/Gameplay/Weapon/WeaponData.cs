@@ -84,6 +84,12 @@ namespace Unity.MP_FPS
         public float HammerImpactRadius = 2f;
         public float HammerDamage = 25f;
         public float HammerGroundRange =3f;
+        [Header("Shotgun Properties")]
+        public float ShotgunEnemyKnockBack = 10f;
+        public float ShotgunSelfKnockBack = 10f;
+        public float ShotgunLaunchForce = 15f;
+        public float ShotgunLaunchRange = 3f;
+        public bool IsShotgun = false;
     }
 
     public enum ProjectileBehavior

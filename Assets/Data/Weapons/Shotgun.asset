@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   WeaponName: Shotgun
-  WeaponDescription: A weapon for close-range combat! Use [1] and [2] to switch between
-    weapons!
+  WeaponDescription: Aim at the ground to propel yourself or hit players to knock
+    them back!
   Type: 0
   ReticleType: 2
   CooldownInMs: 1
@@ -97,3 +97,8 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 25
   HammerGroundRange: 3
+  ShotgunEnemyKnockBack: 10
+  ShotgunSelfKnockBack: 10
+  ShotgunLaunchForce: 15
+  ShotgunLaunchRange: 3
+  IsShotgun: 1
