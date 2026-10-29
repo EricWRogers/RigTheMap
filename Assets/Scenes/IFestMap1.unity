@@ -6032,7 +6032,7 @@ GameObject:
   - component: {fileID: 1569480444}
   - component: {fileID: 1569480443}
   - component: {fileID: 1569480442}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Center spiral base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
