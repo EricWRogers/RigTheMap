@@ -335,6 +335,18 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 if (weaponData.Type == WeaponType.Hitscan)
                                 {
+                                    if(predictedPlayer.ValueRO.EquippedWeaponID == 4 && UnityEngine.Physics.Raycast(eyePosition, aimDirection, out RaycastHit shotgunGroundHit, weaponData.ShotgunLaunchRange, LayerMask.GetMask("Ground", "Default"), QueryTriggerInteraction.Ignore)&& shotgunGroundHit.normal.y > 0.5f)
+                                        {
+                                            float launchForce = weaponData.ShotgunLaunchForce;
+                                            predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = launchForce;
+                                            predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
+                                            predictedPlayer.ValueRW.ControllerState.PreviousMovementType = FirstPersonController.MovementType.Standing;
+                                            predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                            predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                            predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                            predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
+                                            Debug.Log("[Shotgun Client] Ground launch predicted.");
+                                        }
                                     Vector3 endPoint;
                                     if (Physics.Raycast(eyePosition, aimDirection, out RaycastHit cosmeticHit,
                                         weaponData.HitscanRange, s_HitscanLayerMask))

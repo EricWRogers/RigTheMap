@@ -162,7 +162,7 @@ namespace Unity.MP_FPS
             }
 
             var buildGunData =
-                WeaponManager.Instance.WeaponRegistry.GetWeaponData(4);
+                WeaponManager.Instance.WeaponRegistry.GetWeaponData(5);
 
             if (buildGunData == null ||
                 !buildGunData.IsPlacementWeapon ||
@@ -1015,6 +1015,30 @@ namespace Unity.MP_FPS
 
                                 case WeaponType.Hitscan:
                                 {
+                                    if(predictedPlayer.ValueRO.EquippedWeaponID == 4 && UnityEngine.Physics.Raycast(eyePosition, aimDirection, out RaycastHit shotgunGroundHit, weaponData.ShotgunLaunchRange, LayerMask.GetMask("Ground", "Default"), QueryTriggerInteraction.Ignore))
+                                    {
+                                        float launchForce = weaponData.ShotgunLaunchForce;
+                                        predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = launchForce;
+                                        predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
+                                        predictedPlayer.ValueRW.ControllerState.PreviousMovementType = FirstPersonController.MovementType.Standing;
+                                        predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                        predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                        predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                        float3 selfLaunchDirection =
+                                        aimDirection;
+
+                                        selfLaunchDirection.y = 0f;
+
+                                        selfLaunchDirection =
+                                            math.normalizesafe(
+                                                selfLaunchDirection);
+
+                                        predictedPlayer.ValueRW.AccumulatedMovement +=
+                                            selfLaunchDirection *
+                                            weaponData.ShotgunLaunchForce *
+                                            deltaTime;
+                                        Debug.Log("[Shotgun] Ground launch triggered.");
+                                    }
                                     if (UnityEngine.Physics.Raycast(
                                             eyePosition,
                                             aimDirection,
@@ -1062,6 +1086,21 @@ namespace Unity.MP_FPS
                                                         $"{targetNetworkId} are on the same team.");
 
                                                     continue;
+                                                }
+                                                //shotgun knockback against other players
+                                                if (predictedPlayer.ValueRO.EquippedWeaponID == 4)
+                                                {
+                                                    float knockbackForce = 20f;
+                                                    float3 knockbackDirection = targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition - predictedPlayer.ValueRO.ControllerState.CurrentPosition;
+                                                    knockbackDirection.y = 0f;
+                                                    knockbackDirection = math.normalizesafe(knockbackDirection);
+                                                    targetPredictedPlayer.ValueRW.ControllerState.KnockbackVelocity = knockbackDirection * knockbackForce;
+                                                    Debug.Log(
+                                                        $"[SHOTGUN KNOCKBACK] Hit player! " +
+                                                        $"Direction: {knockbackDirection}, " +
+                                                        $"Velocity: {targetPredictedPlayer.ValueRO.ControllerState.KnockbackVelocity}"
+                                                    );
+                                                    Debug.Log("[Shotgun Knockback] Applied to target");
                                                 }
 
                                                 if(LeaderboardManager.Instance != null &&
