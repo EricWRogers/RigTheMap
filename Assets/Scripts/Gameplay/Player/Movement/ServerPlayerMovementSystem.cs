@@ -1515,14 +1515,16 @@ namespace Unity.MP_FPS
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
-                        deltaTime);
+                        deltaTime,
+                        performPhysicsCheck: true);
                 }
                 else
                 {
                     controllerLink.Controller.GroundedCheck(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
-                        deltaTime);
+                        deltaTime,
+                        performPhysicsCheck: true);
                 }
 
                 if (m_HammerLaunchers.Contains(entity) &&
