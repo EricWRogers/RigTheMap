@@ -8,6 +8,7 @@ using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.Entities;
+using Gameplay.Leaderboard;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -408,7 +409,7 @@ public class FirstPersonController : MonoBehaviour
         {
             state.slipperyVelocity = Vector3.zero;
         }
-        if (surface == GroundSurfaceType.Spikey)//damage player
+        if (surface == GroundSurfaceType.Spikey && (LeaderboardManager.Instance == null || LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode))//damage player
         {
             var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
 
@@ -624,8 +625,8 @@ public class FirstPersonController : MonoBehaviour
                 
                 float BounceHeight = consts.BounceHeight;
                 float launchSpeed = math.sqrt(BounceHeight * -0.6f * consts.Gravity);//how high the player can go
-                float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);
-                float3 bounceVelocity = launchDir * launchSpeed;
+                
+                float3 bounceVelocity = k_UpVector * launchSpeed;
                 state.BounceVelocity = bounceVelocity;
                 state.JumpFallSpeed = bounceVelocity.y;
                 state.isBounce = true;

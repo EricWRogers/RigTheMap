@@ -134,6 +134,10 @@ namespace Unity.MP_FPS
 
         private void KillPlayersBelowY(float killYThreshold = -50f)
         {
+            if(LeaderboardManager.Instance != null && LeaderboardManager.Instance.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode)
+            {
+                return;
+            }
             foreach (var (predictedPlayer, transform) in
                      SystemAPI.Query<
                          RefRW<PredictedPlayerGhost>,
@@ -399,8 +403,9 @@ namespace Unity.MP_FPS
 
                 if (isBuildMode != m_WasBuildMode)
                 {
+                    if(!isBuildMode){
                     KillPlayersOnModeChange();
-
+                    }
                     if (isBuildMode)
                     {
                         foreach (var (predictedPlayer, entity) in
@@ -483,6 +488,7 @@ namespace Unity.MP_FPS
                          RefRO<LocalTransform>>()
                          .WithAll<Simulate>())
             {
+                
                 if (transform.ValueRO.Position.y < killYThreshold &&
                     predictedPlayer.ValueRO.CurrentHealth > 0)
                 {
@@ -1058,6 +1064,13 @@ namespace Unity.MP_FPS
                                                     continue;
                                                 }
 
+                                                if(LeaderboardManager.Instance != null &&
+                                                    LeaderboardManager.Instance.CurrentPhase ==
+                                                    LeaderboardManager.RoundPhase.BuildMode)
+                                                    {
+                                                        continue;
+                                                    }
+
                                                 var healthBeforeDamage =
                                                     targetPredictedPlayer.ValueRO.CurrentHealth;
 
@@ -1220,7 +1233,14 @@ namespace Unity.MP_FPS
                                                     var targetTeam = m_PlayerTeamLookup[targetEntity];
 
                                                     if (shooterTeam.TeamId != targetTeam.TeamId)
+                                                    {   
+                                                        if(LeaderboardManager.Instance != null &&
+                                                            LeaderboardManager.Instance.CurrentPhase ==
+                                                            LeaderboardManager.RoundPhase.BuildMode)
                                                     {
+                                                        break;
+                                                    }
+
                                                         float healthBeforeDamage = targetPredictedPlayer.ValueRO.CurrentHealth;
 
                                                         //apply harley bonk bonk

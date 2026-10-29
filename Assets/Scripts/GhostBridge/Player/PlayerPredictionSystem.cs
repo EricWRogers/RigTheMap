@@ -431,7 +431,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                         predictedPlayer.ValueRO.AccumulatedMovement,
                         applyDT);
 
-                    if (predictedPlayer.ValueRW.ControllerState.CurrentPosition.y < -20f)
+                    if (predictedPlayer.ValueRW.ControllerState.CurrentPosition.y < -20f && (LeaderboardManager.Instance == null || LeaderboardManager.Instance == null || LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode))
                     {
                         predictedPlayer.ValueRW.CurrentHealth = 0;
 
