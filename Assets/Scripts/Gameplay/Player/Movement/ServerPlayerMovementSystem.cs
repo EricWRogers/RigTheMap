@@ -480,7 +480,7 @@ namespace Unity.MP_FPS
             }
 
             // Kill players who fall below the Y-level threshold (e.g., -50)
-            float killYThreshold = -50f;
+            float killYThreshold = -10f;
 
             foreach (var (predictedPlayer, transform) in
                      SystemAPI.Query<
@@ -1515,14 +1515,16 @@ namespace Unity.MP_FPS
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
-                        deltaTime);
+                        deltaTime,
+                        performPhysicsCheck: true);
                 }
                 else
                 {
                     controllerLink.Controller.GroundedCheck(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
-                        deltaTime);
+                        deltaTime,
+                        performPhysicsCheck: true);
                 }
 
                 if (m_HammerLaunchers.Contains(entity) &&

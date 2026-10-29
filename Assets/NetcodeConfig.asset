@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd30ee0214cf6a45b2d76765a4615b1, type: 3}
   m_Name: NetcodeConfig
   m_EditorClassIdentifier: Unity.NetCode::Unity.NetCode.NetCodeConfig
-  IsGlobalConfig: 1
+  IsGlobalConfig: 0
   EnableClientServerBootstrap: 1
   ClientServerTickRate:
     SimulationTickRate: 60
@@ -26,7 +26,7 @@ MonoBehaviour:
     m_ClampPartialTicksThreshold: 5
     HandshakeApprovalTimeoutMS: 5000
   ClientTickRate:
-    InterpolationTimeNetTicks: 3
+    InterpolationTimeNetTicks: 5
     InterpolationTimeMS: 0
     MaxExtrapolationTimeSimTicks: 20
     ForcedInputLatencyTicks: 0

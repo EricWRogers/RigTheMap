@@ -120,6 +120,7 @@ public class FirstPersonController : MonoBehaviour
             set => SetFlag(StateFlag.LandTrigger, value);
         }
 
+        public bool IsGrounded;
         public quaternion CurrentRotation;
         public float3 CurrentPosition;
         public float3 GroundNormal;
@@ -283,11 +284,16 @@ public class FirstPersonController : MonoBehaviour
     }
 
     public void ApplyMovementUpdate(ref ControllerState state, in ControllerConsts consts,
-        in float3 accumulatedMovement, float deltaTime)
+        in float3 accumulatedMovement, float deltaTime, bool performPhysicsCheck)
     {
-        UpdateGround(ref state, consts, deltaTime);
+        if (performPhysicsCheck)
+        {
+            UpdateGround(ref state, consts, deltaTime);
+        }
+
         ApplyMove(ref state, consts, accumulatedMovement, deltaTime);
-        GroundedCheck(ref state, consts, deltaTime);
+
+        GroundedCheck(ref state, consts, deltaTime, performPhysicsCheck);
 
         // cache latest values for access outside of entity data
         CachedJumpFallSpeed = state.JumpFallSpeed;
@@ -307,6 +313,11 @@ public class FirstPersonController : MonoBehaviour
             state.PreviousMovementType = state.MovementType;
             state.MovementType = type;
             state.TimeInState = 0;
+
+            if (type == MovementType.Jumping)
+            {
+                state.IsGrounded = false;
+            }
 
             if (!wasUpdatingFallHeight && ShouldUpdateFallHeight(type))
             {
@@ -535,7 +546,7 @@ public class FirstPersonController : MonoBehaviour
         return false;
     }
 
-    public void UpdateGround(ref ControllerState state, in ControllerConsts consts, float deltaTime)
+    private void UpdateGround(ref ControllerState state, in ControllerConsts consts, float deltaTime)
     {
         if (UpdateGround(state, consts, deltaTime, out var groundCollision))
         {
@@ -550,9 +561,34 @@ public class FirstPersonController : MonoBehaviour
         // Debug.Log($"[GRound] isGrounded");
     }
 
-    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts, float deltaTime)
+    public void GroundedCheck(ref ControllerState state, in ControllerConsts consts,
+        float deltaTime, bool performPhysicsCheck)
     {
-        bool isGrounded = UpdateGround(state, consts, deltaTime, out var groundCollision);
+        GroundCollisionVariables groundCollision = default;
+        bool isGrounded;
+
+        if (performPhysicsCheck)
+        {
+            isGrounded = UpdateGround(state, consts, deltaTime, out groundCollision);
+
+            state.IsGrounded = isGrounded;
+
+            if (isGrounded)
+            {
+                state.GroundNormal = groundCollision.FlattestHitNormal;
+                GroundPhysicsMaterial = groundCollision.surfaceHit;
+            }
+            else
+            {
+                state.GroundNormal = k_UpVector;
+                GroundPhysicsMaterial = null;
+            }
+        }
+        else
+        {
+            isGrounded = state.IsGrounded;
+            GroundPhysicsMaterial = null;
+        }
 
         #if ENABLE_MOVEMENT_DIAGNOSTICS
         if (state.isBounce || state.MovementType != MovementType.Standing)
@@ -572,7 +608,7 @@ public class FirstPersonController : MonoBehaviour
 
         GroundSurfaceType surfaceType = isGrounded ? GetGroundSurfaceType(groundCollision.surfaceHit) : GroundSurfaceType.Normal;
 
-        bool shouldBounce = isLanded && !landedFromBounce && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce;
+        bool shouldBounce = isGrounded && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce && !state.isBounce;
 
         if (isLanded)
         {
@@ -632,6 +668,7 @@ public class FirstPersonController : MonoBehaviour
                 state.BounceVelocity = bounceVelocity;
                 state.JumpFallSpeed = bounceVelocity.y;
                 state.isBounce = true;
+                state.IsGrounded = false;
                 SetMovementType(ref state, MovementType.Jumping);
                 state.Jump = true;
                 state.Fall = false;
