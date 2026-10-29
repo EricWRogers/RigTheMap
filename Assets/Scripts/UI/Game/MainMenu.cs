@@ -113,6 +113,7 @@ namespace Unity.MP_FPS.Client
             sceneNames.Remove("CamsScene");
             sceneNames.Remove("ChloesScene");
             sceneNames.Remove("FarmSpawnPoints");
+            sceneNames.Remove("IFestSpawnPoints");
             sceneNames.Remove("ElijahsScene");
             #endif
                 
