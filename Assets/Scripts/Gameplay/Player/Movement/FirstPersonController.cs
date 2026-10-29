@@ -572,7 +572,7 @@ public class FirstPersonController : MonoBehaviour
 
         GroundSurfaceType surfaceType = isGrounded ? GetGroundSurfaceType(groundCollision.surfaceHit) : GroundSurfaceType.Normal;
 
-        bool shouldBounce = isLanded && !landedFromBounce && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce;
+        bool shouldBounce = isGrounded && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce && !state.isBounce;
 
         if (isLanded)
         {
