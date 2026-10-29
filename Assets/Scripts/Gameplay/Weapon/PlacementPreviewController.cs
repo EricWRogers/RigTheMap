@@ -2,6 +2,7 @@ using Unity.MP_FPS;
 using UnityEngine.AddressableAssets;
 using UnityEngine;
 
+
 public class PlacementPreviewController : MonoBehaviour
 {
     public Material previewMaterial;
@@ -150,7 +151,7 @@ public class PlacementPreviewController : MonoBehaviour
 
         int placementMask = currentWeaponData.PlacementLayerMask.value != 0
         ? currentWeaponData.PlacementLayerMask.value
-        : LayerMask.GetMask("Ground", "Default");
+        : LayerMask.GetMask("Ground", "Default", "PermitNeed");
 
         Quaternion aimRotation = Quaternion.Euler(
             playerData.ControllerState.PitchDegrees,
@@ -169,19 +170,26 @@ public class PlacementPreviewController : MonoBehaviour
             currentWeaponData.HitscanRange,
             placementMask))
         {
-            Vector3 position = hit.point + hit.normal * currentWeaponData.PlacementOffset;
-            Quaternion surfaceRotation = currentWeaponData.PlacementGhostPrefabs[selectedIndex]
-                .GetPlacementRotation(hit.normal, currentRotationDegrees);
-            // if (gameObject.CompareTag("VW"))
-            // {
-            //     Quaternion VWRotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 90f);
-            //     previewInstance.transform.SetPositionAndRotation(position, VWRotation);
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("PermitNeed"))
+            {
+                previewInstance.SetActive(false);
+                return;
+            }
 
-            // }
+                Vector3 position = hit.point + hit.normal * currentWeaponData.PlacementOffset;
+                Quaternion surfaceRotation = currentWeaponData.PlacementGhostPrefabs[selectedIndex]
+                    .GetPlacementRotation(hit.normal, currentRotationDegrees);
+                // if (gameObject.CompareTag("VW"))
+                // {
+                //     Quaternion VWRotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 90f);
+                //     previewInstance.transform.SetPositionAndRotation(position, VWRotation);
 
-            previewInstance.transform.SetPositionAndRotation(position, surfaceRotation);
+                // }
 
-            previewInstance.SetActive(true);
+                previewInstance.transform.SetPositionAndRotation(position, surfaceRotation);
+
+                previewInstance.SetActive(true);
         }
         else
             previewInstance.SetActive(false);

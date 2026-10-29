@@ -349,6 +349,12 @@ namespace Unity.MP_FPS
             ProjectileData projectileData,
             ComponentLookup<PredictedPlayerGhost> playerGhostLookup, ComponentLookup<GhostOwner> ghostOwnerLookup)
         {
+            if(LeaderboardManager.Instance != null &&
+                LeaderboardManager.Instance.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode)
+            {
+                GhostGameObject.DestroyEntity();
+                return;
+            }
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(projectileData.WeaponID);
             int shooterNetworkId = projectileData.OwnerNetworkId;
 

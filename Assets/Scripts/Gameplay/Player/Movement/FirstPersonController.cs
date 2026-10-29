@@ -8,6 +8,7 @@ using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
 using Unity.Entities;
+using Gameplay.Leaderboard;
 
 
 [RequireComponent(typeof(CharacterController))]
@@ -133,6 +134,8 @@ public class FirstPersonController : MonoBehaviour
         public float MovementSpeed;
         public float JumpFallSpeed;
         public float3 BounceVelocity;
+        [GhostField(Quantization =100)]
+        public float3 KnockbackVelocity;
         public Vector3 slipperyVelocity;
         public float AnimatorTargetSpeed; // _animIDSpeed
         public float AnimatorTargetSpeedChangeRate;
@@ -408,7 +411,7 @@ public class FirstPersonController : MonoBehaviour
         {
             state.slipperyVelocity = Vector3.zero;
         }
-        if (surface == GroundSurfaceType.Spikey)//damage player
+        if (surface == GroundSurfaceType.Spikey && (LeaderboardManager.Instance == null || LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode))//damage player
         {
             var ghost = m_PlayerGhost.GhostGameObject.ReadGhostComponentData<PredictedPlayerGhost>();
 
@@ -624,8 +627,8 @@ public class FirstPersonController : MonoBehaviour
                 
                 float BounceHeight = consts.BounceHeight;
                 float launchSpeed = math.sqrt(BounceHeight * -0.6f * consts.Gravity);//how high the player can go
-                float3 launchDir = math.normalizesafe((float3)groundCollision.FlattestHitNormal);
-                float3 bounceVelocity = launchDir * launchSpeed;
+                
+                float3 bounceVelocity = k_UpVector * launchSpeed;
                 state.BounceVelocity = bounceVelocity;
                 state.JumpFallSpeed = bounceVelocity.y;
                 state.isBounce = true;
@@ -907,6 +910,8 @@ public class FirstPersonController : MonoBehaviour
     {
         moveDelta.y += state.JumpFallSpeed;
         moveDelta.xz += state.BounceVelocity.xz;
+        //shotgun knockback
+        moveDelta.xz += state.KnockbackVelocity.xz;
     }
 
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)
@@ -988,6 +993,12 @@ public class FirstPersonController : MonoBehaviour
         }
 
         accumulatedMovement += moveDelta * deltaTime;
+        // reduce knockback velocity gradually
+        state.KnockbackVelocity *= math.exp(-8f * deltaTime);
+        if (math.lengthsq(state.KnockbackVelocity) < 0.01f)
+        {
+            state.KnockbackVelocity = float3.zero;
+        }
         state.MovementRequest = accumulatedMovement;
 
 #if DEBUG_RENDER_MOVEMENT

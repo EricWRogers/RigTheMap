@@ -245,12 +245,12 @@ namespace Unity.MP_FPS
                 : characterIndex switch
             {
                 0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
-                // 1 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun removed till rework
                 1 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
                 2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
                 3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
+                4 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
                 //4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
-                _ => playerEntityPrefabs.PlayerShotgunEntityPrefab // unnasigned
+                _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
 

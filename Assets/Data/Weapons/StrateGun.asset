@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StrateGun
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   WeaponName: StrateGun
-  WeaponDescription: Weapon Description
+  WeaponDescription: 
   Type: 0
   ReticleType: 0
   CooldownInMs: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
   IsPlacementWeapon: 1
   PlacementLayerMask:
     serializedVersion: 2
-    m_Bits: 640
+    m_Bits: 1664
   <PlacementPreviewPrefab>k__BackingField:
     m_AssetGUID: 
     m_SubObjectName: 
@@ -216,3 +216,8 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 10
   HammerGroundRange: 3
+  ShotgunEnemyKnockBack: 10
+  ShotgunSelfKnockBack: 10
+  ShotgunLaunchForce: 15
+  ShotgunLaunchRange: 3
+  IsShotgun: 0
