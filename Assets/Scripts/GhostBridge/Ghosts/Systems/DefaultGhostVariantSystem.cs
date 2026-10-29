@@ -18,7 +18,7 @@ public struct TransformDefaultVariant
     /// The position value is replicated with a default quantization unit of 1000 (so roughly 1mm precision per component).
     /// The replicated position value support both interpolation and extrapolation
     /// </summary>
-    [GhostField (Quantization=1000, Smoothing=SmoothingAction.InterpolateAndExtrapolate, MaxSmoothingDistance = 2)]
+    [GhostField (Quantization=1000, Smoothing=SmoothingAction.InterpolateAndExtrapolate, MaxSmoothingDistance = 5)]
     public float3 Position;
 
     /// <summary>
