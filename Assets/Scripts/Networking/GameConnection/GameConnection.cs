@@ -3,6 +3,7 @@ using Unity.Networking.Transport;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
+using System.Collections.Generic;
 
 namespace Unity.MP_FPS
 {
@@ -35,18 +36,33 @@ namespace Unity.MP_FPS
         public NetworkEndpoint ListenEndpoint { get; private set; }
         public NetworkEndpoint ConnectEndpoint { get; private set; }
         public NetworkType SessionConnectionType { get; private set; }
-
+        public const string MapPropertyKey = "mapName";
+        public string ServerMapName {get; private set;}
         public static async Task<GameConnection> CreateGameAsync()
         {
-            var gameConnection = new GameConnection();
+
+            var gameConnection = new GameConnection
+            {
+                ServerMapName = GameSettings.Instance.MapName
+            };
+
             await StartServicesAsync();
 
             var networkHandler = new EntityNetworkHandler();
             var options = new SessionOptions()
             {
-                MaxPlayers = GameManager.MaxPlayer
+                MaxPlayers = GameManager.MaxPlayer,
+                SessionProperties = new Dictionary<string, SessionProperty>
+                {
+                    { // make aboslutely sure the map name is knows at session creation
+                        MapPropertyKey,
+                        new SessionProperty(gameConnection.ServerMapName, VisibilityPropertyOptions.Public)
+                    }
+                }
             }.WithRelayNetwork().WithNetworkHandler(networkHandler);
             gameConnection.Session = await MultiplayerService.Instance.CreateSessionAsync(options);
+
+            // gameConnection.Session.AsHost().SetProperty(MapPropertyKey, new SessionProperty(gameConnection.ServerMapName));
 
             gameConnection.ConnectEndpoint = await networkHandler.ConnectEndpoint;
             gameConnection.ListenEndpoint = await networkHandler.ListenEndpoint;
@@ -68,6 +84,9 @@ namespace Unity.MP_FPS
             gameConnection.ConnectEndpoint = await networkHandler.ConnectEndpoint;
             gameConnection.ListenEndpoint = await networkHandler.ListenEndpoint;
             gameConnection.SessionConnectionType = await networkHandler.SessionConnectionType;
+            gameConnection.ServerMapName = gameConnection.Session.Properties[MapPropertyKey].Value;
+
+
             return gameConnection;
         }
         

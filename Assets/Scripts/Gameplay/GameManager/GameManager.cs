@@ -141,8 +141,6 @@ namespace Unity.MP_FPS
         {
             await ScenesLoader.UnloadGameplayScenesAsync();
 
-            GameSceneName = GameSettings.Instance.MapName;
-
             if (GameSettings.Instance.GameState != GlobalGameState.MainMenu)
             {
                 Debug.Log("[StartGameAsync] Called but in-game, cannot start while in-game!");
@@ -276,6 +274,8 @@ namespace Unity.MP_FPS
                         break;
                     }
             }
+
+            GameSceneName = GameConnection.ServerMapName;
 
             cancellationToken.ThrowIfCancellationRequested();
 
