@@ -30,9 +30,11 @@ namespace Unity.MP_FPS
         
         private static Collider[] _overlapColliders = new Collider[16];
         private ComponentLookup<JoinedClient> _joinedClientLookup;
+        private LeaderboardManager.RoundPhase _lastRoundPhase;
 
         public void OnCreate(ref SystemState state)
         {
+            _lastRoundPhase = LeaderboardManager.RoundPhase.BuildMode;
             state.RequireForUpdate<PlayerEntityPrefabs>();
             state.RequireForUpdate<PhysicsWorldSingleton>();
             state.RequireForUpdate<NetworkStreamDriver>();
@@ -74,6 +76,65 @@ namespace Unity.MP_FPS
 
             HandleJoinRequests(ref state, gameplayMapsEntity, playerEntityPrefabs, ecb);
             HandlePlayerDeathAndRespawn(ref state, ecb);
+            HandleBuildModeTransition(ref state, ecb, clientsMap);
+        }
+
+        void HandleBuildModeTransition(
+            ref SystemState state,
+            EntityCommandBuffer ecb,
+            DynamicBuffer<ClientsMap> clientsMap)
+        {
+            if (LeaderboardManager.Instance == null)
+                return;
+
+            var currentPhase = LeaderboardManager.Instance.CurrentPhase;
+            if (currentPhase == _lastRoundPhase)
+                return;
+
+            _lastRoundPhase = currentPhase;
+            if (currentPhase != LeaderboardManager.RoundPhase.BuildMode)
+                return;
+
+            foreach (var (playerGhost, ghostOwner, entity) in
+                     SystemAPI.Query<RefRO<PredictedPlayerGhost>, RefRO<GhostOwner>>()
+                         .WithEntityAccess())
+            {
+                if (playerGhost.ValueRO.CurrentHealth <= 0f)
+                    continue;
+
+                var networkId = ghostOwner.ValueRO.NetworkId;
+                if (networkId >= clientsMap.Length)
+                    continue;
+
+                var connectionEntity = clientsMap[networkId].ConnectionEntity;
+                if (!state.EntityManager.Exists(connectionEntity))
+                    continue;
+
+                if (!_joinedClientLookup.HasComponent(connectionEntity))
+                    continue;
+
+                var joinedClient = _joinedClientLookup[connectionEntity];
+                joinedClient.lives = 3;
+                state.EntityManager.SetComponentData(connectionEntity, joinedClient);
+
+                if (!SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
+                {
+                    ecb.AddComponent(connectionEntity, new PendingRespawn
+                    {
+                        RespawnTimer = 5f
+                    });
+                }
+
+                if (SystemAPI.HasComponent<PlayerClientCommandInputLookup>(entity))
+                {
+                    var inputLookup = SystemAPI.GetComponent<PlayerClientCommandInputLookup>(entity);
+                    if (SystemAPI.Exists(inputLookup.ClientCommandInputEntity))
+                        ecb.DestroyEntity(inputLookup.ClientCommandInputEntity);
+                }
+
+                ecb.DestroyEntity(entity);
+                Debug.Log($"[Server] Queued build-mode respawn for player {networkId}.");
+            }
         }
 
         void RefreshClientsMap(ref SystemState state, EntityCommandBuffer ecb,
