@@ -11,7 +11,7 @@ namespace Unity.MP_FPS
     {
         public FixedString64Bytes PlayerName;
         public int CharacterIndex;
-        public FixedString64Bytes mapName;
+        public FixedString64Bytes mapName; // unused currently
     }
 
     /// <summary>

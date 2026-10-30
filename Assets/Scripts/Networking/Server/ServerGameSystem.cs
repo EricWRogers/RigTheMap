@@ -527,14 +527,14 @@ namespace Unity.MP_FPS
             {
                 var connectionEntity = rpcReceive.ValueRW.SourceConnection;
 
-                if (request.ValueRO.mapName != GameSettings.Instance.MapName)
-                {
-                    Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
+                // if (request.ValueRO.mapName != GameSettings.Instance.MapName)
+                // {
+                //     Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
 
-                    ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
-                    ecb.DestroyEntity(entity); // The received join-request RPC
-                    continue;
-                }
+                //     ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
+                //     ecb.DestroyEntity(entity); // The received join-request RPC
+                //     continue;
+                // }
 
                 if (SystemAPI.HasComponent<NetworkId>(connectionEntity) &&
                     !SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity) &&
