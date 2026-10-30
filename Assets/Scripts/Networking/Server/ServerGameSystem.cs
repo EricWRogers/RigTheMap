@@ -206,13 +206,7 @@ namespace Unity.MP_FPS
                 teamId = GetTeamForNewPlayer(ref state);
             }
 
-            Entity clientInputEntity;
-
-            // Instantiate the client input entity
-            if(lives > 0)
-                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
-            else
-                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientSpectateEntityPrefab);
+            Entity clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
 
             ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
             
@@ -224,17 +218,9 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-            uint weaponId;
-
-            // if(lives > 0)
-            // {
-                weaponId = isBuildMode
-                    ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                    : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
-                
-            //}
-            // else
-            //     weaponId = (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2); // -2 is spectator cam
+            uint weaponId = isBuildMode
+                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
 
             characterIndex = (int)weaponId;
 
@@ -249,7 +235,6 @@ namespace Unity.MP_FPS
                 2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
                 3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
                 4 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
-                //4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -336,8 +321,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives,
-                    spectator = joinedClient.spectator
+                    lives = joinedClient.lives
+                    // spectator = joinedClient.spectator
                 });
             }
 
