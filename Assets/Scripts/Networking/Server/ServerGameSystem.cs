@@ -76,13 +76,11 @@ namespace Unity.MP_FPS
 
             HandleJoinRequests(ref state, gameplayMapsEntity, playerEntityPrefabs, ecb);
             HandlePlayerDeathAndRespawn(ref state, ecb);
-            HandleBuildModeTransition(ref state, ecb, clientsMap);
+            HandleBuildModeTransition(ref state);
         }
 
         void HandleBuildModeTransition(
-            ref SystemState state,
-            EntityCommandBuffer ecb,
-            DynamicBuffer<ClientsMap> clientsMap)
+            ref SystemState state)
         {
             if (LeaderboardManager.Instance == null)
                 return;
@@ -95,46 +93,48 @@ namespace Unity.MP_FPS
             if (currentPhase != LeaderboardManager.RoundPhase.BuildMode)
                 return;
 
-            foreach (var (playerGhost, ghostOwner, entity) in
-                     SystemAPI.Query<RefRO<PredictedPlayerGhost>, RefRO<GhostOwner>>()
+            foreach (var (playerGhost, ghostOwner, _) in
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>()
                          .WithEntityAccess())
             {
                 if (playerGhost.ValueRO.CurrentHealth <= 0f)
                     continue;
 
                 var networkId = ghostOwner.ValueRO.NetworkId;
-                if (networkId >= clientsMap.Length)
+                if (!TryFindConnectionEntity(ref state, networkId, out var connectionEntity) ||
+                    !_joinedClientLookup.HasComponent(connectionEntity))
+                {
+                    Debug.LogError(
+                        $"[Server] Cannot reset build-mode state for player {networkId}: " +
+                        "connection or JoinedClient was not found.");
                     continue;
-
-                var connectionEntity = clientsMap[networkId].ConnectionEntity;
-                if (!state.EntityManager.Exists(connectionEntity))
-                    continue;
-
-                if (!_joinedClientLookup.HasComponent(connectionEntity))
-                    continue;
+                }
 
                 var joinedClient = _joinedClientLookup[connectionEntity];
                 joinedClient.lives = 3;
                 state.EntityManager.SetComponentData(connectionEntity, joinedClient);
-
-                if (!SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
-                {
-                    ecb.AddComponent(connectionEntity, new PendingRespawn
-                    {
-                        RespawnTimer = 5f
-                    });
-                }
-
-                if (SystemAPI.HasComponent<PlayerClientCommandInputLookup>(entity))
-                {
-                    var inputLookup = SystemAPI.GetComponent<PlayerClientCommandInputLookup>(entity);
-                    if (SystemAPI.Exists(inputLookup.ClientCommandInputEntity))
-                        ecb.DestroyEntity(inputLookup.ClientCommandInputEntity);
-                }
-
-                ecb.DestroyEntity(entity);
-                Debug.Log($"[Server] Queued build-mode respawn for player {networkId}.");
+                playerGhost.ValueRW.CurrentHealth = 0f;
+                playerGhost.ValueRW.LivesRemaining = 3;
             }
+        }
+
+        bool TryFindConnectionEntity(
+            ref SystemState state,
+            int networkId,
+            out Entity connectionEntity)
+        {
+            foreach (var (connectionNetworkId, entity) in
+                     SystemAPI.Query<RefRO<NetworkId>>().WithEntityAccess())
+            {
+                if (connectionNetworkId.ValueRO.Value == networkId)
+                {
+                    connectionEntity = entity;
+                    return true;
+                }
+            }
+
+            connectionEntity = Entity.Null;
+            return false;
         }
 
         void RefreshClientsMap(ref SystemState state, EntityCommandBuffer ecb,
@@ -397,8 +397,6 @@ namespace Unity.MP_FPS
 
         void HandlePlayerDeathAndRespawn(ref SystemState state, EntityCommandBuffer ecb)
         {
-            var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
-
             // --- Part 1: Detect Death and Destroy Player Entity ---
             foreach (var (playerGhost, ghostOwner, entity) in
                      SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>().WithEntityAccess())
@@ -406,7 +404,15 @@ namespace Unity.MP_FPS
                 if (playerGhost.ValueRO.CurrentHealth <= 0)
                 {
                     var networkId = ghostOwner.ValueRO.NetworkId;
-                    var connectionEntity = clientsMap[ghostOwner.ValueRO.NetworkId].ConnectionEntity;
+                    if (!TryFindConnectionEntity(ref state, networkId, out var connectionEntity) ||
+                        !_joinedClientLookup.HasComponent(connectionEntity))
+                    {
+                        Debug.LogError(
+                            $"[Server] Cannot process death for player {networkId}: " +
+                            "connection or JoinedClient was not found.");
+                        continue;
+                    }
+
                     var joinedClient = _joinedClientLookup[connectionEntity];
                     
                     bool isBuildMode = LeaderboardManager.Instance != null &&
