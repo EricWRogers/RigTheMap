@@ -220,6 +220,7 @@ namespace Unity.MP_FPS
 
         void BeginEnteringGame()
         {
+            LobbyRoster.Clear();
             GameSettings.Instance.GameState = GlobalGameState.Lobby;
         }
 

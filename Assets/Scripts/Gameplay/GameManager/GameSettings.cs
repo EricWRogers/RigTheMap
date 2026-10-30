@@ -63,10 +63,12 @@ namespace Unity.MP_FPS
             {
                 if (m_GameState == value)
                 {
+                    UpdateCursorVisibility();
                     return;
                 }
 
                 m_GameState = value;
+                UpdateCursorVisibility();
 
                 Notify(MainMenuStylePropertyName);
                 Notify(LobbyStylePropertyName);
@@ -163,15 +165,27 @@ namespace Unity.MP_FPS
             {
                 if (m_IsPauseMenuOpen == value)
                 {
+                    UpdateCursorVisibility();
                     return;
                 }
 
                 m_IsPauseMenuOpen = value;
-                Utils.SetCursorVisible(value);
+                UpdateCursorVisibility();
                 Notify(PauseMenuStylePropertyName);
                 Notify(MobileControlsOpacityPropertyName);
             }
         }
+
+        void UpdateCursorVisibility()
+        {
+            bool shouldShowCursor =
+                m_IsPauseMenuOpen ||
+                m_GameState == GlobalGameState.MainMenu ||
+                m_GameState == GlobalGameState.Lobby;
+
+            Utils.SetCursorVisible(shouldShowCursor);
+        }
+
         public static readonly string PauseMenuStylePropertyName = nameof(PauseMenuStyle);
         [CreateProperty]
         public DisplayStyle PauseMenuStyle => IsPauseMenuOpen ? DisplayStyle.Flex : DisplayStyle.None;

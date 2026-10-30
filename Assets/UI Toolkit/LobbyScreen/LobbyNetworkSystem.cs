@@ -125,15 +125,6 @@ namespace Unity.MP_FPS
                 !GameManager.Instance.IsLobbyHost)
                 return;
 
-            if (Players.Count == 0)
-                return;
-
-            foreach (var player in Players.Values)
-            {
-                if (!player.IsReady)
-                    return;
-            }
-
             World clientWorld = null;
 
             foreach (var world in World.All)
@@ -211,6 +202,14 @@ namespace Unity.MP_FPS
         public void OnUpdate(ref SystemState state)
         {
             var ecb = new EntityCommandBuffer(Allocator.Temp);
+            var registeredNetworkIds = new HashSet<int>();
+
+            foreach (var existingPlayer in
+                     SystemAPI.Query<RefRO<LobbyPlayer>>())
+            {
+                registeredNetworkIds.Add(
+                    existingPlayer.ValueRO.NetworkId);
+            }
 
             foreach (var (request, receiveRequest, entity) in
                      SystemAPI.Query<
@@ -224,10 +223,20 @@ namespace Unity.MP_FPS
                 var sourceConnection =
                     receiveRequest.ValueRO.SourceConnection;
 
+                if (!state.EntityManager.HasComponent<NetworkId>(
+                        sourceConnection))
+                {
+                    ecb.DestroyEntity(entity);
+                    continue;
+                }
+
                 var networkId =
                     state.EntityManager
                         .GetComponentData<NetworkId>(
                             sourceConnection).Value;
+
+                bool alreadyRegistered =
+                    registeredNetworkIds.Contains(networkId);
 
                 Debug.Log(
                     $"[LOBBY SERVER] Player joined lobby: " +
@@ -254,6 +263,17 @@ namespace Unity.MP_FPS
                             TargetConnection = sourceConnection
                         });
                 }
+
+                if (alreadyRegistered)
+                {
+                    Debug.Log(
+                        $"[LOBBY SERVER] Ignoring duplicate lobby join " +
+                        $"for NetworkId {networkId}");
+                    ecb.DestroyEntity(entity);
+                    continue;
+                }
+
+                registeredNetworkIds.Add(networkId);
 
                 var lobbyPlayerEntity = ecb.CreateEntity();
 
