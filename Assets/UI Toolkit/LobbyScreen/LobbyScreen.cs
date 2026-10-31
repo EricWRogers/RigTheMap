@@ -30,6 +30,8 @@ namespace Unity.MP_FPS.Client
             if (GameSettings.Instance.GameState != GlobalGameState.Lobby)
                 return;
 
+            PauseMenu.pauseEnabled = true;
+
             RefreshPlayerList();
             UpdateStartGameButton();
             if (m_JoinCode != null)
