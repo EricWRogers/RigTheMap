@@ -319,7 +319,7 @@ namespace Unity.MP_FPS
 
             uint weaponId = isBuildMode
                 ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
+                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
 
             characterIndex = (int)weaponId;
 
@@ -352,7 +352,7 @@ namespace Unity.MP_FPS
 
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
-            var secondaryWeaponData = WeaponManager.Instance.WeaponRegistry.SixShooterWeapon;
+            var secondaryWeaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData((uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
 
             ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
 

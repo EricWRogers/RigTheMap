@@ -749,14 +749,14 @@ namespace Unity.MP_FPS
                         if (input.PlayerInput.SelectSecondary && LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode)
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
-                                WeaponRegistry.SixShooterWeaponId,
-                                WeaponRegistry.SixShooterWeaponId);
+                                (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2,
+                                (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
                         }
                         else if (input.PlayerInput.SelectPrimary)
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
                                 predictedPlayer.ValueRO.PrimaryWeaponID,
-                                WeaponRegistry.SixShooterWeaponId);
+                                (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
                         }
 
                         if (input.PlayerInput.WeaponScrollDelta != 0)

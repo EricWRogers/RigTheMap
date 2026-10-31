@@ -210,8 +210,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                         if (input.SelectSecondary && LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.BuildMode)
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
-                                WeaponRegistry.SixShooterWeaponId,
-                                WeaponRegistry.SixShooterWeaponId);
+                                (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2,
+                               (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
                             
                         }
                         else if (input.SelectSecondary)
@@ -222,7 +222,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                         {
                             predictedPlayer.ValueRW.SelectWeapon(
                                 predictedPlayer.ValueRO.PrimaryWeaponID,
-                                WeaponRegistry.SixShooterWeaponId);
+                                (uint)WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
                         }
 
 
