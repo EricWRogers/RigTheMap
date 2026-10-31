@@ -1,8 +1,11 @@
 using Unity.Properties;
+using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.Users;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS
@@ -16,6 +19,8 @@ namespace Unity.MP_FPS
             public const string MainMenuButton = "MainMenuButton";
             public const string QuitButton = "QuitButton";
         }
+
+        static public bool pauseEnabled = false;
 
         Button m_ResumeButton;
         Button m_MainMenuButton;
@@ -53,6 +58,9 @@ namespace Unity.MP_FPS
 
         void Update()
         {
+            if(pauseEnabled)
+            {
+
             bool pausePressed =
                 Keyboard.current != null &&
                 Keyboard.current.escapeKey.wasPressedThisFrame;
@@ -66,6 +74,8 @@ namespace Unity.MP_FPS
 
             if (pausePressed)
                 TogglePauseMenuVisibility();
+
+            }
         }
 
         void TogglePauseMenuVisibility()
@@ -119,6 +129,7 @@ namespace Unity.MP_FPS
 
         static void OnMainMenuPressed()
         {
+            pauseEnabled = false;
             SetGameplayInputEnabled(true);
             GameManager.Instance.ReturnToMainMenuAsync();
             Utils.SetCursorVisible(true);  

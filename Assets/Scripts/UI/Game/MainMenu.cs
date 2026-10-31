@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Unity.Properties;
 using UnityEngine;
@@ -21,19 +22,37 @@ namespace Unity.MP_FPS.Client
             public const string JoinCodeField = "JoinCodeField";
             public const string QuitGame = "QuitButton";
             public const string SurveyButton = "SurveyButton";
+            public const string SettingsButton = "SettingsButton";
+            public const string MainMenuPanel = "MainMenuPanel";
+            public const string AudioSettingsPanel = "AudioSettingsPanel";
+            public const string MasterVolumeSlider = "MasterVolumeSlider";
+            public const string MusicVolumeSlider = "MusicVolumeSlider";
+            public const string SFXVolumeSlider = "SFXVolumeSlider";
+            public const string MenuVolumeSlider = "MenuVolumeSlider";
+            public const string AudioSettingsBackButton = "AudioSettingsBackButton";
         }
 
         VisualElement m_MainMenu;
+        VisualElement m_MainMenuPanel;
+        VisualElement m_AudioSettingsPanel;
         DropdownField m_MapNameField;
         Button m_CreateGameButton;
         Button m_JoinGameButton;
         TextField m_JoinCodeField;
         Button m_QuitButton;
         Button m_SurveyButton;
+        Button m_SettingsButton;
+        Button m_AudioSettingsBackButton;
+        Slider m_MasterVolumeSlider;
+        Slider m_MusicVolumeSlider;
+        Slider m_SFXVolumeSlider;
+        Slider m_MenuVolumeSlider;
 
         void OnEnable()
         {
             m_MainMenu = GetComponent<UIDocument>().rootVisualElement;
+            m_MainMenuPanel = m_MainMenu.Q<VisualElement>(UIElementNames.MainMenuPanel);
+            m_AudioSettingsPanel = m_MainMenu.Q<VisualElement>(UIElementNames.AudioSettingsPanel);
 
             m_MainMenu.SetBinding("style.display", new DataBinding
             {
@@ -78,6 +97,17 @@ namespace Unity.MP_FPS.Client
 
             m_SurveyButton = m_MainMenu.Q<Button>(UIElementNames.SurveyButton);
             m_SurveyButton.clicked += OnSurveyPressed;
+
+            m_SettingsButton = m_MainMenu.Q<Button>(UIElementNames.SettingsButton);
+            m_SettingsButton.clicked += OnSettingsPressed;
+
+            m_AudioSettingsBackButton = m_MainMenu.Q<Button>(UIElementNames.AudioSettingsBackButton);
+            m_AudioSettingsBackButton.clicked += OnAudioSettingsBackPressed;
+
+            m_MasterVolumeSlider = ConfigureVolumeSlider(UIElementNames.MasterVolumeSlider, SoundMixer.soundMasterVol);
+            m_MusicVolumeSlider = ConfigureVolumeSlider(UIElementNames.MusicVolumeSlider, SoundMixer.soundMusicVol);
+            m_SFXVolumeSlider = ConfigureVolumeSlider(UIElementNames.SFXVolumeSlider, SoundMixer.soundSFXVol);
+            m_MenuVolumeSlider = ConfigureVolumeSlider(UIElementNames.MenuVolumeSlider, SoundMixer.soundMenuVol);
 
             var hidingBackground = m_MainMenu.Q<VisualElement>(UIElementNames.HidingBackground);
             hidingBackground.SetBinding("style.display", new DataBinding
@@ -130,6 +160,34 @@ namespace Unity.MP_FPS.Client
             m_JoinGameButton.clicked -= OnJoinGamePressed;
             m_QuitButton.clicked -= OnQuitPressed;
             m_SurveyButton.clicked -= OnSurveyPressed;
+            m_SettingsButton.clicked -= OnSettingsPressed;
+            m_AudioSettingsBackButton.clicked -= OnAudioSettingsBackPressed;
+            m_MasterVolumeSlider.UnregisterValueChangedCallback(OnMasterVolumeChanged);
+            m_MusicVolumeSlider.UnregisterValueChangedCallback(OnMusicVolumeChanged);
+            m_SFXVolumeSlider.UnregisterValueChangedCallback(OnSFXVolumeChanged);
+            m_MenuVolumeSlider.UnregisterValueChangedCallback(OnMenuVolumeChanged);
+        }
+
+        Slider ConfigureVolumeSlider(string elementName, ConfigVar configVar)
+        {
+            var slider = m_MainMenu.Q<Slider>(elementName);
+            slider.value = Mathf.Clamp01(configVar.FloatValue);
+            switch (elementName)
+            {
+                case UIElementNames.MasterVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMasterVolumeChanged);
+                    break;
+                case UIElementNames.MusicVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMusicVolumeChanged);
+                    break;
+                case UIElementNames.SFXVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnSFXVolumeChanged);
+                    break;
+                case UIElementNames.MenuVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMenuVolumeChanged);
+                    break;
+            }
+            return slider;
         }
 
         void Update()
@@ -179,5 +237,31 @@ namespace Unity.MP_FPS.Client
         {
             Application.OpenURL("https://forms.gle/fATHHYG63Cs5Knuo9");
         }
+
+        void OnSettingsPressed()
+        {
+            m_MainMenuPanel.style.display = DisplayStyle.None;
+            m_AudioSettingsPanel.style.display = DisplayStyle.Flex;
+            m_MasterVolumeSlider.Focus();
+        }
+
+        void OnAudioSettingsBackPressed()
+        {
+            m_AudioSettingsPanel.style.display = DisplayStyle.None;
+            m_MainMenuPanel.style.display = DisplayStyle.Flex;
+            m_SettingsButton.Focus();
+        }
+
+        void OnMasterVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMasterVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        void OnMusicVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMusicVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        void OnSFXVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundSFXVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        void OnMenuVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMenuVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
     }
 }

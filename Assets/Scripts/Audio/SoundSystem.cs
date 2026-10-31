@@ -199,13 +199,14 @@ public class SoundSystem : ISoundSystem
     /// <param name="muteSound">Whether to mute all sounds</param>
     public void UpdateSoundSystem(bool muteSound = false)
     {
+        float masterVolume = (muteSound == true ? 0 : m_MasterVolume.GetValue());
+        m_SoundMixer.Update(masterVolume);
+
         if (m_SoundEmitterActiveList.Count == 0)
         {
             return; // Nothing playing
         }
 
-        float masterVolume = (muteSound == true ? 0 : m_MasterVolume.GetValue());
-        m_SoundMixer.Update(masterVolume);
         UpdateActiveSoundEmitters();
     }
 
@@ -376,4 +377,3 @@ public class SoundSystem : ISoundSystem
         }
     }
 }
-
