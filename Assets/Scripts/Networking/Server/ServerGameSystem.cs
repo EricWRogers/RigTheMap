@@ -30,9 +30,11 @@ namespace Unity.MP_FPS
         
         private static Collider[] _overlapColliders = new Collider[16];
         private ComponentLookup<JoinedClient> _joinedClientLookup;
+        private LeaderboardManager.RoundPhase _lastRoundPhase;
 
         public void OnCreate(ref SystemState state)
         {
+            _lastRoundPhase = LeaderboardManager.RoundPhase.BuildMode;
             state.RequireForUpdate<PlayerEntityPrefabs>();
             state.RequireForUpdate<PhysicsWorldSingleton>();
             state.RequireForUpdate<NetworkStreamDriver>();
@@ -74,6 +76,65 @@ namespace Unity.MP_FPS
 
             HandleJoinRequests(ref state, gameplayMapsEntity, playerEntityPrefabs, ecb);
             HandlePlayerDeathAndRespawn(ref state, ecb);
+            HandleBuildModeTransition(ref state);
+        }
+
+        void HandleBuildModeTransition(
+            ref SystemState state)
+        {
+            if (LeaderboardManager.Instance == null)
+                return;
+
+            var currentPhase = LeaderboardManager.Instance.CurrentPhase;
+            if (currentPhase == _lastRoundPhase)
+                return;
+
+            _lastRoundPhase = currentPhase;
+            if (currentPhase != LeaderboardManager.RoundPhase.BuildMode)
+                return;
+
+            foreach (var (playerGhost, ghostOwner, _) in
+                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>()
+                         .WithEntityAccess())
+            {
+                if (playerGhost.ValueRO.CurrentHealth <= 0f)
+                    continue;
+
+                var networkId = ghostOwner.ValueRO.NetworkId;
+                if (!TryFindConnectionEntity(ref state, networkId, out var connectionEntity) ||
+                    !_joinedClientLookup.HasComponent(connectionEntity))
+                {
+                    Debug.LogError(
+                        $"[Server] Cannot reset build-mode state for player {networkId}: " +
+                        "connection or JoinedClient was not found.");
+                    continue;
+                }
+
+                var joinedClient = _joinedClientLookup[connectionEntity];
+                joinedClient.lives = 3;
+                state.EntityManager.SetComponentData(connectionEntity, joinedClient);
+                playerGhost.ValueRW.CurrentHealth = 0f;
+                playerGhost.ValueRW.LivesRemaining = 3;
+            }
+        }
+
+        bool TryFindConnectionEntity(
+            ref SystemState state,
+            int networkId,
+            out Entity connectionEntity)
+        {
+            foreach (var (connectionNetworkId, entity) in
+                     SystemAPI.Query<RefRO<NetworkId>>().WithEntityAccess())
+            {
+                if (connectionNetworkId.ValueRO.Value == networkId)
+                {
+                    connectionEntity = entity;
+                    return true;
+                }
+            }
+
+            connectionEntity = Entity.Null;
+            return false;
         }
 
         void RefreshClientsMap(ref SystemState state, EntityCommandBuffer ecb,
@@ -206,13 +267,7 @@ namespace Unity.MP_FPS
                 teamId = GetTeamForNewPlayer(ref state);
             }
 
-            Entity clientInputEntity;
-
-            // Instantiate the client input entity
-            if(lives > 0)
-                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
-            else
-                clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientSpectateEntityPrefab);
+            Entity clientInputEntity = ecb.Instantiate(playerEntityPrefabs.ClientInputEntityPrefab);
 
             ecb.SetComponent(clientInputEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
             
@@ -224,17 +279,9 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-            uint weaponId;
-
-            if(lives > 0)
-            {
-                weaponId = isBuildMode
-                    ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                    : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
-                
-            }
-            else
-                weaponId = (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2); // -2 is spectator cam
+            uint weaponId = isBuildMode
+                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1);
 
             characterIndex = (int)weaponId;
 
@@ -249,7 +296,6 @@ namespace Unity.MP_FPS
                 2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
                 3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
                 4 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
-                //4 => playerEntityPrefabs.PlayerSpectateEntityPrefab, // invis spectator
                 _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -336,8 +382,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives,
-                    spectator = joinedClient.spectator
+                    lives = joinedClient.lives
+                    // spectator = joinedClient.spectator
                 });
             }
 
@@ -351,8 +397,6 @@ namespace Unity.MP_FPS
 
         void HandlePlayerDeathAndRespawn(ref SystemState state, EntityCommandBuffer ecb)
         {
-            var clientsMap = SystemAPI.GetSingletonBuffer<ClientsMap>();
-
             // --- Part 1: Detect Death and Destroy Player Entity ---
             foreach (var (playerGhost, ghostOwner, entity) in
                      SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>().WithEntityAccess())
@@ -360,12 +404,25 @@ namespace Unity.MP_FPS
                 if (playerGhost.ValueRO.CurrentHealth <= 0)
                 {
                     var networkId = ghostOwner.ValueRO.NetworkId;
-                    var connectionEntity = clientsMap[ghostOwner.ValueRO.NetworkId].ConnectionEntity;
+                    if (!TryFindConnectionEntity(ref state, networkId, out var connectionEntity) ||
+                        !_joinedClientLookup.HasComponent(connectionEntity))
+                    {
+                        Debug.LogError(
+                            $"[Server] Cannot process death for player {networkId}: " +
+                            "connection or JoinedClient was not found.");
+                        continue;
+                    }
+
                     var joinedClient = _joinedClientLookup[connectionEntity];
                     
                     bool isBuildMode = LeaderboardManager.Instance != null &&
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
+
+                    Debug.LogWarning(
+                        $"[Respawn] Death detected: playerNetworkId={networkId}, " +
+                        $"connection={connectionEntity}, livesBefore={joinedClient.lives}, " +
+                        $"buildMode={isBuildMode}.");
 
                     if(!isBuildMode) // I don't think this works right now
                         joinedClient.lives--;
@@ -378,13 +435,19 @@ namespace Unity.MP_FPS
                         connectionEntity,
                         joinedClient);
 
+                    Debug.LogWarning(
+                        $"[Respawn] Lives updated: playerNetworkId={networkId}, " +
+                        $"livesAfter={joinedClient.lives}, connection={connectionEntity}.");
+
                     if (LeaderboardManager.Instance != null)
                         LeaderboardManager.Instance.CheckForWinningTeam();
 
                     // Add a respawn timer to the connection
                     if (!SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
                     {
-                        Debug.Log($"[Server] Player {entity} has died. Starting respawn timer for connection {connectionEntity}.");
+                        Debug.LogWarning(
+                            $"[Respawn] Timer started: playerNetworkId={networkId}, " +
+                            $"connection={connectionEntity}, duration=5s.");
                         
                         
                         ecb.AddComponent(connectionEntity, new PendingRespawn
@@ -392,17 +455,28 @@ namespace Unity.MP_FPS
                                 RespawnTimer = 5f
                             });
                     }
+                    else
+                    {
+                        Debug.LogWarning(
+                            $"[Respawn] Timer already exists: playerNetworkId={networkId}, " +
+                            $"connection={connectionEntity}. No duplicate timer added.");
+                    }
                     
                     if (SystemAPI.HasComponent<PlayerClientCommandInputLookup>(entity))
                     {
                         var inputLookup = SystemAPI.GetComponent<PlayerClientCommandInputLookup>(entity);
                         if (SystemAPI.Exists(inputLookup.ClientCommandInputEntity))
                         {
+                            Debug.LogWarning(
+                                $"[Respawn] Destroying input entity {inputLookup.ClientCommandInputEntity} " +
+                                $"for playerNetworkId={networkId}.");
                             ecb.DestroyEntity(inputLookup.ClientCommandInputEntity);
                         }
                     }
 
                     // Destroy the player character entity
+                    Debug.LogWarning(
+                        $"[Respawn] Destroying player entity {entity} for playerNetworkId={networkId}.");
                     ecb.DestroyEntity(entity);
                 }
             }
@@ -411,15 +485,15 @@ namespace Unity.MP_FPS
             foreach (var (pendingRespawn, connection, entity) in
                      SystemAPI.Query<RefRW<PendingRespawn>, RefRO<NetworkId>>().WithEntityAccess())
             {
+                var previousRespawnTimer = pendingRespawn.ValueRO.RespawnTimer;
                 pendingRespawn.ValueRW.RespawnTimer -= SystemAPI.Time.DeltaTime;
 
                 if (pendingRespawn.ValueRO.RespawnTimer <= 0f)
                 {
-                    Debug.Log($"[Server] Respawning player for connection {entity}.");
-
                     if (_joinedClientLookup.HasComponent(entity))
                     {
                         var joinedClientData = _joinedClientLookup[entity];
+                        var networkId = connection.ValueRO.Value;
 
                         bool isBuildMode = LeaderboardManager.Instance != null &&
                                            LeaderboardManager.Instance.CurrentPhase ==
@@ -427,6 +501,14 @@ namespace Unity.MP_FPS
 
                         bool shouldRespawn = joinedClientData.lives > 0 ||
                                              isBuildMode;
+
+                        if (previousRespawnTimer > 0f)
+                        {
+                            Debug.LogWarning(
+                                $"[Respawn] Timer expired: playerNetworkId={networkId}, " +
+                                $"connection={entity}, lives={joinedClientData.lives}, " +
+                                $"buildMode={isBuildMode}, shouldRespawn={shouldRespawn}.");
+                        }
 
                         if (shouldRespawn)
                         {
@@ -436,7 +518,16 @@ namespace Unity.MP_FPS
                                 state.EntityManager.SetComponentData(
                                     entity,
                                     joinedClientData);
+
+                                Debug.LogWarning(
+                                    $"[Respawn] Lives reset for build mode: playerNetworkId={networkId}, " +
+                                    $"connection={entity}, lives=3.");
                             }
+
+                            Debug.LogWarning(
+                                $"[Respawn] Spawning replacement: playerNetworkId={networkId}, " +
+                                $"connection={entity}, team={joinedClientData.TeamId}, " +
+                                $"lives={joinedClientData.lives}.");
 
                             SpawnPlayerCharacter(
                                 ref state,
@@ -448,12 +539,27 @@ namespace Unity.MP_FPS
                                 joinedClientData.lives);
 
                             ecb.RemoveComponent<PendingRespawn>(entity);
+                            Debug.LogWarning(
+                                $"[Respawn] Replacement queued and timer removed: " +
+                                $"playerNetworkId={networkId}, connection={entity}.");
+                        }
+                        else
+                        {
+                            if (previousRespawnTimer > 0f)
+                            {
+                                Debug.LogWarning(
+                                    $"[Respawn] Respawn denied: playerNetworkId={networkId}, " +
+                                    $"connection={entity}, lives={joinedClientData.lives}, " +
+                                    $"buildMode={isBuildMode}.");
+                            }
                         }
                     }
                     else
                     {
                         // This would indicate a problem, but we handle it safely.
-                        Debug.LogError($"Connection entity {entity} is pending respawn but has no JoinedClient data!");
+                        Debug.LogError(
+                            $"[Respawn] Respawn failed: connection {entity} is pending " +
+                            "but has no JoinedClient data.");
                         ecb.RemoveComponent<PendingRespawn>(entity);
                     }
                 }
@@ -481,14 +587,14 @@ namespace Unity.MP_FPS
             {
                 var connectionEntity = rpcReceive.ValueRW.SourceConnection;
 
-                if (request.ValueRO.mapName != GameSettings.Instance.MapName)
-                {
-                    Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
+                // if (request.ValueRO.mapName != GameSettings.Instance.MapName)
+                // {
+                //     Debug.LogWarning($"Rejecting client: requested map '{request.ValueRO.mapName}', server map is '{GameSettings.Instance.MapName}'.");
 
-                    ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
-                    ecb.DestroyEntity(entity); // The received join-request RPC
-                    continue;
-                }
+                //     ecb.AddComponent(connectionEntity, new NetworkStreamRequestDisconnect());
+                //     ecb.DestroyEntity(entity); // The received join-request RPC
+                //     continue;
+                // }
 
                 if (SystemAPI.HasComponent<NetworkId>(connectionEntity) &&
                     !SystemAPI.HasComponent<NetworkStreamInGame>(connectionEntity) &&

@@ -65,9 +65,7 @@ namespace Unity.MP_FPS
             }
 
             if (pausePressed)
-            {
                 TogglePauseMenuVisibility();
-            }
         }
 
         void TogglePauseMenuVisibility()
@@ -121,6 +119,7 @@ namespace Unity.MP_FPS
 
         static void OnMainMenuPressed()
         {
+            SetGameplayInputEnabled(true);
             GameManager.Instance.ReturnToMainMenuAsync();
             Utils.SetCursorVisible(true);  
             LobbyRoster.Clear();          

@@ -468,12 +468,12 @@ public class FirstPersonController : MonoBehaviour
             var testRadius = m_Controller.radius;
             var testStart = new Vector3(currentPos.x + controllerCentre.x, currentPos.y + +controllerCentre.y,
                 currentPos.z + controllerCentre.z);
-            float extraDistance = 0f;
-            if(state.MovementType == MovementType.Falling && state.JumpFallSpeed < 0f)
-            {
-               extraDistance = -state.JumpFallSpeed * deltaTime;
-            } 
-            float groundCheckDistance = GroundedOffset + extraDistance;
+            // float extraDistance = 0f;
+            // if(state.MovementType == MovementType.Falling && state.JumpFallSpeed < 0f)
+            // {
+            //    extraDistance = -state.JumpFallSpeed * deltaTime;
+            // } 
+            float groundCheckDistance = GroundedOffset; //+ extraDistance;
             var numHits = Physics.SphereCastNonAlloc(testStart, testRadius, Vector3.down,
                 m_GroundCheckRaycastResults, groundCheckDistance, consts.GroundLayers, QueryTriggerInteraction.Ignore);
 

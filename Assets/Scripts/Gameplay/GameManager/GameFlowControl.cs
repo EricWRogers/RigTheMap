@@ -14,6 +14,8 @@ namespace Unity.MP_FPS
         public async void ReturnToMainMenuAsync()
         {
             Debug.Log($"[{nameof(ReturnToMainMenuAsync)}] Called.");
+            LobbyRoster.Clear();
+
             if (!CanUseMainMenu)
             {
                 QuitAsync();
@@ -55,6 +57,7 @@ namespace Unity.MP_FPS
         /// </summary>
         public async void QuitAsync()
         {
+            LobbyRoster.Clear();
             await LeaveSessionAsync();
 
 #if UNITY_EDITOR
