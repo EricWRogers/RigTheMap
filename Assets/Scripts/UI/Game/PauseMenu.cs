@@ -134,6 +134,7 @@ namespace Unity.MP_FPS
             GameManager.Instance.ReturnToMainMenuAsync();
             Utils.SetCursorVisible(true);  
             LobbyRoster.Clear();          
+            
         }
 
         static void OnQuitPressed() => GameManager.Instance.QuitAsync();

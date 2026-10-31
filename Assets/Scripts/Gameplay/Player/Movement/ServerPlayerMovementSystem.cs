@@ -1090,16 +1090,11 @@ namespace Unity.MP_FPS
                                                 //shotgun knockback against other players
                                                 if (predictedPlayer.ValueRO.EquippedWeaponID == 4)
                                                 {
-                                                    float knockbackForce = 20f;
+                                                    float knockbackForce = 30f;
                                                     float3 knockbackDirection = targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition - predictedPlayer.ValueRO.ControllerState.CurrentPosition;
                                                     knockbackDirection.y = 0f;
                                                     knockbackDirection = math.normalizesafe(knockbackDirection);
                                                     targetPredictedPlayer.ValueRW.ControllerState.KnockbackVelocity = knockbackDirection * knockbackForce;
-                                                    Debug.Log(
-                                                        $"[SHOTGUN KNOCKBACK] Hit player! " +
-                                                        $"Direction: {knockbackDirection}, " +
-                                                        $"Velocity: {targetPredictedPlayer.ValueRO.ControllerState.KnockbackVelocity}"
-                                                    );
                                                     Debug.Log("[Shotgun Knockback] Applied to target");
                                                 }
 
