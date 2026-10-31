@@ -65,9 +65,7 @@ namespace Unity.MP_FPS
             }
 
             if (pausePressed)
-            {
                 TogglePauseMenuVisibility();
-            }
         }
 
         void TogglePauseMenuVisibility()

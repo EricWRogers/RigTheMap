@@ -3,6 +3,7 @@ using Gameplay.Leaderboard;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace Unity.MP_FPS.UI
@@ -98,9 +99,32 @@ namespace Unity.MP_FPS.UI
 
         void Update()
         {
-            if (GameInput.Actions.UI.ShowLeaderboard.WasPressedThisFrame())
+            bool tabPressed =
+                Keyboard.current != null &&
+                Keyboard.current.tabKey.wasPressedThisFrame;
+
+            if (!tabPressed &&
+                Gamepad.current != null &&
+                Gamepad.current.selectButton.wasPressedThisFrame)
+            {
+                tabPressed = true;
+            }
+
+            if (tabPressed)
                 OnShowLeaderboard();
-            else if (GameInput.Actions.UI.ShowLeaderboard.WasReleasedThisFrame())
+
+            bool tabReleased = 
+                Keyboard.current != null &&
+                Keyboard.current.tabKey.wasReleasedThisFrame;
+
+            if(!tabReleased &&
+                Gamepad.current != null &&
+                Gamepad.current.selectButton.wasReleasedThisFrame)
+            {
+                tabReleased = true;
+            }
+
+            if(tabReleased)
                 OnHideLeaderboard();
 
             // Find the current ClientWorld, if any
