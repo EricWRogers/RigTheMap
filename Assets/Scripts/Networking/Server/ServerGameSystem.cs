@@ -75,48 +75,86 @@ namespace Unity.MP_FPS
             }
 
             HandleJoinRequests(ref state, gameplayMapsEntity, playerEntityPrefabs, ecb);
-            HandlePlayerDeathAndRespawn(ref state, ecb);
-            HandleBuildModeTransition(ref state);
+            bool phaseChanged = LeaderboardManager.Instance != null && LeaderboardManager.Instance.CurrentPhase != _lastRoundPhase;
+            HandleBuildModeTransition(ref state, ecb);
+
+            if (!phaseChanged)
+            {
+                HandlePlayerDeathAndRespawn(ref state, ecb);
+            }
         }
 
+        
         void HandleBuildModeTransition(
-            ref SystemState state)
+            ref SystemState state, EntityCommandBuffer ecb)
         {
             if (LeaderboardManager.Instance == null)
                 return;
 
             var currentPhase = LeaderboardManager.Instance.CurrentPhase;
+
             if (currentPhase == _lastRoundPhase)
                 return;
 
+            Debug.Log($"[Phase Transition] {_lastRoundPhase} -> {currentPhase}");
             _lastRoundPhase = currentPhase;
-            if (currentPhase != LeaderboardManager.RoundPhase.BuildMode)
+
+            if (currentPhase != LeaderboardManager.RoundPhase.BuildMode &&
+                currentPhase != LeaderboardManager.RoundPhase.Fighting)
                 return;
 
-            foreach (var (playerGhost, ghostOwner, _) in
-                     SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<GhostOwner>>()
-                         .WithEntityAccess())
+            foreach (var (joinedClientRef, connectionEntity) in
+                    SystemAPI.Query<RefRW<JoinedClient>>()
+                        .WithAll<NetworkId>()
+                        .WithEntityAccess())
             {
-                if (playerGhost.ValueRO.CurrentHealth <= 0f)
-                    continue;
+                var joinedClient = joinedClientRef.ValueRO;
 
-                var networkId = ghostOwner.ValueRO.NetworkId;
-                if (!TryFindConnectionEntity(ref state, networkId, out var connectionEntity) ||
-                    !_joinedClientLookup.HasComponent(connectionEntity))
+                // Reset lives for the new phase.
+                joinedClientRef.ValueRW.lives = 3;
+
+                // Clear any old respawn timer.
+                if (state.EntityManager.HasComponent<PendingRespawn>(connectionEntity))
                 {
-                    Debug.LogError(
-                        $"[Server] Cannot reset build-mode state for player {networkId}: " +
-                        "connection or JoinedClient was not found.");
-                    continue;
+                    ecb.RemoveComponent<PendingRespawn>(connectionEntity);
                 }
 
-                var joinedClient = _joinedClientLookup[connectionEntity];
-                joinedClient.lives = 3;
-                state.EntityManager.SetComponentData(connectionEntity, joinedClient);
-                playerGhost.ValueRW.CurrentHealth = 0f;
-                playerGhost.ValueRW.LivesRemaining = 3;
+                // Remove the previous character.
+                var oldPlayer = joinedClient.PlayerEntity;
+
+                if (oldPlayer != Entity.Null &&
+                    state.EntityManager.Exists(oldPlayer))
+                {
+                    if (state.EntityManager.HasComponent<PlayerClientCommandInputLookup>(oldPlayer))
+                    {
+                        var inputLookup =
+                            state.EntityManager.GetComponentData<PlayerClientCommandInputLookup>(oldPlayer);
+
+                        if (inputLookup.ClientCommandInputEntity != Entity.Null &&
+                            state.EntityManager.Exists(inputLookup.ClientCommandInputEntity))
+                        {
+                            ecb.DestroyEntity(inputLookup.ClientCommandInputEntity);
+                        }
+                    }
+
+                    ecb.DestroyEntity(oldPlayer);
+                }
+
+                Debug.LogWarning(
+                    $"[Phase Transition] Respawning player {joinedClient.PlayerName}, " +
+                    $"team={joinedClient.TeamId}, phase={currentPhase}");
+
+                SpawnPlayerCharacter(
+                    ref state,
+                    ecb,
+                    connectionEntity,
+                    joinedClient.PlayerName,
+                    joinedClient.CharacterIndex,
+                    joinedClient.TeamId,
+                    3);
             }
         }
+
 
         bool TryFindConnectionEntity(
             ref SystemState state,
@@ -299,7 +337,12 @@ namespace Unity.MP_FPS
                 _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
-
+            Debug.LogWarning(
+                $"[Spawn Debug] NetworkId={ownerNetworkId.Value}, " +
+                $"PlayerName={playerName}, " +
+                $"Phase={LeaderboardManager.Instance.CurrentPhase}, " +
+                $"WeaponId={weaponId}, " +
+                $"NewPlayerEntity={playerEntity}");
             ecb.SetComponent(playerEntity, new PlayerTeam
             {
                 TeamId = teamId
@@ -487,6 +530,11 @@ namespace Unity.MP_FPS
             {
                 var previousRespawnTimer = pendingRespawn.ValueRO.RespawnTimer;
                 pendingRespawn.ValueRW.RespawnTimer -= SystemAPI.Time.DeltaTime;
+                // check if timer is counting down
+                if (previousRespawnTimer > 0f && Mathf.CeilToInt(previousRespawnTimer) != Mathf.CeilToInt(pendingRespawn.ValueRO.RespawnTimer))
+                {
+                    Debug.LogWarning($"[Respawn countdown] Player {connection.ValueRO.Value}: ${pendingRespawn.ValueRO.RespawnTimer:F1}s remaining");
+                }
 
                 if (pendingRespawn.ValueRO.RespawnTimer <= 0f)
                 {
