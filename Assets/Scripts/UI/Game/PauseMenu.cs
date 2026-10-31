@@ -119,6 +119,7 @@ namespace Unity.MP_FPS
 
         static void OnMainMenuPressed()
         {
+            SetGameplayInputEnabled(true);
             GameManager.Instance.ReturnToMainMenuAsync();
             Utils.SetCursorVisible(true);  
             LobbyRoster.Clear();          
