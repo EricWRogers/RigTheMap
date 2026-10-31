@@ -15,11 +15,6 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 92b6b833b5f846f45bbe32bd85d5ee8d
   m_SerializeEntries:
-  - m_GUID: 2167518d84c05e140bc4c1a7d53a8d42
-    m_Address: Assets/Prefabs/ActorGhosts/Potato.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 250c4879b1be34d43a9780c67da32ff7
     m_Address: Assets/Prefabs/ActorGhosts/JumpPad.prefab
     m_ReadOnly: 0
@@ -92,6 +87,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c93af8b935d1da7419ae22251a33748c
     m_Address: Assets/Prefabs/Effects/PlasmaHit.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caf082d49a038aa4ca09ef35f00f08b5
+    m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_SixShooter.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

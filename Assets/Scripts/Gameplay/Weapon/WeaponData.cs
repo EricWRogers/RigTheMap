@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
+using System;
 
 namespace Unity.MP_FPS
 {
@@ -19,6 +20,7 @@ namespace Unity.MP_FPS
         CircularCross
     }
 
+    [Serializable]
     [CreateAssetMenu(fileName = "NewWeaponData", menuName = "FPS Sample/Weapon Data")]
     public class WeaponData : ScriptableObject
     {

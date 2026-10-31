@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerEntityPrefabsAuthoring : MonoBehaviour
 {
     [field: SerializeField] public GhostAuthoringComponent ClientInputEntityPrefab { get; private set; }
-    [field: SerializeField] public GhostAuthoringComponent ClientSpectateEntityPrefab { get; private set; }
+    // [field: SerializeField] public GhostAuthoringComponent ClientSpectateEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerRifleEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerShotgunEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerSharkEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerHammerEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerSixShooterEntityPrefab { get; private set; }
     [field: SerializeField] public GhostAuthoringComponent PlayerBuildEntityPrefab { get; private set; }
-    [field: SerializeField] public GhostAuthoringComponent PlayerSpectateEntityPrefab { get; private set; }
+    // [field: SerializeField] public GhostAuthoringComponent PlayerSpectateEntityPrefab { get; private set; }
 }
 
 public struct PlayerEntityPrefabs : IComponentData
@@ -46,7 +46,7 @@ public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
                     GetEntity(authoring.PlayerRifleEntityPrefab.gameObject, TransformUsageFlags.None) 
                     : Entity.Null,
 
-            ClientSpectateEntityPrefab = GetEntity(authoring.ClientSpectateEntityPrefab.gameObject, TransformUsageFlags.None),
+            // ClientSpectateEntityPrefab = GetEntity(authoring.ClientSpectateEntityPrefab.gameObject, TransformUsageFlags.None),
 
             PlayerShotgunEntityPrefab = 
                 authoring.PlayerShotgunEntityPrefab !=null ? 
@@ -70,14 +70,14 @@ public class PlayerEntityPrefabsBaker : Baker<PlayerEntityPrefabsAuthoring>
                     ? GetEntity(
                         authoring.PlayerBuildEntityPrefab.gameObject,
                         TransformUsageFlags.None)
-                    : Entity.Null,
-
-            PlayerSpectateEntityPrefab =
-                authoring.PlayerSpectateEntityPrefab != null
-                    ? GetEntity(
-                        authoring.PlayerSpectateEntityPrefab.gameObject,
-                        TransformUsageFlags.None)
                     : Entity.Null
+
+            // PlayerSpectateEntityPrefab =
+            //     authoring.PlayerSpectateEntityPrefab != null
+            //         ? GetEntity(
+            //             authoring.PlayerSpectateEntityPrefab.gameObject,
+            //             TransformUsageFlags.None)
+            //         : Entity.Null
         });
     }
 }

@@ -332,8 +332,8 @@ namespace Unity.MP_FPS
                 0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
                 1 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
                 2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
-                3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
-                4 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
+                //3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
+                3 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
                 _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
@@ -352,7 +352,7 @@ namespace Unity.MP_FPS
 
             var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(weaponId);
             var magazineSize = weaponData != null ? weaponData.MagazineSize : 30; // Default to 30 if weapon not found
-            var secondaryWeaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(WeaponRegistry.SixShooterWeaponId);
+            var secondaryWeaponData = WeaponManager.Instance.WeaponRegistry.SixShooterWeapon;
 
             ecb.SetComponent(playerEntity, new GhostOwner { NetworkId = ownerNetworkId.Value });
 
