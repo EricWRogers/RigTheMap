@@ -23,7 +23,7 @@ namespace Unity.MP_FPS.Client
         Label m_JoinCode;
         Button m_StartGameButton;
         Button m_ReadyButton;
-        int m_LastRosterCount = -1;
+        // int m_LastRosterCount = -1;
 
         void Update()
         {
@@ -142,7 +142,7 @@ namespace Unity.MP_FPS.Client
             if (m_ReadyButton != null)
                 m_ReadyButton.clicked -= OnReadyPressed;
             LobbyRoster.Clear();
-            m_LastRosterCount = -1;
+            // m_LastRosterCount = -1;
 
         }
 
