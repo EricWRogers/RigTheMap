@@ -105,8 +105,8 @@ namespace Unity.MP_FPS
             networkSettings.WithNetworkConfigParameters(
                 connectTimeoutMS: 500,
                 maxConnectAttempts: 8, // Don't spend 30s trying to connect, spend 4s.
-                disconnectTimeoutMS: 3_500, // Timeouts should be relatively fast too, as it's pretty obvious when you've lost connection.
-                reconnectionTimeoutMS: 1_500, // For mobile, reconnect timeouts should be aggressively low.
+                disconnectTimeoutMS: 10_000, // Timeouts should be relatively fast too, as it's pretty obvious when you've lost connection.
+                reconnectionTimeoutMS: 5_000, // For mobile, reconnect timeouts should be aggressively low.
                 sendQueueCapacity: sendQueueCapacity,
                 receiveQueueCapacity: receiveQueueCapacity
             );
