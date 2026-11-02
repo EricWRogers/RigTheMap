@@ -1,4 +1,5 @@
 using Unity.Properties;
+using System.Globalization;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,6 +19,14 @@ namespace Unity.MP_FPS
             public const string ResumeButton = "ResumeButton";
             public const string MainMenuButton = "MainMenuButton";
             public const string QuitButton = "QuitButton";
+            public const string PausePanel = "PausePanel";
+            public const string AudioSettingsPanel = "AudioSettingsPanel";
+            public const string SettingsButton = "SettingsButton";
+            public const string MasterVolumeSlider = "MasterVolumeSlider";
+            public const string MusicVolumeSlider = "MusicVolumeSlider";
+            public const string SFXVolumeSlider = "SFXVolumeSlider";
+            public const string MenuVolumeSlider = "MenuVolumeSlider";
+            public const string AudioSettingsBackButton = "AudioSettingsBackButton";
         }
 
         static public bool pauseEnabled = false;
@@ -25,10 +34,20 @@ namespace Unity.MP_FPS
         Button m_ResumeButton;
         Button m_MainMenuButton;
         Button m_QuitButton;
+        VisualElement m_PausePanel;
+        VisualElement m_AudioSettingsPanel;
+        Button m_SettingsButton;
+        Button m_AudioSettingsBackButton;
+        Slider m_MasterVolumeSlider;
+        Slider m_MusicVolumeSlider;
+        Slider m_SFXVolumeSlider;
+        Slider m_MenuVolumeSlider;
 
         void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
+            m_PausePanel = root.Q<VisualElement>(UIElementNames.PausePanel);
+            m_AudioSettingsPanel = root.Q<VisualElement>(UIElementNames.AudioSettingsPanel);
             SetGameplayInputEnabled(!GameSettings.Instance.IsPauseMenuOpen);
 
             root.SetBinding("style.display", new DataBinding
@@ -47,6 +66,18 @@ namespace Unity.MP_FPS
 
             m_QuitButton = root.Q<Button>(UIElementNames.QuitButton);
             m_QuitButton.clicked += OnQuitPressed;
+
+            m_SettingsButton = root.Q<Button>(UIElementNames.SettingsButton);
+            m_SettingsButton.clicked += OnSettingsPressed;
+
+            m_AudioSettingsBackButton = root.Q<Button>(UIElementNames.AudioSettingsBackButton);
+            m_AudioSettingsBackButton.clicked += OnAudioSettingsBackPressed;
+
+            m_MasterVolumeSlider = ConfigureVolumeSlider(UIElementNames.MasterVolumeSlider, SoundMixer.soundMasterVol);
+            m_MusicVolumeSlider = ConfigureVolumeSlider(UIElementNames.MusicVolumeSlider, SoundMixer.soundMusicVol);
+            m_SFXVolumeSlider = ConfigureVolumeSlider(UIElementNames.SFXVolumeSlider, SoundMixer.soundSFXVol);
+            m_MenuVolumeSlider = ConfigureVolumeSlider(UIElementNames.MenuVolumeSlider, SoundMixer.soundMenuVol);
+            ResetAudioSettingsPanel();
         }
 
         void OnDisable()
@@ -54,6 +85,12 @@ namespace Unity.MP_FPS
             m_ResumeButton.clicked -= OnResumePressed;
             m_MainMenuButton.clicked -= OnMainMenuPressed;
             m_QuitButton.clicked -= OnQuitPressed;
+            m_SettingsButton.clicked -= OnSettingsPressed;
+            m_AudioSettingsBackButton.clicked -= OnAudioSettingsBackPressed;
+            m_MasterVolumeSlider.UnregisterValueChangedCallback(OnMasterVolumeChanged);
+            m_MusicVolumeSlider.UnregisterValueChangedCallback(OnMusicVolumeChanged);
+            m_SFXVolumeSlider.UnregisterValueChangedCallback(OnSFXVolumeChanged);
+            m_MenuVolumeSlider.UnregisterValueChangedCallback(OnMenuVolumeChanged);
         }
 
         void Update()
@@ -73,7 +110,9 @@ namespace Unity.MP_FPS
             }
 
             if (pausePressed)
+            {
                 TogglePauseMenuVisibility();
+            }
 
             }
         }
@@ -93,14 +132,77 @@ namespace Unity.MP_FPS
 
             // EventSystem.current.SetSelectedGameObject(transform.parent.GetComponentInChildren<PanelRaycaster>().gameObject);
             GameSettings.Instance.IsPauseMenuOpen = !GameSettings.Instance.IsPauseMenuOpen;
+            if (!GameSettings.Instance.IsPauseMenuOpen)
+            {
+                ResetAudioSettingsPanel();
+            }
             SetGameplayInputEnabled(!GameSettings.Instance.IsPauseMenuOpen);
         }
 
-        static void OnResumePressed()
+        void OnResumePressed()
+        {
+            ClosePauseMenu();
+        }
+
+        void ClosePauseMenu()
         {
             GameSettings.Instance.IsPauseMenuOpen = false;
+            ResetAudioSettingsPanel();
             SetGameplayInputEnabled(true);
         }
+
+        Slider ConfigureVolumeSlider(string elementName, ConfigVar configVar)
+        {
+            var slider = GetComponent<UIDocument>().rootVisualElement.Q<Slider>(elementName);
+            slider.value = Mathf.Clamp01(configVar.FloatValue);
+            switch (elementName)
+            {
+                case UIElementNames.MasterVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMasterVolumeChanged);
+                    break;
+                case UIElementNames.MusicVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMusicVolumeChanged);
+                    break;
+                case UIElementNames.SFXVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnSFXVolumeChanged);
+                    break;
+                case UIElementNames.MenuVolumeSlider:
+                    slider.RegisterValueChangedCallback(OnMenuVolumeChanged);
+                    break;
+            }
+            return slider;
+        }
+
+        void ResetAudioSettingsPanel()
+        {
+            m_AudioSettingsPanel.style.display = DisplayStyle.None;
+            m_PausePanel.style.display = DisplayStyle.Flex;
+        }
+
+        void OnSettingsPressed()
+        {
+            m_PausePanel.style.display = DisplayStyle.None;
+            m_AudioSettingsPanel.style.display = DisplayStyle.Flex;
+            m_MasterVolumeSlider.Focus();
+        }
+
+        void OnAudioSettingsBackPressed()
+        {
+            ResetAudioSettingsPanel();
+            m_SettingsButton.Focus();
+        }
+
+        static void OnMasterVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMasterVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        static void OnMusicVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMusicVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        static void OnSFXVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundSFXVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
+
+        static void OnMenuVolumeChanged(ChangeEvent<float> evt) =>
+            SoundMixer.soundMenuVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);
 
         static void SetGameplayInputEnabled(bool enabled)
         {
