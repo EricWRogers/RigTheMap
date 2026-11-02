@@ -17,7 +17,7 @@ MonoBehaviour:
     them back! Use [1] and [2] to switch between weapons!
   Type: 0
   ReticleType: 2
-  CooldownInMs: 1
+  CooldownInMs: 0.5
   Damage: 25
   HitscanRange: 100
   IsPlacementWeapon: 0
@@ -31,8 +31,8 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   PlacementOffset: 0.25
-  MagazineSize: 10
-  ReloadTime: 3
+  MagazineSize: 3
+  ReloadTime: 1
   ProjectileGhostPrefab:
     <GhostPrefab>k__BackingField:
       m_AssetGUID: 83a79bf5320972c46ae675e08e77534b

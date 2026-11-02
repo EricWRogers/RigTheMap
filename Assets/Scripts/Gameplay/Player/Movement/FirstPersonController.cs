@@ -14,6 +14,8 @@ using Gameplay.Leaderboard;
 [RequireComponent(typeof(CharacterController))]
 public class FirstPersonController : MonoBehaviour
 {
+    private static readonly int ReloadSpeedHash = Animator.StringToHash("ReloadSpeed");
+    private static readonly int ShootSpeedHash = Animator.StringToHash("ShootSpeed");
     public SoundDef PlayerHitSFX;
 
     private static class AnimationParameters
@@ -744,10 +746,16 @@ public class FirstPersonController : MonoBehaviour
                 Debug.Log($"[ANIMATION] Firing RELOAD trigger at Tick: {ghostState.LastReloadTick.ToString()}");
             }
 
+            var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(ghostState.EquippedWeaponID);
+
+            if (weaponData != null)
+            {
+                float reloadSpeed = 2 / weaponData.ReloadTime; // currently the only reload animation clip is 2s long
+                animator.SetFloat(ReloadSpeedHash, reloadSpeed);
+            }
             animator.SetTrigger(AnimationParameters.Reload);
 
 
-            var weaponData = WeaponManager.Instance.WeaponRegistry.GetWeaponData(ghostState.EquippedWeaponID);
             if (weaponData != null && weaponData.WeaponReloadSfx != null)
             {
                 Unity.MP_FPS.EventHandler eventHandler = animator.GetComponent<Unity.MP_FPS.EventHandler>();
