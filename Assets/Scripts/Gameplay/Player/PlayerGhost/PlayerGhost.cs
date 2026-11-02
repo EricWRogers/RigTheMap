@@ -250,23 +250,28 @@ namespace Unity.MP_FPS
 
         private void CreateClientCamera()
         {
-            //Disable current camera
-            var existingCamera = FindFirstObjectByType<Camera>();
+            var existingCamera = MainCameraSingleton.Instance;
             if (existingCamera != null)
             {
                 existingCamera.enabled = false;
+
+                var existingAudioListener =
+                    existingCamera.GetComponent<AudioListener>();
+                if (existingAudioListener != null)
+                    existingAudioListener.enabled = false;
             }
 
-            // spawn the camera
             var mainCameraInstance = Instantiate(MainCameraPrefab, CameraTarget.transform);
             mainCameraInstance.transform.localPosition = Vector3.zero;
             mainCameraInstance.name = $"MainCamera_{PlayerIndex}";
 
             m_PlayerCamera = mainCameraInstance.GetComponent<Camera>();
+            m_PlayerCamera.enabled = true;
 
             var audioListener = mainCameraInstance.GetComponent<AudioListener>();
             if (audioListener != null)
             {
+                audioListener.enabled = true;
                 GameManager.Instance.SoundSystem.SetListenerTransform(audioListener.transform);
             }
 

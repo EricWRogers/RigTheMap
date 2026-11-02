@@ -23,13 +23,18 @@ namespace Unity.MP_FPS
 
         void Awake()
         {
-            // We already have a main camera and don't need a new one.
-            if (Instance != null)
+            var camera = GetComponent<Camera>();
+
+            if (Instance != null && Instance != camera)
             {
-                Destroy(gameObject);
-                return;
+                Instance.enabled = false;
+
+                var existingAudioListener = Instance.GetComponent<AudioListener>();
+                if (existingAudioListener != null)
+                    existingAudioListener.enabled = false;
             }
-            Instance = GetComponent<Camera>();
+
+            Instance = camera;
             AudioListener = GetComponent<AudioListener>();
         }
 
