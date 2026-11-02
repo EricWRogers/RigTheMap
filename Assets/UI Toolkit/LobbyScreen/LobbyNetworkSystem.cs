@@ -235,6 +235,29 @@ namespace Unity.MP_FPS
                         .GetComponentData<NetworkId>(
                             sourceConnection).Value;
 
+                if (GameSettings.Instance.GameState == GlobalGameState.InGame)
+                {
+                    var beginGameRpc = ecb.CreateEntity();
+
+                    ecb.AddComponent(
+                        beginGameRpc,
+                        new LobbyBeginGameRpc());
+
+                    ecb.AddComponent(
+                        beginGameRpc,
+                        new SendRpcCommandRequest
+                        {
+                            TargetConnection = sourceConnection
+                        });
+
+                    Debug.Log(
+                        $"[LOBBY SERVER] Late join for NetworkId {networkId}; " +
+                        "sending begin game signal.");
+
+                    ecb.DestroyEntity(entity);
+                    continue;
+                }
+
                 bool alreadyRegistered =
                     registeredNetworkIds.Contains(networkId);
 
