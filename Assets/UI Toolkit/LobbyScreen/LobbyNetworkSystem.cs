@@ -18,6 +18,11 @@ namespace Unity.MP_FPS
         public bool IsReady;
     }
 
+    public struct LobbyPlayerRemovedRpc : IRpcCommand
+    {
+        public int NetworkId;
+    }
+
     public struct LobbyReadyRpc : IRpcCommand
     {
         public bool IsReady;
@@ -66,6 +71,11 @@ namespace Unity.MP_FPS
                 PlayerName = playerName,
                 IsReady = isReady
             };
+        }
+
+        public static void RemovePlayer(int networkId)
+        {
+            Players.Remove(networkId);
         }
 
         public static void Clear()
@@ -203,6 +213,47 @@ namespace Unity.MP_FPS
         {
             var ecb = new EntityCommandBuffer(Allocator.Temp);
             var registeredNetworkIds = new HashSet<int>();
+
+            foreach (var connectionEvent in
+                     SystemAPI.GetSingleton<NetworkStreamDriver>()
+                         .ConnectionEventsForTick)
+            {
+                if (connectionEvent.State != ConnectionState.State.Disconnected)
+                    continue;
+
+                int networkId = connectionEvent.Id.Value;
+                bool removed = false;
+
+                foreach (var (lobbyPlayer, lobbyPlayerEntity) in
+                         SystemAPI.Query<RefRO<LobbyPlayer>>()
+                             .WithEntityAccess())
+                {
+                    if (lobbyPlayer.ValueRO.NetworkId != networkId)
+                        continue;
+
+                    ecb.DestroyEntity(lobbyPlayerEntity);
+                    removed = true;
+                    break;
+                }
+
+                if (!removed)
+                    continue;
+
+                Debug.Log(
+                    $"[LOBBY SERVER] Removing disconnected player " +
+                    $"with NetworkId {networkId}.");
+
+                var removalRpc = ecb.CreateEntity();
+                ecb.AddComponent(
+                    removalRpc,
+                    new LobbyPlayerRemovedRpc
+                    {
+                        NetworkId = networkId
+                    });
+                ecb.AddComponent(
+                    removalRpc,
+                    new SendRpcCommandRequest());
+            }
 
             foreach (var existingPlayer in
                      SystemAPI.Query<RefRO<LobbyPlayer>>())
@@ -461,6 +512,19 @@ namespace Unity.MP_FPS
 
                 ecb.DestroyEntity(entity);
             }
+
+            foreach (var (player, entity) in
+                     SystemAPI.Query<RefRO<LobbyPlayerRemovedRpc>>()
+                         .WithEntityAccess())
+            {
+                Debug.Log(
+                    $"[LOBBY CLIENT] Removing disconnected player " +
+                    $"with NetworkId {player.ValueRO.NetworkId}.");
+
+                LobbyRoster.RemovePlayer(player.ValueRO.NetworkId);
+                ecb.DestroyEntity(entity);
+            }
+
             foreach (var (request, entity) in SystemAPI.Query<RefRO<LobbyBeginGameRpc>>().WithEntityAccess())
             {
                 Debug.Log("[Lobby client] Begin game signal recieved");
