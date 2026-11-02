@@ -77,6 +77,8 @@ namespace Unity.MP_FPS
             m_MusicVolumeSlider = ConfigureVolumeSlider(UIElementNames.MusicVolumeSlider, SoundMixer.soundMusicVol);
             m_SFXVolumeSlider = ConfigureVolumeSlider(UIElementNames.SFXVolumeSlider, SoundMixer.soundSFXVol);
             m_MenuVolumeSlider = ConfigureVolumeSlider(UIElementNames.MenuVolumeSlider, SoundMixer.soundMenuVol);
+            GameSettings.Instance.propertyChanged += OnGameSettingsPropertyChanged;
+            RefreshAudioSettingsSliders();
             ResetAudioSettingsPanel();
         }
 
@@ -91,6 +93,7 @@ namespace Unity.MP_FPS
             m_MusicVolumeSlider.UnregisterValueChangedCallback(OnMusicVolumeChanged);
             m_SFXVolumeSlider.UnregisterValueChangedCallback(OnSFXVolumeChanged);
             m_MenuVolumeSlider.UnregisterValueChangedCallback(OnMenuVolumeChanged);
+            GameSettings.Instance.propertyChanged -= OnGameSettingsPropertyChanged;
         }
 
         void Update()
@@ -177,6 +180,23 @@ namespace Unity.MP_FPS
         {
             m_AudioSettingsPanel.style.display = DisplayStyle.None;
             m_PausePanel.style.display = DisplayStyle.Flex;
+        }
+
+        void RefreshAudioSettingsSliders()
+        {
+            m_MasterVolumeSlider.SetValueWithoutNotify(Mathf.Clamp01(SoundMixer.soundMasterVol.FloatValue));
+            m_MusicVolumeSlider.SetValueWithoutNotify(Mathf.Clamp01(SoundMixer.soundMusicVol.FloatValue));
+            m_SFXVolumeSlider.SetValueWithoutNotify(Mathf.Clamp01(SoundMixer.soundSFXVol.FloatValue));
+            m_MenuVolumeSlider.SetValueWithoutNotify(Mathf.Clamp01(SoundMixer.soundMenuVol.FloatValue));
+        }
+
+        void OnGameSettingsPropertyChanged(object sender, BindablePropertyChangedEventArgs evt)
+        {
+            if (evt.propertyName == GameSettings.PauseMenuStylePropertyName &&
+                GameSettings.Instance.IsPauseMenuOpen)
+            {
+                RefreshAudioSettingsSliders();
+            }
         }
 
         void OnSettingsPressed()
