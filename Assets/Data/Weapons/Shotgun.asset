@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   WeaponName: Shotgun
   WeaponDescription: Aim at the ground to propel yourself or hit players to knock
-    them back!
+    them back! Use [1] and [2] to switch between weapons!
   Type: 0
   ReticleType: 2
   CooldownInMs: 1

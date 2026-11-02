@@ -948,7 +948,7 @@ public class FirstPersonController : MonoBehaviour
         moveDelta.y += state.JumpFallSpeed;
         moveDelta.xz += state.BounceVelocity.xz;
         //shotgun knockback
-        moveDelta.xz += state.KnockbackVelocity.xz;
+        moveDelta += state.KnockbackVelocity;
     }
 
     public static void ProcessInputs(ref ControllerState state, in PlayerInput input, float deltaTime)

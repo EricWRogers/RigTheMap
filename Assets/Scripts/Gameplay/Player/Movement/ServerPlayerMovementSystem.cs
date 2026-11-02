@@ -70,6 +70,10 @@ namespace Unity.MP_FPS
         private bool m_WasBuildMode = false;
 
         private HashSet<Entity> m_HammerLaunchers = new HashSet<Entity>();
+        //tracks shotgun recoil boosts
+        private Dictionary<Entity, int> m_ShotgunBoostCounts = new Dictionary<Entity, int>();
+        //tracks reset time for recoil
+        private Dictionary<Entity, float> m_ShotgunRecharge = new Dictionary<Entity, float>();
 
         protected override void OnCreate()
         {
@@ -1015,30 +1019,51 @@ namespace Unity.MP_FPS
 
                                 case WeaponType.Hitscan:
                                 {
-                                    if(predictedPlayer.ValueRO.EquippedWeaponID == 4 && UnityEngine.Physics.Raycast(eyePosition, aimDirection, out RaycastHit shotgunGroundHit, weaponData.ShotgunLaunchRange, LayerMask.GetMask("Ground", "Default"), QueryTriggerInteraction.Ignore))
+
+                                    if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
                                     {
-                                        float launchForce = weaponData.ShotgunLaunchForce;
-                                        predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = launchForce;
-                                        predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
-                                        predictedPlayer.ValueRW.ControllerState.PreviousMovementType = FirstPersonController.MovementType.Standing;
-                                        predictedPlayer.ValueRW.ControllerState.Jump = true;
-                                        predictedPlayer.ValueRW.ControllerState.Fall = false;
-                                        predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                        float3 selfLaunchDirection =
-                                        aimDirection;
+                                        float currentTime = UnityEngine.Time.time;
+                                        float rechargeDuration = 5f;
+                                        //players current boost count
+                                        if (!m_ShotgunBoostCounts.TryGetValue(entity, out int boostCount))
+                                        {
+                                            boostCount = 0;
+                                        }
+                                        //reset boost count after recharge
+                                        if (m_ShotgunRecharge.TryGetValue(entity, out float rechargeTime) && currentTime >= rechargeTime)
+                                        {
+                                            boostCount = 0;
+                                            m_ShotgunBoostCounts[entity] = 0;
+                                            m_ShotgunRecharge.Remove(entity);
+                                        }
+                                        //apply recoil of player has boosts
+                                        if (boostCount < 2)
+                                        {
+                                            float launchForce = weaponData.ShotgunLaunchForce;
+                                            float3 recoilDirection = -math.normalizesafe(aimDirection);
+                                            predictedPlayer.ValueRW.ControllerState.KnockbackVelocity = new float3(recoilDirection.x, 0f, recoilDirection.z) * launchForce;
 
-                                        selfLaunchDirection.y = 0f;
+                                            if (recoilDirection.y > 0f)
+                                            {
+                                                predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = recoilDirection.y * launchForce;
+                                                predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
+                                                predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                                predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                                predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                            }
+                                            boostCount++;
+                                            m_ShotgunBoostCounts[entity] = boostCount;
 
-                                        selfLaunchDirection =
-                                            math.normalizesafe(
-                                                selfLaunchDirection);
-
-                                        predictedPlayer.ValueRW.AccumulatedMovement +=
-                                            selfLaunchDirection *
-                                            weaponData.ShotgunLaunchForce *
-                                            deltaTime;
-                                        Debug.Log("[Shotgun] Ground launch triggered.");
+                                            //start recharge when boost gone
+                                            if (boostCount == 2)
+                                            {
+                                                m_ShotgunRecharge[entity] = currentTime + rechargeDuration;
+                                            }
+                                            Debug.Log($"[Shotgun boost] Recoil boost {boostCount}/2");
+                                        }
+                                        Debug.Log("[Shotgun] Self-recoil applied");
                                     }
+                                    
                                     if (UnityEngine.Physics.Raycast(
                                             eyePosition,
                                             aimDirection,
@@ -1088,11 +1113,11 @@ namespace Unity.MP_FPS
                                                     continue;
                                                 }
                                                 //shotgun knockback against other players
-                                                if (predictedPlayer.ValueRO.EquippedWeaponID == 4)
+                                                if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
                                                 {
                                                     float knockbackForce = 30f;
                                                     float3 knockbackDirection = targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition - predictedPlayer.ValueRO.ControllerState.CurrentPosition;
-                                                    knockbackDirection.y = 0f;
+                                                    knockbackDirection.y = 2f;
                                                     knockbackDirection = math.normalizesafe(knockbackDirection);
                                                     targetPredictedPlayer.ValueRW.ControllerState.KnockbackVelocity = knockbackDirection * knockbackForce;
                                                     Debug.Log("[Shotgun Knockback] Applied to target");
