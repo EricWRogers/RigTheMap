@@ -896,10 +896,15 @@ namespace Unity.MP_FPS
                                 eyePosition +
                                 aimDirection * 0.5f;
                             
-                            Vector3 trailEndPoint = 
-                                eyePosition + 
-                                aimDirection * 
-                                weaponData.HitscanRange;
+                            float visualRange =
+                                weaponData.Type == WeaponType.Melee
+                                    ? weaponData.MeleeRange
+                                    : weaponData.HitscanRange;
+
+                            Vector3 trailEndPoint =
+                                eyePosition +
+                                aimDirection *
+                                visualRange;
                             
                             if(weaponData.Type == WeaponType.Hitscan &&
                             !weaponData.IsPlacementWeapon &&
@@ -1268,64 +1273,108 @@ namespace Unity.MP_FPS
 
                                 case WeaponType.Melee:
                                 {
-                                    if (UnityEngine.Physics.Raycast(
-                                        eyePosition,
-                                        aimDirection,
-                                        out RaycastHit playerHit,
-                                        weaponData.HitscanRange,
-                                        s_HitscanLayerMask))
+                                    uint ticksPerSecond = 60;
+                                    float cooldownInSec = 0.6f;
+                                    uint requiredCooldownTicks = (uint)(cooldownInSec * ticksPerSecond);
+
+                                    var attackerPredictedPlayer = playerGhostLookup.GetRefRW(entity);
+                                    if (serverTick < attackerPredictedPlayer.ValueRO.LastHammerSwingTick + requiredCooldownTicks)
                                     {
-                                        if (playerHit.collider.gameObject.layer == LayerMask.NameToLayer("ServerPlayer"))
+                                        break;
+                                    }
+
+                                    attackerPredictedPlayer.ValueRW.LastHammerSwingTick = serverTick;
+
+                                    Quaternion meleeBoxRotation =
+                                        Quaternion.LookRotation(aimDirection);
+
+                                    Collider meleeHitCollider = null;
+                                    Collider[] overlappingPlayers =
+                                        UnityEngine.Physics.OverlapBox(
+                                            eyePosition,
+                                            weaponData.MeleeBoxHalfExtents,
+                                            meleeBoxRotation,
+                                            LayerMask.GetMask("ServerPlayer"),
+                                            QueryTriggerInteraction.Ignore);
+
+                                    foreach (var overlappingPlayer in overlappingPlayers)
+                                    {
+                                        if (GhostGameObject.TryFindGhostGameObject(
+                                                overlappingPlayer.gameObject,
+                                                out var overlappingGhost) &&
+                                            overlappingGhost.LinkedEntity != entity)
                                         {
-                                            if (GhostGameObject.TryFindGhostGameObject(
-                                                    playerHit.collider.gameObject,
-                                                    out var hitGhostObject) &&
-                                                playerGhostLookup.HasComponent(hitGhostObject.LinkedEntity))
+                                            meleeHitCollider = overlappingPlayer;
+                                            break;
+                                        }
+                                    }
+
+                                    if (meleeHitCollider == null &&
+                                        UnityEngine.Physics.BoxCast(
+                                            eyePosition,
+                                            weaponData.MeleeBoxHalfExtents,
+                                            aimDirection,
+                                            out RaycastHit playerHit,
+                                            meleeBoxRotation,
+                                            weaponData.MeleeRange,
+                                            s_HitscanLayerMask,
+                                            QueryTriggerInteraction.Ignore))
+                                    {
+                                        meleeHitCollider = playerHit.collider;
+                                    }
+
+                                    if (meleeHitCollider != null &&
+                                        meleeHitCollider.gameObject.layer ==
+                                        LayerMask.NameToLayer("ServerPlayer"))
+                                    {
+                                        if (GhostGameObject.TryFindGhostGameObject(
+                                                meleeHitCollider.gameObject,
+                                                out var hitGhostObject) &&
+                                            playerGhostLookup.HasComponent(hitGhostObject.LinkedEntity))
+                                        {
+                                            var targetEntity = hitGhostObject.LinkedEntity;
+                                            var targetPredictedPlayer = playerGhostLookup.GetRefRW(targetEntity);
+                                            var targetNetworkId = ghostOwnerLookup[targetEntity].NetworkId;
+
+                                            if (shooterNetworkId != targetNetworkId)
                                             {
-                                                var targetEntity = hitGhostObject.LinkedEntity;
-                                                var targetPredictedPlayer = playerGhostLookup.GetRefRW(targetEntity);
-                                                var targetNetworkId = ghostOwnerLookup[targetEntity].NetworkId;
+                                                var shooterTeam = m_PlayerTeamLookup[entity];
+                                                var targetTeam = m_PlayerTeamLookup[targetEntity];
 
-                                                if (shooterNetworkId != targetNetworkId)
+                                                if (shooterTeam.TeamId != targetTeam.TeamId)
                                                 {
-                                                    var shooterTeam = m_PlayerTeamLookup[entity];
-                                                    var targetTeam = m_PlayerTeamLookup[targetEntity];
-
-                                                    if (shooterTeam.TeamId != targetTeam.TeamId)
-                                                    {   
-                                                        if(LeaderboardManager.Instance != null &&
+                                                    if(LeaderboardManager.Instance != null &&
                                                             LeaderboardManager.Instance.CurrentPhase ==
                                                             LeaderboardManager.RoundPhase.BuildMode)
                                                     {
                                                         break;
                                                     }
 
-                                                        float healthBeforeDamage = targetPredictedPlayer.ValueRO.CurrentHealth;
+                                                    float healthBeforeDamage = targetPredictedPlayer.ValueRO.CurrentHealth;
 
-                                                        //apply harley bonk bonk
-                                                        targetPredictedPlayer.ValueRW.CurrentHealth -= weaponData.HammerDamage;
-                                                        targetPredictedPlayer.ValueRW.ControllerState.IsHit = true;
-                                                        targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.HammerDamage;
-                                                        targetPredictedPlayer.ValueRW.LastHitTick = serverTick;
+                                                    //apply harley bonk bonk damage
+                                                    targetPredictedPlayer.ValueRW.CurrentHealth -= weaponData.HammerDamage;
+                                                    targetPredictedPlayer.ValueRW.ControllerState.IsHit = true;
+                                                    targetPredictedPlayer.ValueRW.LastDamageAmount = weaponData.HammerDamage;
+                                                    targetPredictedPlayer.ValueRW.LastHitTick = serverTick;
 
-                                                        Debug.Log($"[Hammer Swing] Player {shooterNetworkId} hit player {targetNetworkId} for {weaponData.HammerDamage} damage.");
+                                                    Debug.Log($"[Hammer Swing] Player {shooterNetworkId} hit player {targetNetworkId} for {weaponData.HammerDamage} damage.");
 
-                                                        if (healthBeforeDamage > 0 && targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
+                                                    if (healthBeforeDamage > 0 && targetPredictedPlayer.ValueRO.CurrentHealth <= 0)
+                                                    {
+                                                        Debug.Log($"[Server] Player {shooterNetworkId} killed player {targetNetworkId}.");
+                                                        if (LeaderboardManager.Instance != null)
                                                         {
-                                                            Debug.Log($"[Server] Player {shooterNetworkId} killed player {targetNetworkId}.");
-                                                            if (LeaderboardManager.Instance != null)
-                                                            {
-                                                                LeaderboardManager.Instance.AddKill(shooterNetworkId, targetNetworkId);
-                                                            }
+                                                            LeaderboardManager.Instance.AddKill(shooterNetworkId, targetNetworkId);
                                                         }
-
-                                                        break;
                                                     }
+
+                                                    break;
                                                 }
                                             }
                                         }
                                     }
-                                    
+
                                     if (!UnityEngine.Physics.Raycast(
                                             eyePosition,
                                             aimDirection,

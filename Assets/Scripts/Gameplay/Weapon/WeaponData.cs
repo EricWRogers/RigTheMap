@@ -41,6 +41,12 @@ namespace Unity.MP_FPS
         [Tooltip("Max range for raycast-based weapons.")]
         public float HitscanRange = 100f;
 
+        [Header("Melee Properties")]
+        [Tooltip("Maximum forward reach for melee attacks.")]
+        public float MeleeRange = 2f;
+        [Tooltip("Half-size of the melee box, including its initial overlap check.")]
+        public Vector3 MeleeBoxHalfExtents = new Vector3(0.5f, 0.5f, 0.5f);
+
         [Header("Placement Properties")]
         [Tooltip("If true, the weapon will place a ghost prefab instead of dealing damage.")]
         public bool IsPlacementWeapon = false;
@@ -86,6 +92,7 @@ namespace Unity.MP_FPS
         public float HammerImpactRadius = 2f;
         public float HammerDamage = 25f;
         public float HammerGroundRange =3f;
+        public float HammerCooldown = 0.6f;
         [Header("Shotgun Properties")]
         public float ShotgunEnemyKnockBack = 10f;
         public float ShotgunSelfKnockBack = 10f;

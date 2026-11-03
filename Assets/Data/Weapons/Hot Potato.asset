@@ -20,6 +20,8 @@ MonoBehaviour:
   CooldownInMs: 10
   Damage: 25
   HitscanRange: 100
+  MeleeRange: 2
+  MeleeBoxHalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   IsPlacementWeapon: 0
   PlacementLayerMask:
     serializedVersion: 2
