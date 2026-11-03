@@ -31,5 +31,17 @@ public partial class GhostGameObjectRPCReceiveSystem : ClientServerSingletonSyst
 
         var query = SystemAPI.QueryBuilder().WithAll<ReceiveRpcCommandRequest>().Build();
         ReceivedRPCEntities.AddRange(query.ToEntityArray(Allocator.Temp));
+        
+        if (World.IsClient())
+        {
+            foreach (var entity in ReceivedRPCEntities)
+            {
+                if(EntityManager.HasComponent<Gameplay.Leaderboard.RoundPhaseChangedRpc>(entity))
+                {
+                    var rpc = EntityManager.GetComponentData<Gameplay.Leaderboard.RoundPhaseChangedRpc>(entity);
+                    UnityEngine.Debug.Log($"[Rpc recieve test] Round rpc found, $Matchover={rpc.IsMatchOver}, $WinningTeamId={rpc.WinningTeamId}");
+                }
+            }
+        }
     }
 }

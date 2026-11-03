@@ -17,6 +17,7 @@ namespace Gameplay.Leaderboard
         public int CurrentRound => _currentRound;
         public float BuildTimer => _buildTimer ;
         private float _buildTimerSyncAccumulator;
+        private float _roundStateSyncAccumulator;
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
         private bool _hasInvokedInitialBuildMode = false;
@@ -84,6 +85,7 @@ namespace Gameplay.Leaderboard
 
         private void BroadcastRoundState(bool isBuildMode, bool isMatchOver, int winningTeamId = -1)
         {
+            Debug.Log($"[Server round rpc] Sending: " + $"BuildMode={isBuildMode}, " + $"Matchover={isMatchOver}, " + $"WinningTeamId={winningTeamId}");
             GhostGameObject.BroadcastRPC(
                 new RoundPhaseChangedRpc
                 {
@@ -497,7 +499,13 @@ namespace Gameplay.Leaderboard
                 Debug.Log("[Server] LeaderboardManager not linked yet.");
                 return;
             }
-
+            _roundStateSyncAccumulator += deltaTime;
+            if (_roundStateSyncAccumulator >= 1f)
+            {
+                _roundStateSyncAccumulator = 0f;
+                BroadcastRoundState(_roundPhase == RoundPhase.BuildMode, _roundPhase == RoundPhase.MatchOver, LastWinningTeamId);
+            }
+            
             var buffer =
                 GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
 
@@ -598,6 +606,7 @@ namespace Gameplay.Leaderboard
 
         public void UpdateClient(float deltaTime)
         {
+            Debug.Log($"[Client Leaderboard] UpdateClient Running $Role = {Role}, $GhostLinked={GhostGameObject.IsGhostLinked()}");
             if (!GhostGameObject.IsGhostLinked())
                 return;
 
@@ -625,7 +634,10 @@ namespace Gameplay.Leaderboard
 
                 if (phaseRpc.WinningTeamId >= 0)
                     LastWinningTeamId = phaseRpc.WinningTeamId;
-
+                if(phaseRpc.IsMatchOver)
+                {
+                    Debug.Log($"[Client match test]Match over received!" + $"WinningTeamId={phaseRpc.WinningTeamId}," + $"CurrentPhase={_roundPhase}");
+                }
                 BuildModeChanged?.Invoke(
                     phaseRpc.IsBuildMode);
             }
@@ -676,6 +688,7 @@ namespace Gameplay.Leaderboard
         public float BuildTimer;
         public int WinningTeamId;
     }
+
 
     [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
     [UpdateInGroup(typeof(SimulationSystemGroup))]

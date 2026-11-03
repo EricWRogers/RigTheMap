@@ -97,6 +97,7 @@ public partial class GhostGameObjectEarlyUpdateClientSystem : GhostGameObjectUpd
 
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
+[UpdateAfter(typeof(GhostGameObjectRPCReceiveSystem))]
 public partial class GhostGameObjectUpdateClientSystem : GhostGameObjectUpdateSystemBase<IUpdateClient>
 {
     protected override void UpdateGhostGameObject(GhostGameObject updateObject, float deltaTime) { updateObject.UpdateClient(deltaTime); }
