@@ -144,6 +144,13 @@ public class SoundGameObject
     {
         m_Active = true;
         m_Emitter = soundEmitter;
+        m_AudioSource.gameObject.SetActive(true);
+        m_AudioSource.enabled = true;
+        if (!m_AudioSource.gameObject.activeInHierarchy)
+        {
+            m_AudioSource.transform.SetParent(m_SoundGameObjectPool.transform, true);
+            SetPosition(m_AudioSource.transform.position);
+        }
         m_AudioSource.transform.position = Vector3.zero;
     }
 
@@ -391,6 +398,12 @@ public class SoundGameObject
     {
         m_AudioSource.transform.parent = parent;
         m_AudioSource.transform.localPosition = localPosition;
+        if (!m_AudioSource.gameObject.activeInHierarchy)
+        {
+            m_AudioSource.transform.SetParent(m_SoundGameObjectPool.transform, true);
+            SetPosition(m_AudioSource.transform.position);
+            return;
+        }
         m_Parent = parent.gameObject;
         m_PositionType = PositionType.ParentTransform;
     }
