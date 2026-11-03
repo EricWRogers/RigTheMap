@@ -650,7 +650,18 @@ namespace Unity.MP_FPS
                 {
 
 
-                    int teamId = greenPlayers <= bluePlayers ? 0 : 1;
+                    int requestedTeamId = request.ValueRO.TeamId;
+                    if (requestedTeamId != -1 && requestedTeamId != 0 && requestedTeamId != 1)
+                    {
+                        Debug.LogWarning(
+                            $"Invalid requested team {requestedTeamId} for {request.ValueRO.PlayerName}; " +
+                            "using auto-balance.");
+                        requestedTeamId = -1;
+                    }
+
+                    int teamId = requestedTeamId == -1
+                        ? (greenPlayers <= bluePlayers ? 0 : 1)
+                        : requestedTeamId;
 
                     if (teamId == 0)
                         greenPlayers++;

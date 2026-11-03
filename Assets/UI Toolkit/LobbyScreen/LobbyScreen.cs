@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Properties;
 using UnityEngine.UIElements;
@@ -23,7 +24,7 @@ namespace Unity.MP_FPS.Client
         Label m_JoinCode;
         Button m_StartGameButton;
         Button m_ReadyButton;
-        // int m_LastRosterCount = -1;
+        int m_LastRosterChangeVersion = -1;
 
         void Update()
         {
@@ -32,7 +33,11 @@ namespace Unity.MP_FPS.Client
 
             PauseMenu.pauseEnabled = true;
 
-            RefreshPlayerList();
+            if (m_LastRosterChangeVersion != LobbyRoster.ChangeVersion)
+            {
+                RefreshPlayerList();
+                m_LastRosterChangeVersion = LobbyRoster.ChangeVersion;
+            }
             UpdateStartGameButton();
             if (m_JoinCode != null)
                 m_JoinCode.text = $"Join Code: {ConnectionSettings.Instance.SessionCode}";
@@ -50,7 +55,7 @@ namespace Unity.MP_FPS.Client
 
             // Remove previously generated player labels.
             var oldPlayers =
-                m_PlayerList.Query<Label>(className: "lobby-player").ToList();
+                m_PlayerList.Query<VisualElement>(className: "lobby-player").ToList();
 
             foreach (var label in oldPlayers)
             {
@@ -60,16 +65,56 @@ namespace Unity.MP_FPS.Client
             // Create one label for every player in the lobby.
             foreach (var player in LobbyRoster.Players)
             {
-                var playerLabel = new Label($"{player.Value.PlayerName}  " + $"{(player.Value.IsReady ? "Ready" : "Not Ready")}");
+                var playerRow = new VisualElement();
+                playerRow.AddToClassList("lobby-player");
+                playerRow.style.flexDirection = FlexDirection.Row;
+                playerRow.style.alignItems = Align.Center;
+                playerRow.style.marginTop = 8;
 
-                playerLabel.AddToClassList("lobby-player");
-
+                var playerLabel = new Label(
+                    $"{player.Value.PlayerName}  " +
+                    $"{(player.Value.IsReady ? "Ready" : "Not Ready")}");
                 playerLabel.style.fontSize = 40;
-                playerLabel.style.marginTop = 8;
                 playerLabel.style.color = Color.white;
+                playerRow.Add(playerLabel);
 
-                m_PlayerList.Add(playerLabel);
+                if (player.Key == LobbyRoster.LocalNetworkId)
+                {
+                    var teamSelection = CreateTeamSelection(player.Value.TeamId);
+                    playerRow.Add(teamSelection);
+                }
+                else
+                {
+                    var teamLabel = new Label(TeamName(player.Value.TeamId));
+                    teamLabel.style.fontSize = 32;
+                    teamLabel.style.marginLeft = 20;
+                    teamLabel.style.color = Color.white;
+                    playerRow.Add(teamLabel);
+                }
+
+                m_PlayerList.Add(playerRow);
             }
+        }
+
+        DropdownField CreateTeamSelection(int teamId)
+        {
+            var teamSelection = new DropdownField(
+                new List<string> { "Auto", "Green", "Blue" },
+                TeamName(teamId));
+            teamSelection.style.width = 180;
+            teamSelection.style.marginLeft = 20;
+            teamSelection.style.fontSize = 24;
+            teamSelection.RegisterValueChangedCallback(changeEvent =>
+            {
+                LobbyRoster.SetTeam(changeEvent.newValue switch
+                {
+                    "Green" => 1,
+                    "Blue" => 0,
+                    _ => -1
+                });
+            });
+
+            return teamSelection;
         }
 
         void UpdateStartGameButton()
@@ -132,6 +177,9 @@ namespace Unity.MP_FPS.Client
             {
                 m_ReadyButton.text = "Ready";
             }
+
+            m_LastRosterChangeVersion = -1;
+
         }
 
        
@@ -147,6 +195,13 @@ namespace Unity.MP_FPS.Client
             // m_LastRosterCount = -1;
 
         }
+
+        static string TeamName(int teamId) => teamId switch
+        {
+            0 => "Blue",
+            1 => "Green",
+            _ => "Auto"
+        };
 
         void OnStartGamePressed()
         {

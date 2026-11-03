@@ -244,6 +244,14 @@ namespace Unity.MP_FPS
                 PlayerPrefs.SetInt(k_PlayerCharacterKey, value);
             }
         }
+
+        // -1 lets the server assign the team by balancing the current players.
+        private int m_PlayerTeam = -1;
+        public int PlayerTeam
+        {
+            get => m_PlayerTeam;
+            set => m_PlayerTeam = value == -1 || value == 0 || value == 1 ? value : -1;
+        }
         
         public static readonly string MainMenuSceneLoadedPropertyName = nameof(MainMenuSceneLoadedStyle);
         [CreateProperty]
