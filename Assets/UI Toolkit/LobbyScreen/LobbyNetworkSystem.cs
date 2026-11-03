@@ -9,6 +9,7 @@ namespace Unity.MP_FPS
     public struct LobbyJoinRpc : IRpcCommand
     {
         public FixedString64Bytes PlayerName;
+        public int TeamId;
     }
 
     public struct LobbyPlayerRpc : IRpcCommand
@@ -16,6 +17,7 @@ namespace Unity.MP_FPS
         public int NetworkId;
         public FixedString64Bytes PlayerName;
         public bool IsReady;
+        public int TeamId;
     }
 
     public struct LobbyPlayerRemovedRpc : IRpcCommand
@@ -26,6 +28,11 @@ namespace Unity.MP_FPS
     public struct LobbyReadyRpc : IRpcCommand
     {
         public bool IsReady;
+    }
+
+    public struct LobbyTeamRpc : IRpcCommand
+    {
+        public int TeamId;
     }
 
     public struct LobbyStartGameRpc : IRpcCommand
@@ -46,6 +53,7 @@ namespace Unity.MP_FPS
         public int NetworkId;
         public FixedString64Bytes PlayerName;
         public bool IsReady;
+        public int TeamId;
     }
 
     public static class LobbyRoster
@@ -54,34 +62,43 @@ namespace Unity.MP_FPS
         {
             public string PlayerName;
             public bool IsReady;
+            public int TeamId;
         }
 
         public static readonly Dictionary<int, PlayerInfo> Players =
             new Dictionary<int, PlayerInfo>();
 
         public static bool LocalPlayerReady = false;
+        public static int LocalNetworkId = -1;
+        public static int ChangeVersion {get; set;}
 
         public static void AddOrUpdatePlayer(
             int networkId,
             string playerName,
-            bool isReady)
+            bool isReady,
+            int teamId)
         {
             Players[networkId] = new PlayerInfo
             {
                 PlayerName = playerName,
-                IsReady = isReady
+                IsReady = isReady,
+                TeamId = teamId
             };
+            ChangeVersion++;
         }
 
         public static void RemovePlayer(int networkId)
         {
-            Players.Remove(networkId);
+            if (Players.Remove(networkId))
+                ChangeVersion++;
         }
 
         public static void Clear()
         {
             Players.Clear();
             LocalPlayerReady = false;
+            LocalNetworkId = -1;
+            ChangeVersion++;
         }
 
         public static void ToggleReady()
@@ -124,6 +141,38 @@ namespace Unity.MP_FPS
 
             Debug.Log(
                 $"[LOBBY CLIENT] Ready changed to {LocalPlayerReady}");
+        }
+
+        public static void SetTeam(int teamId)
+        {
+            if (GameSettings.Instance.GameState != GlobalGameState.Lobby)
+                return;
+
+            World clientWorld = null;
+            foreach (var world in World.All)
+            {
+                if (world.IsCreated && world.Name == "ClientWorld")
+                {
+                    clientWorld = world;
+                    break;
+                }
+            }
+
+            if (clientWorld == null)
+            {
+                Debug.LogWarning("[LOBBY] ClientWorld not found.");
+                return;
+            }
+
+            GameSettings.Instance.PlayerTeam = teamId;
+            var entityManager = clientWorld.EntityManager;
+            var rpcEntity = entityManager.CreateEntity();
+            entityManager.AddComponentData(
+                rpcEntity,
+                new LobbyTeamRpc { TeamId = teamId });
+            entityManager.AddComponentData(
+                rpcEntity,
+                new SendRpcCommandRequest());
         }
 
         public static void RequestStartGame()
@@ -179,6 +228,9 @@ namespace Unity.MP_FPS
                     out var connectionEntity))
                 return;
 
+            LobbyRoster.LocalNetworkId =
+                SystemAPI.GetComponent<NetworkId>(connectionEntity).Value;
+
             if (SystemAPI.HasComponent<LobbyJoinSent>(connectionEntity))
                 return;
 
@@ -188,6 +240,7 @@ namespace Unity.MP_FPS
 
             lobbyJoin.PlayerName.CopyFromTruncated(
                 GameSettings.Instance.PlayerName);
+            lobbyJoin.TeamId = GameSettings.Instance.PlayerTeam;
 
             state.EntityManager.AddComponentData(
                 rpcEntity,
@@ -327,7 +380,8 @@ namespace Unity.MP_FPS
                         {
                             NetworkId = existingPlayer.ValueRO.NetworkId,
                             PlayerName = existingPlayer.ValueRO.PlayerName,
-                            IsReady = existingPlayer.ValueRO.IsReady
+                            IsReady = existingPlayer.ValueRO.IsReady,
+                            TeamId = existingPlayer.ValueRO.TeamId
                         });
 
                     ecb.AddComponent(
@@ -357,7 +411,12 @@ namespace Unity.MP_FPS
                     {
                         NetworkId = networkId,
                         PlayerName = request.ValueRO.PlayerName,
-                        IsReady = false
+                        IsReady = false,
+                        TeamId = request.ValueRO.TeamId == -1 ||
+                                 request.ValueRO.TeamId == 0 ||
+                                 request.ValueRO.TeamId == 1
+                            ? request.ValueRO.TeamId
+                            : -1
                     });
 
                 var newPlayerRpc = ecb.CreateEntity();
@@ -368,7 +427,12 @@ namespace Unity.MP_FPS
                     {
                         NetworkId = networkId,
                         PlayerName = request.ValueRO.PlayerName,
-                        IsReady = false
+                        IsReady = false,
+                        TeamId = request.ValueRO.TeamId == -1 ||
+                                 request.ValueRO.TeamId == 0 ||
+                                 request.ValueRO.TeamId == 1
+                            ? request.ValueRO.TeamId
+                            : -1
                     });
 
                 ecb.AddComponent(
@@ -414,13 +478,55 @@ namespace Unity.MP_FPS
                         {
                             NetworkId = lobbyPlayer.ValueRO.NetworkId,
                             PlayerName = lobbyPlayer.ValueRO.PlayerName,
-                            IsReady = newReadyState
+                            IsReady = newReadyState,
+                            TeamId = lobbyPlayer.ValueRO.TeamId
                         });
 
                     ecb.AddComponent(
                         updateRpcEntity,
                         new SendRpcCommandRequest());
 
+                    break;
+                }
+
+                ecb.DestroyEntity(entity);
+            }
+
+            foreach (var (teamRequest, receiveRequest, entity) in
+                     SystemAPI.Query<
+                             RefRO<LobbyTeamRpc>,
+                             RefRO<ReceiveRpcCommandRequest>>()
+                         .WithEntityAccess())
+            {
+                var sourceConnection = receiveRequest.ValueRO.SourceConnection;
+                if (!state.EntityManager.HasComponent<NetworkId>(sourceConnection))
+                {
+                    ecb.DestroyEntity(entity);
+                    continue;
+                }
+
+                int networkId = state.EntityManager.GetComponentData<NetworkId>(sourceConnection).Value;
+                int teamId = teamRequest.ValueRO.TeamId == -1 ||
+                              teamRequest.ValueRO.TeamId == 0 ||
+                              teamRequest.ValueRO.TeamId == 1
+                    ? teamRequest.ValueRO.TeamId
+                    : -1;
+
+                foreach (var lobbyPlayer in SystemAPI.Query<RefRW<LobbyPlayer>>())
+                {
+                    if (lobbyPlayer.ValueRO.NetworkId != networkId)
+                        continue;
+
+                    lobbyPlayer.ValueRW.TeamId = teamId;
+                    var updateRpcEntity = ecb.CreateEntity();
+                    ecb.AddComponent(updateRpcEntity, new LobbyPlayerRpc
+                    {
+                        NetworkId = lobbyPlayer.ValueRO.NetworkId,
+                        PlayerName = lobbyPlayer.ValueRO.PlayerName,
+                        IsReady = lobbyPlayer.ValueRO.IsReady,
+                        TeamId = teamId
+                    });
+                    ecb.AddComponent(updateRpcEntity, new SendRpcCommandRequest());
                     break;
                 }
 
@@ -508,7 +614,8 @@ namespace Unity.MP_FPS
                 LobbyRoster.AddOrUpdatePlayer(
                     player.ValueRO.NetworkId,
                     player.ValueRO.PlayerName.ToString(),
-                    player.ValueRO.IsReady);
+                    player.ValueRO.IsReady,
+                    player.ValueRO.TeamId);
 
                 ecb.DestroyEntity(entity);
             }
