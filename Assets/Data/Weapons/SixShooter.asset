@@ -20,6 +20,8 @@ MonoBehaviour:
   CooldownInMs: 0.5
   Damage: 20
   HitscanRange: 100
+  MeleeRange: 2
+  MeleeBoxHalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   IsPlacementWeapon: 0
   PlacementLayerMask:
     serializedVersion: 2
@@ -82,8 +84,8 @@ MonoBehaviour:
         y: 2437402558
         z: 1237618833
         w: 3997788915
-  WeaponFireSfx: {fileID: 11400000, guid: fc81bfa0b72614d498bbd910628ff6ef, type: 2}
-  WeaponReloadSfx: {fileID: 11400000, guid: e371920830b214046bde8a79c9798829, type: 2}
+  WeaponFireSfx: {fileID: 11400000, guid: d0eb609f30ee83f48a6b4b0d3cac57e3, type: 2}
+  WeaponReloadSfx: {fileID: 11400000, guid: c45feb500fb09d543a9d8baaed1ff381, type: 2}
   Behavior: 0
   AoeRadius: 5
   ProjectileSpeed: 30
@@ -97,3 +99,9 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 25
   HammerGroundRange: 3
+  HammerCooldown: 0.6
+  ShotgunEnemyKnockBack: 10
+  ShotgunSelfKnockBack: 10
+  ShotgunLaunchForce: 15
+  ShotgunLaunchRange: 3
+  IsShotgun: 0
