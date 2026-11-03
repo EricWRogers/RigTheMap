@@ -256,7 +256,7 @@ namespace Unity.MP_FPS.Client
 
         static void OnSurveyPressed()
         {
-            Application.OpenURL("https://forms.gle/fATHHYG63Cs5Knuo9");
+            Application.OpenURL("https://forms.gle/5bRRkAPLCvMHkRMb6");
         }
 
         void OnSettingsPressed()
