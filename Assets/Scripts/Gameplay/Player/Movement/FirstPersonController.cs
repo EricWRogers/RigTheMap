@@ -434,9 +434,9 @@ public class FirstPersonController : MonoBehaviour
             
 
             m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
-            // Vector3 knockback = groundNormal.normalized;
-            // float knockStr = 2f;
-            // move += knockback * knockStr; // instant upwards
+            Vector3 knockback = groundNormal.normalized;
+            float knockStr = 12f;
+            move += knockback * knockStr; // instant upwards
 
         }
         return move;
