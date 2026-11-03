@@ -17,9 +17,9 @@
                     <ui:Button text="Join Game" name="JoinGame" tabindex="1" />
                     <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
                     <ui:TextField label="Join Code" name="JoinCodeField" value="" tabindex="2" max-length="6" />
+                    <ui:Button text="Settings" name="SettingsButton" tabindex="4" />
                     <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
                     <ui:Button text="Respond to our survey!" name="SurveyButton" tabindex="3" />
-                    <ui:Button text="Settings" name="SettingsButton" tabindex="4" />
                     <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
                     <ui:Button text="Quit" name="QuitButton" tabindex="5" />
                     </ui:VisualElement>
