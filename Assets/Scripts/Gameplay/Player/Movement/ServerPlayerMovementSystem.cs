@@ -1150,7 +1150,7 @@ namespace Unity.MP_FPS
 
                                                             if (hit.distance > minFallOff)
                                                             {
-                                                                float v = ((hit.distance - minFallOff) / (maxFallOff - minFallOff)) - 1.0f;
+                                                                float v = 1 - ((hit.distance - minFallOff) / (maxFallOff - minFallOff));
                                                                 realDamage = v * (weaponData.Damage - (weaponData.Damage * 0.2f));
                                                                 realDamage += (weaponData.Damage * 0.2f);
                                                             }
