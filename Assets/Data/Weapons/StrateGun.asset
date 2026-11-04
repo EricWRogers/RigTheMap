@@ -19,6 +19,8 @@ MonoBehaviour:
   CooldownInMs: 1
   Damage: 0
   HitscanRange: 1000
+  MeleeRange: 2
+  MeleeBoxHalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   IsPlacementWeapon: 1
   PlacementLayerMask:
     serializedVersion: 2
@@ -79,21 +81,6 @@ MonoBehaviour:
         y: 1087641451
         z: 646615721
         w: 1930083009
-  - <GhostPrefab>k__BackingField:
-      m_AssetGUID: ce624c635d4df5c4f810ece69b910d20
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 1
-    <AssetName>k__BackingField: Honey
-    <RotatesToSurface>k__BackingField: 0
-    <FixedPlacementEuler>k__BackingField: {x: -0, y: 0, z: 0}
-    m_GhostGuid:
-      Value:
-        x: 918824684
-        y: 1281348821
-        z: 1858994575
-        w: 47192505
   - <GhostPrefab>k__BackingField:
       m_AssetGUID: abafff61a81489c498a20e4811aeae1e
       m_SubObjectName: 
@@ -216,6 +203,7 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 10
   HammerGroundRange: 3
+  HammerCooldown: 0.6
   ShotgunEnemyKnockBack: 10
   ShotgunSelfKnockBack: 10
   ShotgunLaunchForce: 15
