@@ -1030,22 +1030,13 @@ namespace Unity.MP_FPS
                                         if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
                                         {
                                             float currentTime = UnityEngine.Time.time;
-                                            float rechargeDuration = 5f;
+                                            
                                             //players current boost count
-                                            if (!m_ShotgunBoostCounts.TryGetValue(entity, out int boostCount))
-                                            {
-                                                boostCount = 0;
-                                            }
+                                           
                                             //reset boost count after recharge
-                                            if (m_ShotgunRecharge.TryGetValue(entity, out float rechargeTime) && currentTime >= rechargeTime)
-                                            {
-                                                boostCount = 0;
-                                                m_ShotgunBoostCounts[entity] = 0;
-                                                m_ShotgunRecharge.Remove(entity);
-                                            }
+                                            
                                             //apply recoil of player has boosts
-                                            if (boostCount < 2)
-                                            {
+                                            
                                                 float launchForce = weaponData.ShotgunLaunchForce;
                                                 float3 recoilDirection = -math.normalizesafe(aimDirection);
                                                 predictedPlayer.ValueRW.ControllerState.KnockbackVelocity = new float3(recoilDirection.x, 0f, recoilDirection.z) * launchForce;
@@ -1057,16 +1048,8 @@ namespace Unity.MP_FPS
                                                     predictedPlayer.ValueRW.ControllerState.Jump = true;
                                                     predictedPlayer.ValueRW.ControllerState.Fall = false;
                                                     predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                                }
-                                                boostCount++;
-                                                m_ShotgunBoostCounts[entity] = boostCount;
-
-                                                //start recharge when boost gone
-                                                if (boostCount == 2)
-                                                {
-                                                    m_ShotgunRecharge[entity] = currentTime + rechargeDuration;
-                                                }
-                                                Debug.Log($"[Shotgun boost] Recoil boost {boostCount}/2");
+                                                
+                                                
                                             }
                                             Debug.Log("[Shotgun] Self-recoil applied");
 
