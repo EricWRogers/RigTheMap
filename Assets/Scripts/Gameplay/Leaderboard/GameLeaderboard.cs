@@ -355,8 +355,8 @@ namespace Gameplay.Leaderboard
             {
                 var entry = buffer[i];
 
-                entry.Kills = 0;
-                entry.Deaths = 0;
+                // entry.Kills = 0;
+                // entry.Deaths = 0;
 
                 buffer[i] = entry;
             }

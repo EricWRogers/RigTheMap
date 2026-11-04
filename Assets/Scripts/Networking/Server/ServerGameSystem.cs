@@ -467,8 +467,11 @@ namespace Unity.MP_FPS
                         $"connection={connectionEntity}, livesBefore={joinedClient.lives}, " +
                         $"buildMode={isBuildMode}.");
 
-                    if(!isBuildMode) // I don't think this works right now
+                    if(!isBuildMode)
+                    { // I don't think this works right now
                         joinedClient.lives--;
+                        AddDeathToLeaderboard(networkId);
+                    }
                     else
                         joinedClient.lives = 3;
 
