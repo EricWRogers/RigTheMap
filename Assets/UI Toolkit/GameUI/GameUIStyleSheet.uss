@@ -212,6 +212,34 @@ DropdownField:disabled .unity-base-field__input {
     scale: 1;
 }
 
+IntegerField {
+    flex-direction: row;
+    height: var(--height-element);
+    margin-top: var(--button-top-margin);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+IntegerField .unity-base-field__input {
+    background-color: rgb(0, 0, 0);
+    border-color: var(--color-border);
+    border-width: var(--border-width);
+}
+
+IntegerField:hover .unity-base-field__input {
+    background-color: var(--color-hovered);
+}
+
+IntegerField:focus .unity-base-field__input {
+    background-color: var(--color-hovered);
+    border-color: var(--color-border-focused);
+}
+
+IntegerField:disabled .unity-base-field__input {
+    background-color: var(--color-inactive);
+    border-color: var(--color-inactive);
+}
+
 ProgressBar .unity-progress-bar__background {
     min-height: var(--height-progress-bar);
     background-color: var(--color-input-background);

@@ -937,11 +937,11 @@ namespace Unity.MP_FPS
 
                             if (weaponData.IsPlacementWeapon)
                             {
-                                if (predictedPlayer.ValueRO.BuildPlacementsUsed >= 3)
+                                if (predictedPlayer.ValueRO.BuildPlacementsUsed >= GameManager.PlayerBuilds)
                                 {
                                     Debug.Log(
                                         $"[Build Mode] Player {ghostOwnerLookup[entity].NetworkId} " +
-                                        "has used all 3 placements.");
+                                        $"has used all {GameManager.PlayerBuilds} placements.");
 
                                     continue;
                                 }
@@ -1011,7 +1011,7 @@ namespace Unity.MP_FPS
 
                                     Debug.Log(
                                         $"[Build Mode] Player has used " +
-                                        $"{predictedPlayer.ValueRO.BuildPlacementsUsed}/3 placements.");
+                                        $"{predictedPlayer.ValueRO.BuildPlacementsUsed}/{GameManager.PlayerBuilds} placements.");
 
                                     Debug.Log(
                                         "[Server] Purple death orb placed at " +

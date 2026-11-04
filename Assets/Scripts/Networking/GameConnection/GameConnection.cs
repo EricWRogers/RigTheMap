@@ -37,6 +37,8 @@ namespace Unity.MP_FPS
         public NetworkEndpoint ConnectEndpoint { get; private set; }
         public NetworkType SessionConnectionType { get; private set; }
         public const string MapPropertyKey = "mapName";
+        public const string PlayerLivesPropertyKey = "playerLives";
+        public const string PlayerBuildsPropertyKey = "playerBuilds";
         public string ServerMapName {get; private set;}
         public static async Task<GameConnection> CreateGameAsync()
         {
@@ -54,10 +56,9 @@ namespace Unity.MP_FPS
                 MaxPlayers = GameManager.MaxPlayer,
                 SessionProperties = new Dictionary<string, SessionProperty>
                 {
-                    { // make aboslutely sure the map name is knows at session creation
-                        MapPropertyKey,
-                        new SessionProperty(gameConnection.ServerMapName, VisibilityPropertyOptions.Public)
-                    }
+                    {MapPropertyKey, new SessionProperty(gameConnection.ServerMapName, VisibilityPropertyOptions.Public)},
+                    {PlayerLivesPropertyKey, new SessionProperty(GameManager.PlayerLives.ToString())},
+                    {PlayerBuildsPropertyKey, new SessionProperty(GameManager.PlayerBuilds.ToString())}
                 }
             }.WithRelayNetwork().WithNetworkHandler(networkHandler);
             gameConnection.Session = await MultiplayerService.Instance.CreateSessionAsync(options);

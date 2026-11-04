@@ -111,7 +111,7 @@ namespace Unity.MP_FPS
                 var joinedClient = joinedClientRef.ValueRO;
 
                 // Reset lives for the new phase.
-                joinedClientRef.ValueRW.lives = 3;
+                joinedClientRef.ValueRW.lives = GameManager.PlayerLives;
 
                 // Clear any old respawn timer.
                 if (state.EntityManager.HasComponent<PendingRespawn>(connectionEntity))
@@ -151,7 +151,7 @@ namespace Unity.MP_FPS
                     joinedClient.PlayerName,
                     joinedClient.CharacterIndex,
                     joinedClient.TeamId,
-                    3);
+                    GameManager.PlayerLives);
             }
         }
 
@@ -294,8 +294,8 @@ namespace Unity.MP_FPS
             Entity connectionEntity,
             FixedString64Bytes playerName,
             int characterIndex,
-            int teamId = -1,
-            int lives = 3)
+            int teamId,
+            int lives)
         {
             var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
             var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
@@ -473,7 +473,7 @@ namespace Unity.MP_FPS
                         AddDeathToLeaderboard(networkId);
                     }
                     else
-                        joinedClient.lives = 3;
+                        joinedClient.lives = GameManager.PlayerLives;
 
                     playerGhost.ValueRW.LivesRemaining = joinedClient.lives;
 
@@ -565,14 +565,14 @@ namespace Unity.MP_FPS
                         {
                             if (joinedClientData.lives <= 0)
                             {
-                                joinedClientData.lives = 3;
+                                joinedClientData.lives = GameManager.PlayerLives;
                                 state.EntityManager.SetComponentData(
                                     entity,
                                     joinedClientData);
 
                                 Debug.LogWarning(
                                     $"[Respawn] Lives reset for build mode: playerNetworkId={networkId}, " +
-                                    $"connection={entity}, lives=3.");
+                                    $"connection={entity}, lives={GameManager.PlayerLives}.");
                             }
 
                             Debug.LogWarning(
@@ -678,7 +678,7 @@ namespace Unity.MP_FPS
                         request.ValueRO.PlayerName,
                         request.ValueRO.CharacterIndex,
                         teamId,
-                        3);
+                        GameManager.PlayerLives);
                     
                     var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
                     AddPlayerToLeaderboard(ownerNetworkId.Value, request.ValueRO.PlayerName);

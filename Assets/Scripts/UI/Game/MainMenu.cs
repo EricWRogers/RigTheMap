@@ -30,6 +30,8 @@ namespace Unity.MP_FPS.Client
             public const string SFXVolumeSlider = "SFXVolumeSlider";
             public const string MenuVolumeSlider = "MenuVolumeSlider";
             public const string AudioSettingsBackButton = "AudioSettingsBackButton";
+            public const string PlayerLivesField = "PlayerLivesField";
+            public const string PlayerBuildsField = "PlayerBuildsField";
         }
 
         VisualElement m_MainMenu;
@@ -43,6 +45,8 @@ namespace Unity.MP_FPS.Client
         Button m_SurveyButton;
         Button m_SettingsButton;
         Button m_AudioSettingsBackButton;
+        IntegerField m_PlayerLivesField;
+        IntegerField m_PlayerBuildsField;
         Slider m_MasterVolumeSlider;
         Slider m_MusicVolumeSlider;
         Slider m_SFXVolumeSlider;
@@ -103,6 +107,22 @@ namespace Unity.MP_FPS.Client
 
             m_AudioSettingsBackButton = m_MainMenu.Q<Button>(UIElementNames.AudioSettingsBackButton);
             m_AudioSettingsBackButton.clicked += OnAudioSettingsBackPressed;
+
+            m_PlayerLivesField = m_MainMenu.Q<IntegerField>(UIElementNames.PlayerLivesField);
+            m_PlayerLivesField.SetBinding("value", new DataBinding
+            {
+                dataSource = GameSettings.Instance,
+                dataSourcePath = new PropertyPath(nameof(GameSettings.LivesCount)),
+                bindingMode = BindingMode.TwoWay,
+            });
+
+            m_PlayerBuildsField = m_MainMenu.Q<IntegerField>(UIElementNames.PlayerBuildsField);
+            m_PlayerBuildsField.SetBinding("value", new DataBinding
+            {
+                dataSource = GameSettings.Instance,
+                dataSourcePath = new PropertyPath(nameof(GameSettings.BuildCount)),
+                bindingMode = BindingMode.TwoWay,
+            });
 
             m_MasterVolumeSlider = ConfigureVolumeSlider(UIElementNames.MasterVolumeSlider, SoundMixer.soundMasterVol);
             m_MusicVolumeSlider = ConfigureVolumeSlider(UIElementNames.MusicVolumeSlider, SoundMixer.soundMusicVol);
@@ -272,6 +292,7 @@ namespace Unity.MP_FPS.Client
             m_MainMenuPanel.style.display = DisplayStyle.Flex;
             m_SettingsButton.Focus();
         }
+
 
         void OnMasterVolumeChanged(ChangeEvent<float> evt) =>
             SoundMixer.soundMasterVol.Value = evt.newValue.ToString(CultureInfo.InvariantCulture);

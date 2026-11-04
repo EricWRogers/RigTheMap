@@ -263,10 +263,10 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
                                 if (weaponData.IsPlacementWeapon)
                                 {
-                                    if (predictedPlayer.ValueRO.BuildPlacementsUsed >= 3)
+                                    if (predictedPlayer.ValueRO.BuildPlacementsUsed >= GameManager.PlayerBuilds)
                                     {
                                         Debug.Log(
-                                            "[Build Mode] Player has used all 3 build placements.");
+                                            $"[Build Mode] Player has used all {GameManager.PlayerBuilds} build placements.");
 
                                         continue;
                                     }
