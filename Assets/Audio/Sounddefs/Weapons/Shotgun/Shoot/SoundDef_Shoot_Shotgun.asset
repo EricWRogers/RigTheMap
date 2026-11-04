@@ -39,7 +39,7 @@ MonoBehaviour:
     PitchMax: 256
   DistanceInfo:
     VolumeDistMin: 1.5
-    VolumeDistMax: 30
+    VolumeDistMax: 70
     SpatialBlend: 1
     DopplerScale: 0
     VolumeRolloffMode: 1
