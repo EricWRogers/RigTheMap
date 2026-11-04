@@ -18,8 +18,10 @@ MonoBehaviour:
   Type: 0
   ReticleType: 2
   CooldownInMs: 0.5
-  Damage: 25
-  HitscanRange: 100
+  Damage: 5
+  HitscanRange: 40
+  MeleeRange: 2
+  MeleeBoxHalfExtents: {x: 0.5, y: 0.5, z: 0.5}
   IsPlacementWeapon: 0
   PlacementLayerMask:
     serializedVersion: 2
@@ -97,6 +99,7 @@ MonoBehaviour:
   HammerImpactRadius: 2
   HammerDamage: 25
   HammerGroundRange: 3
+  HammerCooldown: 0.6
   ShotgunEnemyKnockBack: 10
   ShotgunSelfKnockBack: 10
   ShotgunLaunchForce: 15
