@@ -152,6 +152,7 @@ namespace Unity.MP_FPS
                 ShowTutorial(
                     "Build Mode",
                     "Use scroll wheel to change between build items!\n" +
+                    "Use Q and E to rotate your building before placement!\n " +
                     "Use them wisely, you only get 3 placements per round!"
                 );
             }
@@ -398,8 +399,11 @@ namespace Unity.MP_FPS
         {
             if(isBuildMode)
             {
-                ShowTutorial("Build Mode", 
-                "Use scroll wheel to change between build items!");
+                ShowTutorial("Build Mode",
+                    "Use scroll wheel to change between build items!\n" +
+                    "Use Q and E to rotate your building before placement!\n " +
+                    "Use them wisely, you only get 3 placements per round!"
+                );
             }
         }
 
