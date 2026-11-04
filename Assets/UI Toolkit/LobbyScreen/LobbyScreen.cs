@@ -14,6 +14,7 @@ namespace Unity.MP_FPS.Client
             public const string JoinCode = "JoinCode";
             public const string PlayerList = "PlayerList";
             public const string PlayersHeading = "PlayerHeading";
+            public const string PlayerRosterScrollView = "PlayerRosterScrollView";
             public const string StartGameButton = "StartGameButton";
             public const string ReadyButton = "ReadyButton";
         }
@@ -73,9 +74,13 @@ namespace Unity.MP_FPS.Client
 
                 var playerLabel = new Label(
                     $"{player.Value.PlayerName}  " +
-                    $"{(player.Value.IsReady ? "Ready" : "Not Ready")}");
+                    $"{(player.Value.IsReady ? "Ready" : "Not Ready")}; Team Color:");
                 playerLabel.style.fontSize = 40;
                 playerLabel.style.color = Color.white;
+                playerLabel.style.whiteSpace = WhiteSpace.Normal;
+                playerLabel.style.flexGrow = 1;
+                playerLabel.style.flexShrink = 1;
+                playerLabel.style.minWidth = 0;
                 playerRow.Add(playerLabel);
 
                 if (player.Key == LobbyRoster.LocalNetworkId)
@@ -92,6 +97,7 @@ namespace Unity.MP_FPS.Client
                     playerRow.Add(teamLabel);
                 }
 
+                
                 m_PlayerList.Add(playerRow);
             }
         }
@@ -157,7 +163,9 @@ namespace Unity.MP_FPS.Client
 
             m_LobbyTitle = m_Root.Q<Label>(UIElementNames.LobbyTitle);
             m_JoinCode = m_Root.Q<Label>(UIElementNames.JoinCode);
-            m_PlayerList = m_Root.Q<VisualElement>(UIElementNames.PlayerList);
+            var playerRosterScrollView =
+                m_Root.Q<ScrollView>(UIElementNames.PlayerRosterScrollView);
+            m_PlayerList = playerRosterScrollView?.contentContainer;
             m_StartGameButton = m_Root.Q<Button>(UIElementNames.StartGameButton);
             m_ReadyButton = m_Root.Q<Button>(UIElementNames.ReadyButton);
 
