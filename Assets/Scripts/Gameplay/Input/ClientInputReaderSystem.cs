@@ -145,12 +145,16 @@ public partial class ClientInputReaderSystem : SystemBase
         playerInput.SetFlag(PlayerInput.InputFlag.Reload, controls.FPS.Reload.triggered);
         playerInput.SetFlag(PlayerInput.InputFlag.Sprint, controls.Player.Sprint.IsPressed());
 
+        // Debug Controls
+        #if UNITY_EDITOR
         if(controls.Player.DebugToFightRound.WasPressedThisFrame() && LeaderboardManager.Instance != null 
         && LeaderboardManager.Instance.CurrentPhase == LeaderboardManager.RoundPhase.BuildMode)
         {
             LeaderboardManager.Instance.roundSkipped = true;
             LeaderboardManager.Instance.SkipRound();
         }
+        #endif
+
         if(controls.Player.Previous.WasPressedThisFrame())
         {
             playerInput.SetFlag(PlayerInput.InputFlag.SelectPrimary, true);
