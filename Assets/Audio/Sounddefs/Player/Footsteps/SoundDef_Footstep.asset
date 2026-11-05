@@ -29,7 +29,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0327212910ca5734eaa5a4192ee0cc21, type: 3}
   - {fileID: 8300000, guid: 89e285ebe754ec8469a904b0a9c72885, type: 3}
   - {fileID: 8300000, guid: 9140ac74a320e5c4592baf166c37fadf, type: 3}
-  - {fileID: 8300000, guid: a2c93165a6ed87e40b2d4e1d58d7cbc8, type: 3}
   RepeatInfo:
     LoopCount: 1
     RepeatMin: 1
