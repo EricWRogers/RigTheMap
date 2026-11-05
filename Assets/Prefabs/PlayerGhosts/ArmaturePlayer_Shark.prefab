@@ -549,6 +549,10 @@ PrefabInstance:
       value: CatRig
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: c5c10f1ac41be0246af79b47dfdf5236, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
+    - target: {fileID: 5866666021909216657, guid: c5c10f1ac41be0246af79b47dfdf5236, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 0a49c864fb4ed4d7e993981886fead4e, type: 2}
