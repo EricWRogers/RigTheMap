@@ -152,7 +152,8 @@ namespace Unity.MP_FPS
                 ShowTutorial(
                     "Build Mode",
                     "Use scroll wheel to change between build items!\n" +
-                    "Use them wisely, you only get 3 placements per round!"
+                    "Use Q and E to rotate your building before placement!\n " +
+                    $"Use them wisely, you only get {GameManager.PlayerBuilds} placements per round!"
                 );
             }
              UpdateTutorialTimer();
@@ -253,9 +254,9 @@ namespace Unity.MP_FPS
             }
             if (m_BuildingsRemainingLabel != null)
             {
-                int buildingsRemaining = Mathf.Max(0, 3 - playerData.BuildPlacementsUsed);
+                int buildingsRemaining = Mathf.Max(0, GameManager.PlayerBuilds - playerData.BuildPlacementsUsed);
 
-                m_BuildingsRemainingLabel.text = $"Buildings Remaining: {buildingsRemaining} / 3";
+                m_BuildingsRemainingLabel.text = $"Buildings Remaining: {buildingsRemaining} / {GameManager.PlayerBuilds}";
                 m_BuildingsRemainingLabel.style.color = Color.white;
                 m_BuildingsRemainingLabel.style.display =
                     weaponData != null && weaponData.IsPlacementWeapon
@@ -398,8 +399,11 @@ namespace Unity.MP_FPS
         {
             if(isBuildMode)
             {
-                ShowTutorial("Build Mode", 
-                "Use scroll wheel to change between build items!");
+                ShowTutorial("Build Mode",
+                    "Use scroll wheel to change between build items!\n" +
+                    "Use Q and E to rotate your building before placement!\n " +
+                    "Use them wisely, you only get 3 placements per round!"
+                );
             }
         }
 

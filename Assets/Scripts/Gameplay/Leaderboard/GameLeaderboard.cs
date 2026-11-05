@@ -312,8 +312,8 @@ namespace Gameplay.Leaderboard
                 {
                     var entry = initialBuffer[i];
 
-                    entry.Kills = 0;
-                    entry.Deaths = 0;
+                    // entry.Kills = 0;
+                    // entry.Deaths = 0;
 
                     initialBuffer[i] = entry;
                 }
@@ -355,8 +355,8 @@ namespace Gameplay.Leaderboard
             {
                 var entry = buffer[i];
 
-                entry.Kills = 0;
-                entry.Deaths = 0;
+                // entry.Kills = 0;
+                // entry.Deaths = 0;
 
                 buffer[i] = entry;
             }
@@ -606,7 +606,7 @@ namespace Gameplay.Leaderboard
 
         public void UpdateClient(float deltaTime)
         {
-            Debug.Log($"[Client Leaderboard] UpdateClient Running $Role = {Role}, $GhostLinked={GhostGameObject.IsGhostLinked()}");
+            // Debug.Log($"[Client Leaderboard] UpdateClient Running $Role = {Role}, $GhostLinked={GhostGameObject.IsGhostLinked()}");
             if (!GhostGameObject.IsGhostLinked())
                 return;
 

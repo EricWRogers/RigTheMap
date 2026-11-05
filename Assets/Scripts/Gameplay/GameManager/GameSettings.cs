@@ -41,12 +41,16 @@ namespace Unity.MP_FPS
         const string k_PlayerNameKey = "PlayerName";
         const string k_MapNameKey = "MapName";
         const string k_PlayerCharacterKey = "PlayerCharacer";
+        // const string k_LivesCountKey = "LivesCount";
+        // const string k_BuildCountKey = "BuildCount";
 
         GameSettings()
         {
             m_PlayerName = PlayerPrefs.GetString(k_PlayerNameKey, Environment.UserName);
             m_MapName = PlayerPrefs.GetString(k_MapNameKey, "GameScene");
             m_PlayerCharacter = PlayerPrefs.GetInt(k_PlayerCharacterKey, 0);  
+            m_LivesCount = 3;
+            m_BuildCount = 3;
         }
 
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
@@ -251,6 +255,40 @@ namespace Unity.MP_FPS
         {
             get => m_PlayerTeam;
             set => m_PlayerTeam = value == -1 || value == 0 || value == 1 ? value : -1;
+        }
+
+        private int m_LivesCount = 3;
+        [CreateProperty]
+        public int LivesCount
+        {
+            get => m_LivesCount;
+            set
+            {
+                var clampedValue = Math.Clamp(value, 1, int.MaxValue);
+                if (m_LivesCount == clampedValue)
+                    return;
+
+                m_LivesCount = clampedValue;
+                // PlayerPrefs.SetInt(k_LivesCountKey, m_LivesCount);
+                Notify();
+            }
+        }
+
+        private int m_BuildCount = 3;
+        [CreateProperty]
+        public int BuildCount
+        {
+            get => m_BuildCount;
+            set
+            {
+                var clampedValue = Math.Clamp(value, 0, int.MaxValue);
+                if (m_BuildCount == clampedValue)
+                    return;
+
+                m_BuildCount = clampedValue;
+                // PlayerPrefs.SetInt(k_BuildCountKey, m_BuildCount);
+                Notify();
+            }
         }
         
         public static readonly string MainMenuSceneLoadedPropertyName = nameof(MainMenuSceneLoadedStyle);

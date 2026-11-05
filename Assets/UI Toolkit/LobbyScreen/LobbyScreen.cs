@@ -14,6 +14,7 @@ namespace Unity.MP_FPS.Client
             public const string JoinCode = "JoinCode";
             public const string PlayerList = "PlayerList";
             public const string PlayersHeading = "PlayerHeading";
+            public const string PlayerRosterScrollView = "PlayerRosterScrollView";
             public const string StartGameButton = "StartGameButton";
             public const string ReadyButton = "ReadyButton";
         }
@@ -44,7 +45,8 @@ namespace Unity.MP_FPS.Client
 
             if (m_ReadyButton != null)
             {
-                m_ReadyButton.text = LobbyRoster.LocalPlayerReady ? "Cancel" : "Ready";
+                m_ReadyButton.text = "";
+                m_ReadyButton.style.unityBackgroundImageTintColor = LobbyRoster.LocalPlayerReady ? new Color(0.45f, 0.45f, 0.45f, 1f) : Color.white;
             }
         }
 
@@ -70,40 +72,51 @@ namespace Unity.MP_FPS.Client
                 playerRow.style.flexDirection = FlexDirection.Row;
                 playerRow.style.alignItems = Align.Center;
                 playerRow.style.marginTop = 8;
+                playerRow.style.width = Length.Percent(100);
+                playerRow.style.flexShrink = 1;
 
-                var playerLabel = new Label(
-                    $"{player.Value.PlayerName}  " +
-                    $"{(player.Value.IsReady ? "Ready" : "Not Ready")}");
-                playerLabel.style.fontSize = 40;
-                playerLabel.style.color = Color.white;
-                playerRow.Add(playerLabel);
+                var playerNameLabel = new Label(player.Value.PlayerName);
+                playerNameLabel.style.fontSize = 30;
+                playerNameLabel.style.color = Color.white;
+                playerNameLabel.style.whiteSpace = WhiteSpace.Normal;
+                playerNameLabel.style.flexGrow = 1;
+                playerNameLabel.style.flexShrink = 1;
+                playerNameLabel.style.minWidth = 0;
+                playerRow.Add(playerNameLabel);
+
+                var readyLabel = new Label(player.Value.IsReady ? "Ready" : "Not Ready");
+                readyLabel.style.width = 180;
+                readyLabel.style.fontSize = 30;
+                readyLabel.style.color = Color.white;
+                readyLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+                playerRow.Add(readyLabel);
 
                 if (player.Key == LobbyRoster.LocalNetworkId)
                 {
-                    var teamSelection = CreateTeamSelection(player.Value.TeamId);
-                    playerRow.Add(teamSelection);
+                    playerRow.Add(CreateTeamSelection(player.Value.TeamId));
                 }
                 else
                 {
-                    var teamLabel = new Label(TeamName(player.Value.TeamId));
-                    teamLabel.style.fontSize = 32;
-                    teamLabel.style.marginLeft = 20;
-                    teamLabel.style.color = Color.white;
-                    playerRow.Add(teamLabel);
+                    playerRow.Add(CreateTeamDisplay(player.Value.TeamId));
                 }
 
+                
                 m_PlayerList.Add(playerRow);
             }
         }
 
-        DropdownField CreateTeamSelection(int teamId)
+        VisualElement CreateTeamSelection(int teamId)
         {
+            var teamColumn = CreateTeamColumn();
+            var teamLabel = CreateTeamLabel();
             var teamSelection = new DropdownField(
                 new List<string> { "Auto", "Green", "Blue" },
                 TeamName(teamId));
+
+            teamSelection.style.flexShrink = 0;
             teamSelection.style.width = 180;
-            teamSelection.style.marginLeft = 20;
             teamSelection.style.fontSize = 24;
+            teamSelection.style.alignSelf = Align.Center;
             teamSelection.RegisterValueChangedCallback(changeEvent =>
             {
                 LobbyRoster.SetTeam(changeEvent.newValue switch
@@ -114,7 +127,44 @@ namespace Unity.MP_FPS.Client
                 });
             });
 
-            return teamSelection;
+            teamColumn.Add(teamLabel);
+            teamColumn.Add(teamSelection);
+            return teamColumn;
+        }
+
+        VisualElement CreateTeamDisplay(int teamId)
+        {
+            var teamColumn = CreateTeamColumn();
+            var teamLabel = CreateTeamLabel();
+            var teamValue = new Label(TeamName(teamId));
+            teamValue.style.width = 180;
+            teamValue.style.fontSize = 32;
+            teamValue.style.color = Color.white;
+            teamValue.style.unityTextAlign = TextAnchor.MiddleCenter;
+            teamColumn.Add(teamLabel);
+            teamColumn.Add(teamValue);
+            return teamColumn;
+        }
+
+        static VisualElement CreateTeamColumn()
+        {
+            var teamColumn = new VisualElement();
+            teamColumn.style.width = 280;
+            teamColumn.style.flexShrink = 0;
+            teamColumn.style.flexDirection = FlexDirection.Row;
+            teamColumn.style.alignItems = Align.Center;
+            teamColumn.style.marginLeft = StyleKeyword.Auto;
+            return teamColumn;
+        }
+
+        static Label CreateTeamLabel()
+        {
+            var teamLabel = new Label("Team:");
+            teamLabel.style.width = 100;
+            teamLabel.style.fontSize = 24;
+            teamLabel.style.color = Color.white;
+            teamLabel.style.unityTextAlign = TextAnchor.MiddleRight;
+            return teamLabel;
         }
 
         void UpdateStartGameButton()
@@ -157,7 +207,9 @@ namespace Unity.MP_FPS.Client
 
             m_LobbyTitle = m_Root.Q<Label>(UIElementNames.LobbyTitle);
             m_JoinCode = m_Root.Q<Label>(UIElementNames.JoinCode);
-            m_PlayerList = m_Root.Q<VisualElement>(UIElementNames.PlayerList);
+            var playerRosterScrollView =
+                m_Root.Q<ScrollView>(UIElementNames.PlayerRosterScrollView);
+            m_PlayerList = playerRosterScrollView?.contentContainer;
             m_StartGameButton = m_Root.Q<Button>(UIElementNames.StartGameButton);
             m_ReadyButton = m_Root.Q<Button>(UIElementNames.ReadyButton);
 
@@ -175,7 +227,7 @@ namespace Unity.MP_FPS.Client
             
             if (m_ReadyButton != null)
             {
-                m_ReadyButton.text = "Ready";
+                m_ReadyButton.text = "";
             }
 
             m_LastRosterChangeVersion = -1;
@@ -210,14 +262,6 @@ namespace Unity.MP_FPS.Client
       void OnReadyPressed()
         {
             LobbyRoster.ToggleReady();
-
-            if (m_ReadyButton != null)
-            {
-                m_ReadyButton.text =
-                    LobbyRoster.LocalPlayerReady
-                        ? "Cancel"
-                        : "Ready";
-            }
         }
     }
 }

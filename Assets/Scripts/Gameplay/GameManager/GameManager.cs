@@ -19,6 +19,8 @@ namespace Unity.MP_FPS
         public const int MaxPlayer = 32;
         public const string MainMenuSceneName = "MainMenu";
         static public string GameSceneName = "GameScene";
+        static public int PlayerLives = 3;
+        static public int PlayerBuilds = 3;
         static public GameConnection GameConnection { get; private set; }
 
         Task m_LoadingGame;
@@ -251,6 +253,13 @@ namespace Unity.MP_FPS
 
             // Connecting to a Multiplayer Session.
             LoadingData.Instance.UpdateLoading(LoadingData.LoadingSteps.InitializeConnection);
+            if (creationType == CreationType.Host ||
+                creationType == CreationType.CreateRelay)
+            {
+                PlayerLives = GameSettings.Instance.LivesCount;
+                PlayerBuilds = GameSettings.Instance.BuildCount;
+            }
+
             switch (creationType)
             {
                 case (CreationType.CreateRelay):
@@ -276,6 +285,13 @@ namespace Unity.MP_FPS
             }
 
             GameSceneName = GameConnection.ServerMapName;
+            if (GameConnection.Session != null)
+            {
+                PlayerLives =
+                    int.Parse(GameConnection.Session.Properties[GameConnection.PlayerLivesPropertyKey].Value);
+                PlayerBuilds =
+                    int.Parse(GameConnection.Session.Properties[GameConnection.PlayerBuildsPropertyKey].Value);
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
 

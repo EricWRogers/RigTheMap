@@ -49,6 +49,8 @@ namespace Unity.MP_FPS.UI
             _listView.selectionType = SelectionType.None;
 
             _listView.RefreshItems();
+
+            UpdateLeaderboardUI();
         }
 
         private void OnShowLeaderboard()

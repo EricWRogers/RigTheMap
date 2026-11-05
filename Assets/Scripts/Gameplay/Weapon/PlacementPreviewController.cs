@@ -160,7 +160,7 @@ public class PlacementPreviewController : MonoBehaviour
 
         Vector3 aimDirection = aimRotation * Vector3.forward;
 
-        if(playerData.BuildPlacementsUsed >= 3)
+        if(playerData.BuildPlacementsUsed >= GameManager.PlayerBuilds)
             previewInstance.SetActive(false);
             
         else if(Physics.Raycast(
@@ -170,7 +170,7 @@ public class PlacementPreviewController : MonoBehaviour
             currentWeaponData.HitscanRange,
             placementMask))
         {
-            Debug.Log(hit.collider.gameObject.name);
+            // Debug.Log(hit.collider.gameObject.name);
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("PermitNeed"))
             {
                 previewInstance.SetActive(false);
