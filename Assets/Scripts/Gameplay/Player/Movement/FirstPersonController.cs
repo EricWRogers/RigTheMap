@@ -17,6 +17,7 @@ public class FirstPersonController : MonoBehaviour
     private static readonly int ReloadSpeedHash = Animator.StringToHash("ReloadSpeed");
     private static readonly int ShootSpeedHash = Animator.StringToHash("ShootSpeed");
     public SoundDef PlayerHitSFX;
+    public SoundDef PlayerdeadSFX;
 
     private static class AnimationParameters
     {
@@ -434,9 +435,9 @@ public class FirstPersonController : MonoBehaviour
             
 
             m_PlayerGhost.GhostGameObject.WriteGhostComponentData(ghost);
-            Vector3 knockback = groundNormal.normalized;
-            float knockStr = 12f;
-            move += knockback * knockStr; // instant upwards
+            // Vector3 knockback = groundNormal.normalized;
+            // float knockStr = 2f;
+            // move += knockback * knockStr; // instant upwards
 
         }
         return move;
@@ -865,8 +866,9 @@ public class FirstPersonController : MonoBehaviour
         animator.SetFloat(AnimationParameters.Speed, speedZ);
         animator.SetFloat(AnimationParameters.StrafeSpeed, speedX);
 
-        bool isDead = (currentHealth <= 0);
+        bool isDead = currentHealth <= 0;
         animator.SetBool(AnimationParameters.IsDead, isDead);
+        
     }
 
     private void ApplyPosImmediate(in ControllerState state)

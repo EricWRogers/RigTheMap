@@ -170,7 +170,7 @@ public class PlacementPreviewController : MonoBehaviour
             currentWeaponData.HitscanRange,
             placementMask))
         {
-            Debug.Log(hit.collider.gameObject.name);
+            // Debug.Log(hit.collider.gameObject.name);
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("PermitNeed"))
             {
                 previewInstance.SetActive(false);
