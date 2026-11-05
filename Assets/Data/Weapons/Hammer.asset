@@ -84,7 +84,7 @@ MonoBehaviour:
         y: 0
         z: 0
         w: 0
-  WeaponFireSfx: {fileID: 0}
+  WeaponFireSfx: {fileID: 11400000, guid: 07672bf699e71df47a094a809327b395, type: 2}
   WeaponReloadSfx: {fileID: 0}
   Behavior: 0
   AoeRadius: 0

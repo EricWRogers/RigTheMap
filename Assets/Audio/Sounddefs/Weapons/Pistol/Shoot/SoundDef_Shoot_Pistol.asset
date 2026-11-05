@@ -41,7 +41,7 @@ MonoBehaviour:
     VolumeDistMin: 20
     VolumeDistMax: 70
     SpatialBlend: 1
-    DopplerScale: 0
+    DopplerScale: 0.581
     VolumeRolloffMode: 1
     LPFRollOffCurveType: 4
     LPF_MinCutoff: 6000

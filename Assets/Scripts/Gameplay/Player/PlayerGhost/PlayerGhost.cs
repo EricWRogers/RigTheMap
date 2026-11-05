@@ -42,6 +42,7 @@ namespace Unity.MP_FPS
 
         private uint m_LastProcessedSharkHitTick;
         private float m_SharkHitVisualTimer;
+        private bool m_WasAlive;
 
         public int PlayerIndex { get; private set; }
         public int InputUserId { get; set; } = -1;
@@ -68,9 +69,11 @@ namespace Unity.MP_FPS
         private static void Init()
         {
             s_NextPredictionId = 1;
+            s_DeathAudioCamera = null;
         }
         
         private static uint s_NextPredictionId = 1;
+        private static Camera s_DeathAudioCamera;
 
         public static uint GetNextPredictionID()
         {
@@ -124,6 +127,7 @@ namespace Unity.MP_FPS
 
         public override void OnGhostLinked()
         {
+            m_WasAlive = ReadGhostComponentData<PredictedPlayerGhost>().CurrentHealth > 0;
             bool isClientOwned = (Role == MultiplayerRole.ClientOwned);
             m_OwnerVisuals.SetActive(isClientOwned);
             m_OtherPlayerVisuals.SetActive(!isClientOwned);
@@ -138,6 +142,7 @@ namespace Unity.MP_FPS
                 {
                     GameManager.Instance.SoundSystem.CreateEmitter(m_SpawnSFX, transform.position);
                 }
+       
             }
 
             if (isClientOwned)
@@ -225,6 +230,14 @@ namespace Unity.MP_FPS
 
         public override void OnGhostPreDestroy()
         {
+            if(Role == MultiplayerRole.ClientOwned && m_PlayerCamera != null && m_PlayerCamera.TryGetComponent<AudioListener>(out var deathAudioListener))
+            {
+                m_PlayerCamera.transform.SetParent(null, true);
+                m_PlayerCamera.enabled = false;
+                deathAudioListener.enabled = true;
+                s_DeathAudioCamera = m_PlayerCamera;
+                GameManager.Instance.SoundSystem.SetListenerTransform(deathAudioListener.transform);
+            }
             var placementPreview = GetComponent<PlacementPreviewController>();
             if (placementPreview != null)
             {
@@ -259,6 +272,11 @@ namespace Unity.MP_FPS
                     existingCamera.GetComponent<AudioListener>();
                 if (existingAudioListener != null)
                     existingAudioListener.enabled = false;
+                if(existingCamera == s_DeathAudioCamera)
+                {
+                    Destroy(existingCamera.gameObject);
+                    s_DeathAudioCamera = null;
+                }
             }
 
             var mainCameraInstance = Instantiate(MainCameraPrefab, CameraTarget.transform);
@@ -289,6 +307,13 @@ namespace Unity.MP_FPS
         {
             var predictedPlayerGhost = ReadGhostComponentData<PredictedPlayerGhost>();
             var controllerState = predictedPlayerGhost.ControllerState;
+            bool isAlive = predictedPlayerGhost.CurrentHealth > 0;
+
+            if(m_WasAlive && !isAlive && m_Controller.PlayerdeadSFX != null)
+            {
+                GameManager.Instance.SoundSystem.CreateEmitter(m_Controller.PlayerdeadSFX, transform.position);
+            }
+            m_WasAlive = isAlive;
 
             if (predictedPlayerGhost.LastSharkHitTick > m_LastProcessedSharkHitTick)
             {
