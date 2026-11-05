@@ -41,16 +41,16 @@ namespace Unity.MP_FPS
         const string k_PlayerNameKey = "PlayerName";
         const string k_MapNameKey = "MapName";
         const string k_PlayerCharacterKey = "PlayerCharacer";
-        const string k_LivesCountKey = "LivesCount";
-        const string k_BuildCountKey = "BuildCount";
+        // const string k_LivesCountKey = "LivesCount";
+        // const string k_BuildCountKey = "BuildCount";
 
         GameSettings()
         {
             m_PlayerName = PlayerPrefs.GetString(k_PlayerNameKey, Environment.UserName);
             m_MapName = PlayerPrefs.GetString(k_MapNameKey, "GameScene");
             m_PlayerCharacter = PlayerPrefs.GetInt(k_PlayerCharacterKey, 0);  
-            m_LivesCount = PlayerPrefs.GetInt(k_LivesCountKey, 3);
-            m_BuildCount = PlayerPrefs.GetInt(k_BuildCountKey, 3);
+            m_LivesCount = 3;
+            m_BuildCount = 3;
         }
 
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
@@ -269,7 +269,7 @@ namespace Unity.MP_FPS
                     return;
 
                 m_LivesCount = clampedValue;
-                PlayerPrefs.SetInt(k_LivesCountKey, m_LivesCount);
+                // PlayerPrefs.SetInt(k_LivesCountKey, m_LivesCount);
                 Notify();
             }
         }
@@ -286,7 +286,7 @@ namespace Unity.MP_FPS
                     return;
 
                 m_BuildCount = clampedValue;
-                PlayerPrefs.SetInt(k_BuildCountKey, m_BuildCount);
+                // PlayerPrefs.SetInt(k_BuildCountKey, m_BuildCount);
                 Notify();
             }
         }

@@ -45,7 +45,8 @@ namespace Unity.MP_FPS.Client
 
             if (m_ReadyButton != null)
             {
-                m_ReadyButton.text = LobbyRoster.LocalPlayerReady ? "Cancel" : "Ready";
+                m_ReadyButton.text = "";
+                m_ReadyButton.style.unityBackgroundImageTintColor = LobbyRoster.LocalPlayerReady ? new Color(0.45f, 0.45f, 0.45f, 1f) : Color.white;
             }
         }
 
@@ -226,7 +227,7 @@ namespace Unity.MP_FPS.Client
             
             if (m_ReadyButton != null)
             {
-                m_ReadyButton.text = "Ready";
+                m_ReadyButton.text = "";
             }
 
             m_LastRosterChangeVersion = -1;
@@ -261,14 +262,6 @@ namespace Unity.MP_FPS.Client
       void OnReadyPressed()
         {
             LobbyRoster.ToggleReady();
-
-            if (m_ReadyButton != null)
-            {
-                m_ReadyButton.text =
-                    LobbyRoster.LocalPlayerReady
-                        ? "Cancel"
-                        : "Ready";
-            }
         }
     }
 }

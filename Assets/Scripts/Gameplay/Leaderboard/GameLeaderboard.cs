@@ -606,7 +606,7 @@ namespace Gameplay.Leaderboard
 
         public void UpdateClient(float deltaTime)
         {
-            Debug.Log($"[Client Leaderboard] UpdateClient Running $Role = {Role}, $GhostLinked={GhostGameObject.IsGhostLinked()}");
+            // Debug.Log($"[Client Leaderboard] UpdateClient Running $Role = {Role}, $GhostLinked={GhostGameObject.IsGhostLinked()}");
             if (!GhostGameObject.IsGhostLinked())
                 return;
 

@@ -45,11 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3f894d02029c3494db5405d4eda0fa8e
-    m_Address: Assets/Prefabs/PlayerGhosts/SpectatorCam.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 55aca060ce02f08448e041ace3f96dcb
     m_Address: Assets/Prefabs/ActorGhosts/Buildings/HealthPackSpawner.prefab
     m_ReadOnly: 0
@@ -87,11 +82,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c93af8b935d1da7419ae22251a33748c
     m_Address: Assets/Prefabs/Effects/PlasmaHit.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: caf082d49a038aa4ca09ef35f00f08b5
-    m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_SixShooter.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
