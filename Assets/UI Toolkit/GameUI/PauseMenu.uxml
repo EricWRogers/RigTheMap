@@ -5,17 +5,17 @@
             <ui:VisualElement name="UIWrapper" picking-mode="Ignore">
                 <ui:VisualElement name="PausePanel" picking-mode="Ignore">
                     <ui:Button text="Resume" name="ResumeButton" tabindex="0" selectable="false" focusable="false"/>
-                    <ui:Button text="Settings" name="SettingsButton" tabindex="1"/>
+                    <ui:Button text="" name="SettingsButton" tabindex="1" style="background-color: rgba(62, 62, 62, 0); background-image: url(&quot;project://database/Assets/Art/UI/SettingButton.png?fileID=2800000&amp;guid=9a3561b809f77ee41a2d81bca52b0c61&amp;type=3#SettingButton&quot;); background-size: 300% 700%; border-left-color: rgba(131, 180, 222, 0); border-right-color: rgba(131, 180, 222, 0); border-top-color: rgba(131, 180, 222, 0); border-bottom-color: rgba(131, 180, 222, 0);"/>
                     <ui:Button text="Main Menu" name="MainMenuButton" tabindex="2"/>
-                    <ui:Button text="Quit" name="QuitButton" tabindex="3"/>
+                    <ui:Button text="" name="QuitButton" tabindex="3" style="background-image: url(&quot;project://database/Assets/Art/UI/QuitButton.png?fileID=2800000&amp;guid=66aa8575d452a1f4b9c4d18584af74f0&amp;type=3#QuitButton&quot;); background-size: 300% 600%; background-color: rgba(47, 112, 165, 0); border-left-color: rgba(131, 180, 222, 0); border-right-color: rgba(131, 180, 222, 0); border-top-color: rgba(131, 180, 222, 0); border-bottom-color: rgba(131, 180, 222, 0);"/>
                 </ui:VisualElement>
                 <ui:VisualElement name="AudioSettingsPanel" picking-mode="Ignore" style="display: none;">
-                    <ui:Label text="Audio Settings" class="instructions-title" />
-                    <ui:Slider label="Master" name="MasterVolumeSlider" low-value="0" high-value="1" tabindex="0" />
-                    <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1" />
-                    <ui:Slider label="SFX" name="SFXVolumeSlider" low-value="0" high-value="1" tabindex="2" />
-                    <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3" />
-                    <ui:Button text="Back" name="AudioSettingsBackButton" tabindex="4" />
+                    <ui:Label text="Audio Settings" class="instructions-title"/>
+                    <ui:Slider label="Master" name="MasterVolumeSlider" low-value="0" high-value="1" tabindex="0"/>
+                    <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1"/>
+                    <ui:Slider label="SFX" name="SFXVolumeSlider" low-value="0" high-value="1" tabindex="2"/>
+                    <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3"/>
+                    <ui:Button text="Back" name="AudioSettingsBackButton" tabindex="4"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

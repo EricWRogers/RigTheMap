@@ -1,52 +1,51 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/GameUI/GameUIStyleSheet.uss?fileID=7433441132597879392&amp;guid=35b9b2a65173fdb47ad41dfdb0b5a02a&amp;type=3#GameUIStyleSheet" />
+    <Style src="project://database/Assets/UI%20Toolkit/GameUI/GameUIStyleSheet.uss?fileID=7433441132597879392&amp;guid=35b9b2a65173fdb47ad41dfdb0b5a02a&amp;type=3#GameUIStyleSheet"/>
     <ui:VisualElement name="Canvas" picking-mode="Ignore" class="canvas canvas-transparent-background">
-        <ui:VisualElement name="HidingBackground" picking-mode="Ignore" class="background" />
+        <ui:VisualElement name="HidingBackground" picking-mode="Ignore" class="background"/>
         <ui:VisualElement name="Container" picking-mode="Ignore" class="container" style="background-image: url(&quot;project://database/Assets/Art/Textures/Grid_01_Emissive.png?fileID=2800000&amp;guid=d4d6919451fe3e24388816386a6d15a4&amp;type=3#Grid_01_Emissive&quot;); height: auto;">
             <ui:VisualElement name="UIWrapper" picking-mode="Ignore">
                 <ui:VisualElement name="MainMenuPanel" picking-mode="Ignore">
-                <ui:VisualElement name="ConnectionPanel" picking-mode="Ignore">
-                    <ui:VisualElement name="InputPlayerName" picking-mode="Ignore" class="section-separator">
-                        <ui:Label text="Player Name" name="PlayerName" picking-mode="Ignore" />
-                        <ui:TextField name="PlayerNameField" value="_" tabindex="-1" />
-                        <ui:Label text="Map Name" name="MapName" picking-mode="Ignore" />
-                        <ui:DropdownField name="MapNameField" tabindex="-1" />
-                    </ui:VisualElement>
-                    <!--ui:RadioButtonGroup label="Weapon" choices="Rifle,Shotgun,Toy Hammer" value="-1" name="ChooseCharacterOption" style="border-left-color: rgb(131, 180, 222); border-right-color: rgb(131, 180, 222); border-top-color: rgb(131, 180, 222); border-bottom-color: rgb(131, 180, 222); border-bottom-width: 2px; border-right-width: 2px; border-top-width: 2px; border-left-width: 2px;" /-->
-                    <ui:Button text="Create Game" name="CreateGame" tabindex="0" />
-                    <ui:Button text="Join Game" name="JoinGame" tabindex="1" />
-                    <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
-                    <ui:TextField label="Join Code" name="JoinCodeField" value="" tabindex="2" max-length="6" />
-                    <ui:Button text="Settings" name="SettingsButton" tabindex="4" />
-                    <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
-                    <ui:Button text="Respond to our survey!" name="SurveyButton" tabindex="3" />
-                    <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;" />
-                    <ui:Button text="Quit" name="QuitButton" tabindex="5" />
+                    <ui:VisualElement name="ConnectionPanel" picking-mode="Ignore">
+                        <ui:VisualElement name="InputPlayerName" picking-mode="Ignore" class="section-separator">
+                            <ui:Label text="Player Name" name="PlayerName" picking-mode="Ignore"/>
+                            <ui:TextField name="PlayerNameField" value="_" tabindex="-1"/>
+                            <ui:Label text="Map Name" name="MapName" picking-mode="Ignore"/>
+                            <ui:DropdownField name="MapNameField" tabindex="-1"/>
+                        </ui:VisualElement>
+                        <ui:Button text="Create Game" name="CreateGame" tabindex="0"/>
+                        <ui:Button text="Join Game" name="JoinGame" tabindex="1"/>
+                        <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;"/>
+                        <ui:TextField label="Join Code" name="JoinCodeField" value="" tabindex="2" max-length="6"/>
+                        <ui:Button text="" name="SettingsButton" tabindex="4" icon-image="" style="background-image: url(&quot;project://database/Assets/Art/UI/SettingButton.png?fileID=2800000&amp;guid=9a3561b809f77ee41a2d81bca52b0c61&amp;type=3#SettingButton&quot;); background-size: 300% 700%; background-color: rgba(255, 255, 255, 0); border-left-color: rgba(131, 180, 222, 0); border-right-color: rgba(131, 180, 222, 0); border-top-color: rgba(131, 180, 222, 0); border-bottom-color: rgba(131, 180, 222, 0);"/>
+                        <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;"/>
+                        <ui:Button text="Respond to our survey!" name="SurveyButton" tabindex="3"/>
+                        <ui:VisualElement name="Seperator" focusable="false" style="flex-grow: 1; height: 16px;"/>
+                        <ui:Button text="" name="QuitButton" tabindex="5" style="background-color: rgba(47, 112, 165, 0); background-image: url(&quot;project://database/Assets/Art/UI/QuitButton.png?fileID=2800000&amp;guid=66aa8575d452a1f4b9c4d18584af74f0&amp;type=3#QuitButton&quot;); background-size: 300% 600%; border-left-color: rgba(131, 180, 222, 0); border-right-color: rgba(131, 180, 222, 0); border-top-color: rgba(131, 180, 222, 0); border-bottom-color: rgba(131, 180, 222, 0);"/>
                     </ui:VisualElement>
                     <ui:VisualElement name="InstructionsPanel" class="instructions-panel">
-                    <ui:Label text="Instructions" class="instructions-title" />
-                    <ui:Label text="Creating a Session" class="instructions-heading" />
-                    <ui:Label text="Select Create Game." class="instructions-text" />
-                    <ui:Label text="Share the Join code with your friends." class="instructions-text" />
-                    <ui:Label text="Mark yourself as Ready." class="instructions-text" />
-                    <ui:Label text="Start the match once everyone is Ready." class="instructions-text" />
-                    <ui:Label text="Joining a Session" class="instructions-heading" />
-                    <ui:Label text="Enter the code your friend shared with you in the Join Code section." class="instructions-text" />
-                    <ui:Label text="Select Join Game." class="instructions-text" />
-                    <ui:Label text="Mark yourself as ready." class="instructions-text" />
-                    <ui:Label text="Wait for the Host to start the game." class="instructions-text" />
-                </ui:VisualElement>
+                        <ui:Label text="Instructions" class="instructions-title"/>
+                        <ui:Label text="Creating a Session" class="instructions-heading"/>
+                        <ui:Label text="Select Create Game." class="instructions-text"/>
+                        <ui:Label text="Share the Join code with your friends." class="instructions-text"/>
+                        <ui:Label text="Mark yourself as Ready." class="instructions-text"/>
+                        <ui:Label text="Start the match once everyone is Ready." class="instructions-text"/>
+                        <ui:Label text="Joining a Session" class="instructions-heading"/>
+                        <ui:Label text="Enter the code your friend shared with you in the Join Code section." class="instructions-text"/>
+                        <ui:Label text="Select Join Game." class="instructions-text"/>
+                        <ui:Label text="Mark yourself as ready." class="instructions-text"/>
+                        <ui:Label text="Wait for the Host to start the game." class="instructions-text"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="AudioSettingsPanel" picking-mode="Ignore" style="display: none;">
-                    <ui:Label text="Audio Settings" class="instructions-title" />
-                    <ui:Slider label="Master" name="MasterVolumeSlider" low-value="0" high-value="1" tabindex="0" />
-                <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1" />
-                <ui:Slider label="SFX" name="SFXVolumeSlider" low-value="0" high-value="1" tabindex="2" />
-                <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3" />
-                <ui:Label text="Host Only Settings" class="instructions-heading" />
-                <ui:IntegerField label="Player Lives" name="PlayerLivesField" value="3" tabindex="4" />
-                <ui:IntegerField label="Player Builds" name="PlayerBuildsField" value="3" tabindex="5" />
-                <ui:Button text="Back" name="AudioSettingsBackButton" tabindex="6" />
+                    <ui:Label text="Audio Settings" class="instructions-title"/>
+                    <ui:Slider label="Master" name="MasterVolumeSlider" low-value="0" high-value="1" tabindex="0"/>
+                    <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1"/>
+                    <ui:Slider label="SFX" name="SFXVolumeSlider" low-value="0" high-value="1" tabindex="2"/>
+                    <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3"/>
+                    <ui:Label text="Host Only Settings" class="instructions-heading"/>
+                    <ui:IntegerField label="Player Lives" name="PlayerLivesField" value="3" tabindex="4"/>
+                    <ui:IntegerField label="Player Builds" name="PlayerBuildsField" value="3" tabindex="5"/>
+                    <ui:Button text="Back" name="AudioSettingsBackButton" tabindex="6"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
