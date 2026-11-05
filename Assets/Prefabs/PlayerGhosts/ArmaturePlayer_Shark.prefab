@@ -184,7 +184,7 @@ MonoBehaviour:
   GroundedOffset: 0.2
   <ControllerOffset>k__BackingField: {x: 0, y: 0, z: 0}
   m_Animator_1P: {fileID: 1312274706370647420}
-  m_Animator_3P: {fileID: 0}
+  m_Animator_3P: {fileID: 8623489002440885783}
   m_EnableAnimationLogging: 0
 --- !u!114 &5189483525945704937
 MonoBehaviour:
@@ -551,7 +551,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: c5c10f1ac41be0246af79b47dfdf5236, type: 3}
       propertyPath: m_Avatar
       value: 
-      objectReference: {fileID: 9000000, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
+      objectReference: {fileID: 9000000, guid: c5c10f1ac41be0246af79b47dfdf5236, type: 3}
     - target: {fileID: 5866666021909216657, guid: c5c10f1ac41be0246af79b47dfdf5236, type: 3}
       propertyPath: m_Controller
       value: 
@@ -759,6 +759,18 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
       propertyPath: m_CullingMode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 27920c0d8fc9347b5ac92d1aa38d440f, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'Chest'\n\tTransform 'Spine'\n\tTransform
+        'UpperChest'\n\tTransform 'Head'\n\tTransform 'Hips'\n\tTransform 'Right_ThumbIntermediate'\n\tTransform
+        'Left_IndexProximal'\n\tTransform 'Right_IndexProximal'\n\tTransform 'Right_MiddleIntermediate'\n\tTransform
+        'Left_LowerArm'\n\tand more ...\n\tFrom animation clip 'Shoot_Shotgun F Recoil'\n\tFrom
+        animation clip 'Shoot_Reload'\n\tFrom animation clip 'Shoot_Shotgun'\n\tFrom
+        animation clip 'Shoot_Shotgun'\n\tFrom animation clip 'Run_N'\n\tFrom animation
+        clip 'Run_N_Land'"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
