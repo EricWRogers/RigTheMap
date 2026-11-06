@@ -338,23 +338,9 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     if(weaponData.IsShotgun && UnityEngine.Physics.Raycast(eyePosition, aimDirection, out RaycastHit shotgunGroundHit, weaponData.ShotgunLaunchRange, LayerMask.GetMask("Ground", "Default"), QueryTriggerInteraction.Ignore)&& shotgunGroundHit.normal.y > 0.5f)
                                         {
                                             float launchForce = weaponData.ShotgunLaunchForce;
-                                            predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = launchForce;
-                                            if (predictedPlayer.ValueRO.ControllerState.MovementType ==
-                                                FirstPersonController.MovementType.Standing)
-                                            {
-                                                predictedPlayer.ValueRW.ControllerState.MovementType =
-                                                    FirstPersonController.MovementType.Jumping;
-                                                predictedPlayer.ValueRW.ControllerState.PreviousMovementType =
-                                                    FirstPersonController.MovementType.Standing;
-                                                predictedPlayer.ValueRW.ControllerState.Jump = true;
-                                                predictedPlayer.ValueRW.ControllerState.Fall = false;
-                                                predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
-                                                predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                                predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
-                                                predictedPlayer.ValueRW.ControllerState.FallTimeoutDelta = 0f;
-                                                predictedPlayer.ValueRW.ControllerState.LandingTimeRemaining = 0f;
-                                                predictedPlayer.ValueRW.ControllerState.Land = false;
-                                            }
+                                            float3 recoilDirection = -math.normalizesafe((float3)aimDirection);
+                                            predictedPlayer.ValueRW.AccumulatedMovement +=
+                                                new float3(0f, recoilDirection.y * launchForce * accumulateDT, 0f);
                                             Debug.Log("[Shotgun Client] Ground launch predicted.");
                                         }
                                     Vector3 endPoint;
