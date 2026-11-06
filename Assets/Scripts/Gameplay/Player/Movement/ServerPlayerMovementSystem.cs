@@ -1027,7 +1027,7 @@ namespace Unity.MP_FPS
                                 case WeaponType.Hitscan:
                                     {
 
-                                        if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
+                                        if (weaponData.IsShotgun)
                                         {
                                             float currentTime = UnityEngine.Time.time;
                                             
@@ -1044,13 +1044,13 @@ namespace Unity.MP_FPS
                                                 if (recoilDirection.y > 0f)
                                                 {
                                                     predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = recoilDirection.y * launchForce;
-                                                    // if(predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Jumping && predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Falling)
-                                                    // {
-                                                    //     predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
-                                                    //     predictedPlayer.ValueRW.ControllerState.Jump = true;
-                                                    //     predictedPlayer.ValueRW.ControllerState.Fall = false;
-                                                    //     predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                                    // }
+                                                    predictedPlayer.ValueRW.ControllerState.MovementType =
+                                                        FirstPersonController.MovementType.Jumping;
+                                                    predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                                    predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                                    predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
+                                                    predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                                    predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
                                                 
                                                 
                                             }
@@ -1109,7 +1109,7 @@ namespace Unity.MP_FPS
                                                                 continue;
                                                             }
                                                             //shotgun knockback against other players
-                                                            if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
+                                                            if (weaponData.IsShotgun)
                                                             {
                                                                 float knockbackForce = 30f;
                                                                 float3 knockbackDirection = targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition - predictedPlayer.ValueRO.ControllerState.CurrentPosition;
@@ -1249,7 +1249,7 @@ namespace Unity.MP_FPS
                                                             continue;
                                                         }
                                                         //shotgun knockback against other players
-                                                        if (predictedPlayer.ValueRO.EquippedWeaponID == 3)
+                                                        if (weaponData.IsShotgun)
                                                         {
                                                             float knockbackForce = 30f;
                                                             float3 knockbackDirection = targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition - predictedPlayer.ValueRO.ControllerState.CurrentPosition;
