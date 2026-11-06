@@ -346,6 +346,9 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                             predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
                                             predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
                                             predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
+                                            predictedPlayer.ValueRW.ControllerState.FallTimeoutDelta = 0f;
+                                            predictedPlayer.ValueRW.ControllerState.LandingTimeRemaining = 0f;
+                                            predictedPlayer.ValueRW.ControllerState.Land = false;
                                             Debug.Log("[Shotgun Client] Ground launch predicted.");
                                         }
                                     Vector3 endPoint;

@@ -1046,11 +1046,16 @@ namespace Unity.MP_FPS
                                                     predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = recoilDirection.y * launchForce;
                                                     predictedPlayer.ValueRW.ControllerState.MovementType =
                                                         FirstPersonController.MovementType.Jumping;
+                                                    predictedPlayer.ValueRW.ControllerState.PreviousMovementType =
+                                                        predictedPlayer.ValueRO.ControllerState.MovementType;
                                                     predictedPlayer.ValueRW.ControllerState.Jump = true;
                                                     predictedPlayer.ValueRW.ControllerState.Fall = false;
                                                     predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
                                                     predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
                                                     predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
+                                                    predictedPlayer.ValueRW.ControllerState.FallTimeoutDelta = 0f;
+                                                    predictedPlayer.ValueRW.ControllerState.LandingTimeRemaining = 0f;
+                                                    predictedPlayer.ValueRW.ControllerState.Land = false;
                                                 
                                                 
                                             }
