@@ -339,16 +339,22 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         {
                                             float launchForce = weaponData.ShotgunLaunchForce;
                                             predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = launchForce;
-                                            predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
-                                            predictedPlayer.ValueRW.ControllerState.PreviousMovementType = predictedPlayer.ValueRO.ControllerState.MovementType;
-                                            predictedPlayer.ValueRW.ControllerState.Jump = true;
-                                            predictedPlayer.ValueRW.ControllerState.Fall = false;
-                                            predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
-                                            predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                            predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
-                                            predictedPlayer.ValueRW.ControllerState.FallTimeoutDelta = 0f;
-                                            predictedPlayer.ValueRW.ControllerState.LandingTimeRemaining = 0f;
-                                            predictedPlayer.ValueRW.ControllerState.Land = false;
+                                            if (predictedPlayer.ValueRO.ControllerState.MovementType ==
+                                                FirstPersonController.MovementType.Standing)
+                                            {
+                                                predictedPlayer.ValueRW.ControllerState.MovementType =
+                                                    FirstPersonController.MovementType.Jumping;
+                                                predictedPlayer.ValueRW.ControllerState.PreviousMovementType =
+                                                    FirstPersonController.MovementType.Standing;
+                                                predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                                predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                                predictedPlayer.ValueRW.ControllerState.IsGrounded = false;
+                                                predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                                predictedPlayer.ValueRW.ControllerState.JumpTimeoutDelta = 0f;
+                                                predictedPlayer.ValueRW.ControllerState.FallTimeoutDelta = 0f;
+                                                predictedPlayer.ValueRW.ControllerState.LandingTimeRemaining = 0f;
+                                                predictedPlayer.ValueRW.ControllerState.Land = false;
+                                            }
                                             Debug.Log("[Shotgun Client] Ground launch predicted.");
                                         }
                                     Vector3 endPoint;
