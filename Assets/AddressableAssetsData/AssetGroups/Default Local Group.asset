@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c413348962fcd0d45a2ef85f060abf14
+    m_Address: Assets/Prefabs/ActorGhosts/HitCube.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c93af8b935d1da7419ae22251a33748c
     m_Address: Assets/Prefabs/Effects/PlasmaHit.prefab
     m_ReadOnly: 0
