@@ -1044,13 +1044,13 @@ namespace Unity.MP_FPS
                                                 if (recoilDirection.y > 0f)
                                                 {
                                                     predictedPlayer.ValueRW.ControllerState.JumpFallSpeed = recoilDirection.y * launchForce;
-                                                    if(predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Jumping && predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Falling)
-                                                    {
-                                                        predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
-                                                        predictedPlayer.ValueRW.ControllerState.Jump = true;
-                                                        predictedPlayer.ValueRW.ControllerState.Fall = false;
-                                                        predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
-                                                    }
+                                                    // if(predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Jumping && predictedPlayer.ValueRO.ControllerState.MovementType != FirstPersonController.MovementType.Falling)
+                                                    // {
+                                                    //     predictedPlayer.ValueRW.ControllerState.MovementType = FirstPersonController.MovementType.Jumping;
+                                                    //     predictedPlayer.ValueRW.ControllerState.Jump = true;
+                                                    //     predictedPlayer.ValueRW.ControllerState.Fall = false;
+                                                    //     predictedPlayer.ValueRW.ControllerState.TimeInState = 0f;
+                                                    // }
                                                 
                                                 
                                             }
