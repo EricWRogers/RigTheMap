@@ -488,6 +488,12 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                         dt,
                         performPhysicsCheck: false);
                 }
+
+                if (predictedPlayer.ValueRW.ControllerState.LandTriggered)
+                {
+                    predictedPlayer.ValueRW.LastLandTick = tick;
+                    predictedPlayer.ValueRW.ControllerState.LandTriggered = false;
+                }
             }
 
             if (isFinalPredictionTick)

@@ -1744,6 +1744,12 @@ namespace Unity.MP_FPS
                     m_HammerLaunchers.Remove(entity);
                 }
 
+                if (predictedPlayer.ValueRW.ControllerState.LandTriggered)
+                {
+                    predictedPlayer.ValueRW.LastLandTick = serverTick;
+                    predictedPlayer.ValueRW.ControllerState.LandTriggered = false;
+                }
+
                 predictedPlayer.ValueRW.AccumulatedMovement =
                     float3.zero;
             }
