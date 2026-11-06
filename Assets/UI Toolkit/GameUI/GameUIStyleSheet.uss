@@ -3,11 +3,11 @@
     --color-default: rgb(250, 250, 250);
     --color-canvas: rgb(21, 22, 28);
     --color-transparent: rgba(0, 0, 0, 0);
-    --color-primary: rgb(47, 112, 165);
-    --color-border: rgb(131, 180, 222);
-    --color-active: rgb(56, 101, 153);
+    --color-primary: rgb(215, 146, 47);
+    --color-border: rgb(215, 146, 47);
+    --color-active: rgb(174, 117, 38);
     --color-inactive: rgb(171, 171, 171);
-    --color-hovered: rgb(24, 63, 103);
+    --color-hovered: rgb(174, 117, 38);
     --color-border-focused: rgb(254, 203, 47);
     --color-input-background: rgb(45, 81, 123);
     --color-progress-bar: rgb(186, 223, 255);
@@ -327,7 +327,7 @@ ProgressBar .unity-progress-bar__progress {
 .instructions-title {
     font-size: 30px;
     -unity-font-style: bold;
-    color: rgb(131, 180, 222);
+    color: rgb(215, 146, 47);
     margin-bottom: 22px;
     white-space: normal;
 }

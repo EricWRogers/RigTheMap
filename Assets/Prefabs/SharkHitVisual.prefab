@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8771091787928289351, guid: 4c3e1491a0946bc42a3619de76cb7cda, type: 3}
       propertyPath: m_Name
-      value: shark2f 1
+      value: SharkHitVisual
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: DwightDiDog_openPBR_shader2
-    second: {fileID: 2100000, guid: 33af9fcf9a9202d41b22d2dfe3db0c92, type: 2}
+    second: {fileID: 2100000, guid: 7a4158c76b55aff419fc57a4b554a456, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule

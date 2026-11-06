@@ -604,8 +604,8 @@ public class FirstPersonController : MonoBehaviour
         }
         #endif
 
-        bool wasFalling = state.MovementType == MovementType.Falling;
-        bool isLanded = isGrounded && wasFalling;
+        bool wasAirborne = state.MovementType != MovementType.Standing;
+        bool isLanded = isGrounded && wasAirborne && state.JumpFallSpeed <= 0f;
 
         bool landedFromBounce = isLanded && state.isBounce;
 
