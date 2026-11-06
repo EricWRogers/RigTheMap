@@ -11,6 +11,7 @@ using Unity.CharacterController;
 using Unity.XR.OpenVR;
 using UnityEngine.SocialPlatforms.Impl;
 using Gameplay.Leaderboard;
+using System.Collections.Generic;
 
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
 [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
@@ -35,6 +36,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
     }
     
     private NativeList<ClientCommandInput> m_ProcessedClientInputCommands;
+    private readonly HashSet<uint> m_playedPlacementSfxTicks = new HashSet<uint>();
 
     protected override void OnCreate()
     {
@@ -312,6 +314,10 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                         // {
                                         //     placementRotation = Quaternion.Euler(90f, input.PlacementRotationDegrees, 0f);
                                         // }
+                                         if(weaponData.PlacementSfx != null && m_playedPlacementSfxTicks.Add(commandInput.Tick.TickIndexForValidTick))
+                                        {
+                                            GameManager.Instance.SoundSystem.CreateEmitter(weaponData.PlacementSfx, placementPos);
+                                        }
 
                                         Debug.DrawLine(eyePosition, placementPos, Color.green, 0.5f);
 
@@ -326,7 +332,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     : playerGhost.CameraTarget != null
                                         ? playerGhost.CameraTarget
                                         : playerGhost.transform;
-                                var shotOriginPosition = shotOrigin.position;
+                                var shotOriginPosition = shotOrigin.position + shotOrigin.forward * 0.1f;
+                                
 
                                 if (VisualEffectManager.ClientInstance != null)
                                 {

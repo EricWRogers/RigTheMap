@@ -16,10 +16,10 @@ MonoBehaviour:
   UnityAudioMixer: {fileID: 24100000, guid: fddb343a82968524eb1e9a6f65433d7e, type: 2}
   MixerGroup: 1
   BasePitchInCents: 0
-  VolumeScale: 1
+  VolumeScale: 0.7
   BaseLowPassCutoff: 0
-  PlaybackType: 2
-  PlayCount: 2
+  PlaybackType: 1
+  PlayCount: 1
   Clips:
   - {fileID: 8300000, guid: 572e817dadfb9254993d9d5fc1410444, type: 3}
   RepeatInfo:
@@ -38,8 +38,8 @@ MonoBehaviour:
     PitchMin: 0
     PitchMax: 400
   DistanceInfo:
-    VolumeDistMin: 10
-    VolumeDistMax: 30
+    VolumeDistMin: 4
+    VolumeDistMax: 15
     SpatialBlend: 1
     DopplerScale: 0
     VolumeRolloffMode: 1

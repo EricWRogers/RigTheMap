@@ -193,5 +193,6 @@ public class PlacementPreviewController : MonoBehaviour
         }
         else
             previewInstance.SetActive(false);
+    
     }
 }

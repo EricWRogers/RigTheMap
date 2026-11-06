@@ -76,6 +76,8 @@ namespace Unity.MP_FPS
 
         public SoundDef WeaponFireSfx;
         public SoundDef WeaponReloadSfx;
+        
+        public SoundDef PlacementSfx;
 
         public ProjectileBehavior Behavior = ProjectileBehavior.DirectDamage;
         public float AoeRadius = 5f;

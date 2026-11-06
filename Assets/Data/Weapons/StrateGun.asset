@@ -190,6 +190,7 @@ MonoBehaviour:
         w: 0
   WeaponFireSfx: {fileID: 11400000, guid: fc81bfa0b72614d498bbd910628ff6ef, type: 2}
   WeaponReloadSfx: {fileID: 11400000, guid: e371920830b214046bde8a79c9798829, type: 2}
+  PlacementSfx: {fileID: 11400000, guid: 4b1061f84c7f3b94a9198847bede4d6e, type: 2}
   Behavior: 0
   AoeRadius: 0
   ProjectileSpeed: 30
