@@ -468,7 +468,7 @@ public class FirstPersonController : MonoBehaviour
             var currentPos = GetGroundRaycastOrigin(state, m_Controller);
             // set sphere position, with offset
             var controllerCentre = transform.rotation * ControllerOffset;
-            var testRadius = m_Controller.radius;
+            var testRadius = math.min(m_Controller.radius, 0.1f);
             var testStart = new Vector3(currentPos.x + controllerCentre.x, currentPos.y + +controllerCentre.y,
                 currentPos.z + controllerCentre.z);
             // float extraDistance = 0f;
