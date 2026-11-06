@@ -48,23 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.Leaderboard.LeaderboardManager
   roundSkipped: 0
-  m_HealthPackPrefab:
-    <GhostPrefab>k__BackingField:
-      m_AssetGUID: dfc1bf0811fd7564cb8189b2d277c092
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    <AssetName>k__BackingField: 
-    m_GhostGuid:
-      Value:
-        x: 2163940605
-        y: 1180163857
-        z: 731388092
-        w: 688682797
-  m_HealthPackSpawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
+  m_MatchVictorySfx: {fileID: 11400000, guid: 39cda364b3aa54f46b2f1221ce31f16b, type: 2}
 --- !u!114 &-6585310401842929032
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,7 @@ namespace Gameplay.Leaderboard
         public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
+        [SerializeField] private SoundDef m_MatchVictorySfx; 
 
         public enum RoundPhase
         {
@@ -624,6 +625,7 @@ namespace Gameplay.Leaderboard
             while (GhostGameObject.ConsumeRPC(
                        out RoundPhaseChangedRpc phaseRpc))
             {
+                // var previousPhase = _roundPhase;
                 _roundPhase = phaseRpc.IsMatchOver
                     ? RoundPhase.MatchOver
                     : phaseRpc.IsBuildMode
@@ -634,8 +636,15 @@ namespace Gameplay.Leaderboard
 
                 if (phaseRpc.WinningTeamId >= 0)
                     LastWinningTeamId = phaseRpc.WinningTeamId;
+                    
+                // if(previousPhase != RoundPhase.MatchOver && phaseRpc.IsMatchOver && phaseRpc.WinningTeamId >= 0 
+                //     && m_MatchVictorySfx != null && GameManager.Instance != null && GameManager.Instance.SoundSystem != null && MainCameraSingleton.Instance != null)
+                // {
+                //     GameManager.Instance.SoundSystem.CreateEmitter(m_MatchVictorySfx, MainCameraSingleton.Instance.transform);
+                // }
                 if(phaseRpc.IsMatchOver)
                 {
+                    
                     Debug.Log($"[Client match test]Match over received!" + $"WinningTeamId={phaseRpc.WinningTeamId}," + $"CurrentPhase={_roundPhase}");
                 }
                 BuildModeChanged?.Invoke(
