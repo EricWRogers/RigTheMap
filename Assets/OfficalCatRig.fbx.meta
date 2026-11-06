@@ -3,7 +3,22 @@ guid: 378ec424989d62e4bb84c1bd584e8cb5
 ModelImporter:
   serializedVersion: 24300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CatAccessorieMAT
+    second: {fileID: 2100000, guid: 14b2cdf0e085bd944bb7e53ffdca21bb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ClaudetteMAT
+    second: {fileID: 2100000, guid: 75c645137e4038d4f8857e19a0d9d71c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MP_handMAT
+    second: {fileID: 2100000, guid: 2e6efa576aff45442947cd0f980ccad0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
