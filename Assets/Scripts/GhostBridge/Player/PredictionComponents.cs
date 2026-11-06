@@ -6,6 +6,7 @@ using Unity.MP_FPS;
 
 using static FirstPersonController;
 using System.Numerics;
+using UnityEngine;
 
 public struct PredictedPlayerGhostState : IPredictedState
 {
@@ -41,7 +42,6 @@ public struct PredictedPlayerGhost : IComponentData
     public float RotationError;
     public float RotationErrorTimeout;
     public bool RequestApplyMovement;
-
     public float DisabledPredictionLerpFactor;
 
     public uint ClientPredictionEnabledTick;
@@ -80,7 +80,6 @@ public struct PredictedPlayerGhost : IComponentData
     [GhostField] public int BuildItem1;
     [GhostField] public int BuildItem2;
     [GhostField] public int BuildPlacementsUsed;
-
     [GhostField] public byte BuildItemsUsedMask;
     [GhostField] public int LivesRemaining;
 

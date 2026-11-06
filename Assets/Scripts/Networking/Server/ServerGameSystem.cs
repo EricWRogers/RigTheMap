@@ -317,9 +317,10 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
-            uint weaponId = isBuildMode
-                ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
+            // uint weaponId = isBuildMode
+            //     ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
+            //     : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
+            uint weaponId = 0;
 
             characterIndex = (int)weaponId;
 

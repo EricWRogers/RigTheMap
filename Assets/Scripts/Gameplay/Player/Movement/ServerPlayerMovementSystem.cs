@@ -1440,6 +1440,9 @@ namespace Unity.MP_FPS
                                             }
                                         }
 
+                                        // Hit Cube hopefully
+                                        // ghostLink.LinkedInstance.GetComponent<Transform>().GetChild(0).GetChild(1).gameObject.SetActive(true);
+
                                         if (meleeHitCollider == null &&
                                             UnityEngine.Physics.BoxCast(
                                                 eyePosition,
