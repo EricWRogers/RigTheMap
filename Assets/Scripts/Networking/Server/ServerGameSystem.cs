@@ -319,7 +319,7 @@ namespace Unity.MP_FPS
 
             uint weaponId = isBuildMode
                 ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
-                : 3;//(uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
+                : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
 
             characterIndex = (int)weaponId;
 
