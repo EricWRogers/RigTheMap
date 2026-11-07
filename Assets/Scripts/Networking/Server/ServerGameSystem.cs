@@ -288,6 +288,16 @@ namespace Unity.MP_FPS
             LeaderboardManager.Instance.RemovePlayer(networkId);
         }
 
+        private static Entity GetTeamPrefab(
+            int teamId,
+            Entity teamBPrefab,
+            Entity teamGPrefab,
+            Entity fallbackPrefab)
+        {
+            var teamPrefab = teamId == 0 ? teamBPrefab : teamGPrefab;
+            return teamPrefab != Entity.Null ? teamPrefab : fallbackPrefab;
+        }
+
         private void SpawnPlayerCharacter(
             ref SystemState state,
             EntityCommandBuffer ecb,
@@ -317,24 +327,34 @@ namespace Unity.MP_FPS
                                LeaderboardManager.Instance.CurrentPhase ==
                                LeaderboardManager.RoundPhase.BuildMode;
 
+            // Weapon data here
             uint weaponId = isBuildMode
                 ? (uint)(WeaponManager.Instance.WeaponRegistry.Weapons.Count - 1)
                 : (uint)UnityEngine.Random.Range(0, WeaponManager.Instance.WeaponRegistry.Weapons.Count - 2);
 
             characterIndex = (int)weaponId;
 
-            // Instantiate the player entity for the current round phase.
-            var playerEntityPrefab = isBuildMode &&
-                                     playerEntityPrefabs.PlayerBuildEntityPrefab != Entity.Null
-                ? playerEntityPrefabs.PlayerBuildEntityPrefab
+            // Player/weapon model here
+            var playerEntityPrefab = isBuildMode
+                ? GetTeamPrefab(
+                    teamId,
+                    playerEntityPrefabs.PlayerBuildEntityPrefabB,
+                    playerEntityPrefabs.PlayerBuildEntityPrefabG,
+                    playerEntityPrefabs.PlayerBuildEntityPrefab)
                 : characterIndex switch
             {
-                0 => playerEntityPrefabs.PlayerRifleEntityPrefab, // rifle
-                1 => playerEntityPrefabs.PlayerSharkEntityPrefab, // shark
-                2 => playerEntityPrefabs.PlayerHammerEntityPrefab, // hammer
-                //3 => playerEntityPrefabs.PlayerSixShooterEntityPrefab, // six shooter
-                3 => playerEntityPrefabs.PlayerShotgunEntityPrefab, // shotgun
-                _ => playerEntityPrefabs.PlayerRifleEntityPrefab // unnasigned
+                0 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefabB,
+                    playerEntityPrefabs.PlayerRifleEntityPrefabG, playerEntityPrefabs.PlayerRifleEntityPrefab),
+                1 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSharkEntityPrefabB,
+                    playerEntityPrefabs.PlayerSharkEntityPrefabG, playerEntityPrefabs.PlayerSharkEntityPrefab),
+                2 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerHammerEntityPrefabB,
+                    playerEntityPrefabs.PlayerHammerEntityPrefabG, playerEntityPrefabs.PlayerHammerEntityPrefab),
+                3 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerShotgunEntityPrefabB,
+                    playerEntityPrefabs.PlayerShotgunEntityPrefabG, playerEntityPrefabs.PlayerShotgunEntityPrefab),
+                4 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSixShooterEntityPrefabB,
+                    playerEntityPrefabs.PlayerSixShooterEntityPrefabG, playerEntityPrefabs.PlayerSixShooterEntityPrefab),
+                _ => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefabB,
+                    playerEntityPrefabs.PlayerRifleEntityPrefabG, playerEntityPrefabs.PlayerRifleEntityPrefab)
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
             Debug.LogWarning(

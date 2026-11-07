@@ -166,11 +166,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: GameObjectBridge::PlayerEntityPrefabsAuthoring
   <ClientInputEntityPrefab>k__BackingField: {fileID: -872636517575754594, guid: a5f7e89c673676445a6ea2905e239be0, type: 3}
   <PlayerRifleEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: d66bf1c0cf4a94990815a86b3d55b686, type: 3}
+  <PlayerRifleEntityPrefabB>k__BackingField: {fileID: 0}
+  <PlayerRifleEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerShotgunEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 4b8a5f6ec4d23ff4895b80ffbb3f2117, type: 3}
+  <PlayerShotgunEntityPrefabB>k__BackingField: {fileID: 0}
+  <PlayerShotgunEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerSharkEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: abdf45bd23d9a4c458ba972b8772a0d9, type: 3}
+  <PlayerSharkEntityPrefabB>k__BackingField: {fileID: 5939953900665156735, guid: b9fd7ce51a77b5f49b057d8e29034e61, type: 3}
+  <PlayerSharkEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerHammerEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 3bdee9dcdb7731f4ea3bd5754b5ea8f8, type: 3}
+  <PlayerHammerEntityPrefabB>k__BackingField: {fileID: 0}
+  <PlayerHammerEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerSixShooterEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: caf082d49a038aa4ca09ef35f00f08b5, type: 3}
+  <PlayerSixShooterEntityPrefabB>k__BackingField: {fileID: 0}
+  <PlayerSixShooterEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerBuildEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 5edb95f5485955843a2edf75c2b7d879, type: 3}
+  <PlayerBuildEntityPrefabB>k__BackingField: {fileID: 5939953900665156735, guid: 9f0b43417a2838d4eaac42942c0fdb15, type: 3}
+  <PlayerBuildEntityPrefabG>k__BackingField: {fileID: 0}
 --- !u!114 &1105370251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,6 +327,16 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
   - m_AssetGUID: 4b8a5f6ec4d23ff4895b80ffbb3f2117
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 9f0b43417a2838d4eaac42942c0fdb15
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: b9fd7ce51a77b5f49b057d8e29034e61
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
