@@ -75,6 +75,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f0b43417a2838d4eaac42942c0fdb15
+    m_Address: Assets/Prefabs/PlayerGhosts/Cat_Phone.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: abafff61a81489c498a20e4811aeae1e
     m_Address: Assets/Prefabs/ActorGhosts/TrenchBarricade.prefab
     m_ReadOnly: 0
@@ -82,6 +87,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: abdf45bd23d9a4c458ba972b8772a0d9
     m_Address: Assets/Prefabs/PlayerGhosts/ArmaturePlayer_Shark.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9fd7ce51a77b5f49b057d8e29034e61
+    m_Address: Assets/Prefabs/PlayerGhosts/Cat_Shark.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c37231d0d130fab4f8fa546a1aa3b695
+    m_Address: Assets/Prefabs/PlayerGhosts/Dog_Shotgun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

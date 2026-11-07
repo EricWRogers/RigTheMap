@@ -20,8 +20,7 @@ MonoBehaviour:
   BaseLowPassCutoff: 0
   PlaybackType: 1
   PlayCount: 1
-  Clips:
-  - {fileID: 8300000, guid: 572e817dadfb9254993d9d5fc1410444, type: 3}
+  Clips: []
   RepeatInfo:
     LoopCount: 1
     RepeatMin: 1
