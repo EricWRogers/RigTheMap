@@ -9,12 +9,11 @@ public class SpectatorClientInputAuthoring : PredictedClientInputAuthoring
     
 }
 
-public class SpectatorInputBaker : Baker<PredictedClientInputAuthoring>
+public class SpectatorInputBaker : Baker<SpectatorClientInputAuthoring>
 {
-    public override void Bake(PredictedClientInputAuthoring authoring)
+    public override void Bake(SpectatorClientInputAuthoring authoring)
     {
-        var entity = GetEntity(TransformUsageFlags.None);
-        // AddComponent<PredictedClientInput>(entity);
+        Entity entity = GetEntity(TransformUsageFlags.None);
     }
 }
 

@@ -219,6 +219,7 @@ MonoBehaviour:
   m_Animator3P: {fileID: 4970021270097425092}
   m_SharkHitVisual: {fileID: 0}
   m_SharkHitVisualDuration: 3
+  m_SpectatorCameraPrefab: {fileID: 2541900851493749638, guid: 514687c03aaf4eb4d98536a4075f309b, type: 3}
   <MainCameraPrefab>k__BackingField: {fileID: 8944336655422409498, guid: f6d148d888ffbf54b9afe9936dfaec1f, type: 3}
 --- !u!114 &1290565221828185357
 MonoBehaviour:

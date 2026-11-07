@@ -445,8 +445,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives
-                    // spectator = joinedClient.spectator
+                    lives = joinedClient.lives,
+                    spectator = joinedClient.spectator
                 });
             }
 
@@ -489,8 +489,43 @@ namespace Unity.MP_FPS
 
                     if(!isBuildMode)
                     { // I don't think this works right now
-                        joinedClient.lives--;
+                        joinedClient.lives = Mathf.Max(0, joinedClient.lives - 1);
+                        joinedClient.spectator = joinedClient.lives <= 0;
+
                         AddDeathToLeaderboard(networkId);
+
+                        playerGhost.ValueRW.LivesRemaining = joinedClient.lives;
+
+                        state.EntityManager.SetComponentData(connectionEntity, joinedClient);
+
+                        Debug.LogWarning(
+                            $"[Respawn] Lives updated: playerNetworkId={networkId}, " +
+                            $"livesAfter={joinedClient.lives}, connection={connectionEntity}.");
+
+                        if (LeaderboardManager.Instance != null)
+                            LeaderboardManager.Instance.CheckForWinningTeam();
+
+                        // Add a respawn timer to the connection
+                        if (joinedClient.lives > 0 || isBuildMode)
+                        {
+                            if (!SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
+                            {
+                                ecb.AddComponent(connectionEntity, new PendingRespawn
+                                {
+                                    RespawnTimer = 5f
+                                });
+                            }
+                        }
+                        else
+                        {
+                            joinedClient.spectator = true;
+                            state.EntityManager.SetComponentData(connectionEntity, joinedClient);
+
+                            if (SystemAPI.HasComponent<PendingRespawn>(connectionEntity))
+                            {
+                                ecb.RemoveComponent<PendingRespawn>(connectionEntity);
+                            }
+                        }
                     }
                     else
                         joinedClient.lives = GameManager.PlayerLives;

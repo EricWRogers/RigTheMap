@@ -40,6 +40,11 @@ namespace Unity.MP_FPS
         [SerializeField] private GameObject m_SharkHitVisual;
         [SerializeField] private float m_SharkHitVisualDuration = 3f;
 
+        [Header("Spectator Setup")]
+        [SerializeField] private GameObject m_SpectatorCameraPrefab; // Prefab with a Free-Fly or Orbit camera script
+        private GameObject m_ActiveSpectatorCameraInstance;
+        private bool m_IsSpectating = false;
+
         private uint m_LastProcessedSharkHitTick;
         private float m_SharkHitVisualTimer;
         private bool m_WasAlive;
@@ -232,6 +237,13 @@ namespace Unity.MP_FPS
         {
             if(Role == MultiplayerRole.ClientOwned && m_PlayerCamera != null && m_PlayerCamera.TryGetComponent<AudioListener>(out var deathAudioListener))
             {
+                var playerData = ReadGhostComponentData<PredictedPlayerGhost>();
+
+                if (playerData.LivesRemaining <= 0)
+                {
+                    StartSpectating();
+                }
+
                 m_PlayerCamera.transform.SetParent(null, true);
                 m_PlayerCamera.enabled = false;
                 deathAudioListener.enabled = true;
@@ -263,6 +275,8 @@ namespace Unity.MP_FPS
 
         private void CreateClientCamera()
         {
+            StopSpectating();
+
             var existingCamera = MainCameraSingleton.Instance;
             if (existingCamera != null)
             {
@@ -380,6 +394,129 @@ namespace Unity.MP_FPS
             }
 
             return false;
+        }
+
+        private void StartSpectating()
+        {
+            if (m_IsSpectating || m_SpectatorCameraPrefab == null)
+            {
+                return;
+            }
+
+            m_IsSpectating = true;
+
+            if (m_PlayerCamera != null)
+            {
+                m_PlayerCamera.enabled = false;
+
+                if (m_PlayerCamera.TryGetComponent<AudioListener>(out var playerListener))
+                {
+                    playerListener.enabled = false;
+                }
+            }
+
+            m_ActiveSpectatorCameraInstance = Instantiate(m_SpectatorCameraPrefab);
+            m_ActiveSpectatorCameraInstance.name = $"SpectatorCamera_{PlayerIndex}";
+
+            Camera spectatorCamera =
+                m_ActiveSpectatorCameraInstance.GetComponentInChildren<Camera>(true);
+
+            if (spectatorCamera == null)
+            {
+                Debug.LogError("The spectator camera prefab must contain a Camera component.");
+                return;
+            }
+
+            spectatorCamera.enabled = true;
+
+            AudioListener spectatorListener =
+                m_ActiveSpectatorCameraInstance.GetComponentInChildren<AudioListener>(true);
+
+            if (spectatorListener != null)
+            {
+                spectatorListener.enabled = true;
+                GameManager.Instance.SoundSystem.SetListenerTransform(
+                    spectatorListener.transform);
+            }
+
+            SpectatorCameraController controller =
+                m_ActiveSpectatorCameraInstance.GetComponent<SpectatorCameraController>();
+
+            if (controller == null)
+            {
+                Debug.LogError(
+                    "The spectator camera prefab must contain SpectatorCameraController.");
+                return;
+            }
+
+            PlayerGhost target = FindFirstSpectatablePlayer();
+
+            if (target != null)
+            {
+                controller.SetTarget(target.transform);
+            }
+
+            Utils.SetCursorVisible(false);
+        }
+
+        private PlayerGhost FindFirstSpectatablePlayer()
+        {
+            if (!PlayerGhostManager.TryGetInstanceByRole(
+                    MultiplayerRole.ClientAll,
+                    out var playerManager))
+            {
+                return null;
+            }
+
+            var players = playerManager.GetPlayersByRole(MultiplayerRole.ClientAll);
+
+            if (players == null)
+            {
+                return null;
+            }
+
+            foreach (PlayerGhost player in players)
+            {
+                if (player == null || player == this)
+                {
+                    continue;
+                }
+
+                if (player.ReadGhostComponentData<PredictedPlayerGhost>().CurrentHealth > 0)
+                {
+                    return player;
+                }
+            }
+
+            return null;
+        }
+
+        private void StopSpectating()
+        {
+            if (!m_IsSpectating)
+            {
+                return;
+            }
+
+            m_IsSpectating = false;
+
+            if (m_ActiveSpectatorCameraInstance != null)
+            {
+                Destroy(m_ActiveSpectatorCameraInstance);
+                m_ActiveSpectatorCameraInstance = null;
+            }
+
+            if (m_PlayerCamera != null)
+            {
+                m_PlayerCamera.enabled = true;
+
+                if (m_PlayerCamera.TryGetComponent<AudioListener>(out var playerListener))
+                {
+                    playerListener.enabled = true;
+                    GameManager.Instance.SoundSystem.SetListenerTransform(
+                        playerListener.transform);
+                }
+            }
         }
     }
 }

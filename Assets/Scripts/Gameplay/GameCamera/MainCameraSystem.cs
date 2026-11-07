@@ -17,14 +17,16 @@ namespace Unity.MP_FPS
 
         protected override void OnUpdate()
         {
-            if (MainCameraSingleton.Instance != null)
+            if (MainCameraSingleton.Instance != null && MainCameraSingleton.Instance.enabled)
             {
                 EntityManager.CompleteAllTrackedJobs();
+
                 Entity mainEntityCameraEntity = SystemAPI.GetSingletonEntity<MainCamera>();
                 MainCamera mainCamera = SystemAPI.GetSingleton<MainCamera>();
                 LocalToWorld targetLocalToWorld = SystemAPI.GetComponent<LocalToWorld>(mainEntityCameraEntity);
-                MainCameraSingleton.Instance.transform.SetPositionAndRotation(targetLocalToWorld.Position,targetLocalToWorld.Rotation);
-                MainCameraSingleton.Instance.fieldOfView = mainCamera.CurrentFov = mainCamera.BaseFov;
+
+                MainCameraSingleton.Instance.transform.SetPositionAndRotation( targetLocalToWorld.Position, targetLocalToWorld.Rotation);
+                MainCameraSingleton.Instance.fieldOfView = mainCamera.BaseFov;
             }
         }
     }
