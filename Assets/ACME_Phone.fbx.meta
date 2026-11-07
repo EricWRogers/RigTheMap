@@ -7,6 +7,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Battery_Surface
+    second: {fileID: 2100000, guid: 03fab91d1ded5d043be869233a1e2255, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Phone_Surface
+    second: {fileID: 2100000, guid: 33e99b826cb31ff4fa6c700555b9fedf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: openPBR_shader1
     second: {fileID: 2100000, guid: 33e99b826cb31ff4fa6c700555b9fedf, type: 2}
   materials:
