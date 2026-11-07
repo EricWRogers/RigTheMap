@@ -12,9 +12,9 @@
                 <ui:VisualElement name="AudioSettingsPanel" picking-mode="Ignore" style="display: none;">
                     <ui:Label text="Audio Settings" class="instructions-title"/>
                     <ui:Slider label="Master" name="MasterVolumeSlider" low-value="0" high-value="1" tabindex="0"/>
-                    <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1"/>
+                    <!-- <ui:Slider label="Music" name="MusicVolumeSlider" low-value="0" high-value="1" tabindex="1"/> -->
                     <ui:Slider label="SFX" name="SFXVolumeSlider" low-value="0" high-value="1" tabindex="2"/>
-                    <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3"/>
+                    <!-- <ui:Slider label="Menu" name="MenuVolumeSlider" low-value="0" high-value="1" tabindex="3"/> -->
                     <ui:Button text="Back" name="AudioSettingsBackButton" tabindex="4"/>
                 </ui:VisualElement>
             </ui:VisualElement>
