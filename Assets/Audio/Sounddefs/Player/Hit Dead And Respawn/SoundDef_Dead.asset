@@ -18,9 +18,11 @@ MonoBehaviour:
   BasePitchInCents: 0
   VolumeScale: 0.7
   BaseLowPassCutoff: 0
-  PlaybackType: 1
+  PlaybackType: 0
   PlayCount: 1
-  Clips: []
+  Clips:
+  - {fileID: 8300000, guid: e6cd94af7ded1e44ca360858a2a6f39c, type: 3}
+  - {fileID: 8300000, guid: be4d20f004ce9884b9d94be79333c405, type: 3}
   RepeatInfo:
     LoopCount: 1
     RepeatMin: 1

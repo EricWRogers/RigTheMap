@@ -192,10 +192,16 @@ namespace Unity.MP_FPS
 
         void OnGameSettingsPropertyChanged(object sender, BindablePropertyChangedEventArgs evt)
         {
-            if (evt.propertyName == GameSettings.PauseMenuStylePropertyName &&
-                GameSettings.Instance.IsPauseMenuOpen)
+            if (evt.propertyName != GameSettings.PauseMenuStylePropertyName)
+                return;
+            
+            bool isPauseMenuOpen = GameSettings.Instance.IsPauseMenuOpen;
+            SetGameplayInputEnabled(!isPauseMenuOpen);
+
+            if(isPauseMenuOpen)
             {
                 RefreshAudioSettingsSliders();
+                ResetAudioSettingsPanel();
             }
         }
 

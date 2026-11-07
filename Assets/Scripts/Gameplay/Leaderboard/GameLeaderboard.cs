@@ -21,6 +21,7 @@ namespace Gameplay.Leaderboard
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
         private bool _hasInvokedInitialBuildMode = false;
+        private bool _hasOpenedMatchOverMenu;
         public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
@@ -646,6 +647,11 @@ namespace Gameplay.Leaderboard
                 {
                     
                     Debug.Log($"[Client match test]Match over received!" + $"WinningTeamId={phaseRpc.WinningTeamId}," + $"CurrentPhase={_roundPhase}");
+                    if(!_hasOpenedMatchOverMenu)
+                    {
+                        _hasOpenedMatchOverMenu = true;
+                        GameSettings.Instance.IsPauseMenuOpen = true;
+                    }
                 }
                 BuildModeChanged?.Invoke(
                     phaseRpc.IsBuildMode);
