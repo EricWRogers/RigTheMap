@@ -241,8 +241,8 @@ MonoBehaviour:
   m_OtherPlayerVisuals: {fileID: 1273279944006790436}
   m_FirstPersonVisuals: {fileID: 5736986264473589180}
   m_SpawnSFX: {fileID: 11400000, guid: bfec68d58a412fa4fb63e149caa5b3e5, type: 2}
-  m_Team0Color: {r: 0, g: 0, b: 1, a: 1}
-  m_Team1Color: {r: 0, g: 1, b: 0, a: 1}
+  m_Team0Color: {r: 0.654902, g: 0.654902, b: 1, a: 0.2}
+  m_Team1Color: {r: 0.6509804, g: 1, b: 0.6509804, a: 0.2}
   <CameraTarget>k__BackingField: {fileID: 1666222585322407308}
   <ReticlePoint>k__BackingField: {fileID: 912756953968078347}
   <ShotOrigin>k__BackingField: {fileID: 429955562769033583}
@@ -903,17 +903,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7431196452171373437, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
-      propertyPath: m_TagString
-      value: Secondary
-      objectReference: {fileID: 0}
     - target: {fileID: 7812401069683704263, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.137
+      value: 0.058
       objectReference: {fileID: 0}
     - target: {fileID: 7812401069683704263, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.084
+      value: 0.148
       objectReference: {fileID: 0}
     - target: {fileID: 7812401069683704263, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
       propertyPath: m_LocalPosition.z
@@ -948,8 +944,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 41187343284203692, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52e24ebf71c35c14aa66f8d5a10a6c15, type: 3}
