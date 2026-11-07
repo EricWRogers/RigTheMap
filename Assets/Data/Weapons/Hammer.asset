@@ -86,6 +86,7 @@ MonoBehaviour:
         w: 0
   WeaponFireSfx: {fileID: 11400000, guid: 07672bf699e71df47a094a809327b395, type: 2}
   WeaponReloadSfx: {fileID: 0}
+  PlacementSfx: {fileID: 0}
   Behavior: 0
   AoeRadius: 0
   ProjectileSpeed: 30
@@ -97,7 +98,7 @@ MonoBehaviour:
   SharkBlindDuration: 3
   HammerLaunchForce: 12
   HammerImpactRadius: 10
-  HammerDamage: 25
+  HammerDamage: 35
   HammerGroundRange: 3
   HammerCooldown: 0.6
   ShotgunEnemyKnockBack: 10
