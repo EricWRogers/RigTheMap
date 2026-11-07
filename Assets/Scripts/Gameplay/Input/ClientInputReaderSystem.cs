@@ -94,7 +94,11 @@ public partial class ClientInputReaderSystem : SystemBase
 
                 const float stickDeadzone = 0.0f;
                 const float mouseSensitivity = 3.7f;
+                #if PLATFORM_ARCH_64
+                const float stickSensitivity = 6.7f;
+                #else
                 const float stickSensitivity = 3.7f;
+                #endif
 
                 float2 lookDelta;
 
