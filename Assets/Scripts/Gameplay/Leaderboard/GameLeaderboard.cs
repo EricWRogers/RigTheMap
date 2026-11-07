@@ -626,7 +626,7 @@ namespace Gameplay.Leaderboard
             while (GhostGameObject.ConsumeRPC(
                        out RoundPhaseChangedRpc phaseRpc))
             {
-                // var previousPhase = _roundPhase;
+                var previousPhase = _roundPhase;
                 _roundPhase = phaseRpc.IsMatchOver
                     ? RoundPhase.MatchOver
                     : phaseRpc.IsBuildMode
@@ -638,11 +638,11 @@ namespace Gameplay.Leaderboard
                 if (phaseRpc.WinningTeamId >= 0)
                     LastWinningTeamId = phaseRpc.WinningTeamId;
                     
-                // if(previousPhase != RoundPhase.MatchOver && phaseRpc.IsMatchOver && phaseRpc.WinningTeamId >= 0 
-                //     && m_MatchVictorySfx != null && GameManager.Instance != null && GameManager.Instance.SoundSystem != null && MainCameraSingleton.Instance != null)
-                // {
-                //     GameManager.Instance.SoundSystem.CreateEmitter(m_MatchVictorySfx, MainCameraSingleton.Instance.transform);
-                // }
+                if(previousPhase != RoundPhase.MatchOver && _roundPhase == RoundPhase.MatchOver && phaseRpc.WinningTeamId >= 0 
+                    && m_MatchVictorySfx != null && GameManager.Instance != null && GameManager.Instance.SoundSystem != null && MainCameraSingleton.Instance != null)
+                {
+                    GameManager.Instance.SoundSystem.CreateEmitter(m_MatchVictorySfx, MainCameraSingleton.Instance.transform);
+                }
                 if(phaseRpc.IsMatchOver)
                 {
                     
