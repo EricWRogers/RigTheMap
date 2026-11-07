@@ -20,7 +20,7 @@ namespace Unity.MP_FPS
         [SerializeField] private GameObject m_OtherPlayerVisuals;
         [SerializeField] private GameObject m_FirstPersonVisuals;
         [SerializeField] private SoundDef m_SpawnSFX;
-        [SerializeField] private Color m_Team0Color = Color.white;
+        [SerializeField] private Color m_Team0Color = new Color(0f, 0f, 0.2f);
         [SerializeField] private Color m_Team1Color = new Color(0f, 0.2f, 0f);
         private List<Renderer> m_Renderers = new();
         private MaterialPropertyBlock m_TeamMaterialBlock;

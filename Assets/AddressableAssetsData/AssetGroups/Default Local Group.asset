@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 398e1bbd795361c44a0b3cc5c9a2a595
+    m_Address: Assets/Prefabs/PlayerGhosts/Cat_Hammer.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3bdee9dcdb7731f4ea3bd5754b5ea8f8
     m_Address: Assets/Prefabs/PlayerGhosts/Hammer.prefab
     m_ReadOnly: 0
@@ -97,11 +102,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9fd7ce51a77b5f49b057d8e29034e61
     m_Address: Assets/Prefabs/PlayerGhosts/Cat_Shark.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c37231d0d130fab4f8fa546a1aa3b695
-    m_Address: Assets/Prefabs/PlayerGhosts/Dog_Shotgun.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
