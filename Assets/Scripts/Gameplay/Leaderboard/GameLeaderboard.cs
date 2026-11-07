@@ -549,6 +549,12 @@ namespace Gameplay.Leaderboard
                     // Announce join *after* successfully adding to the buffer
                     AnnouncePlayerJoined(playerName);
                 }
+
+                if(_roundPhase == RoundPhase.MatchOver && !_hasOpenedMatchOverMenu)
+                {
+                    _hasOpenedMatchOverMenu = true;
+                    GameSettings.Instance.IsPauseMenuOpen = true;
+                }
             }
 
             while (_killQueue.Count > 0)
