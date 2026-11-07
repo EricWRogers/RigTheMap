@@ -120,7 +120,7 @@ namespace Unity.MP_FPS
             }
         }
 
-        void TogglePauseMenuVisibility()
+        public void TogglePauseMenuVisibility()
         {
             if(EventSystem.current != null)
             {
