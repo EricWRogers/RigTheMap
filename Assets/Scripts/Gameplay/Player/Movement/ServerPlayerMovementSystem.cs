@@ -955,7 +955,7 @@ namespace Unity.MP_FPS
                                 int placementMask =
                                     weaponData.PlacementLayerMask.value != 0
                                         ? weaponData.PlacementLayerMask.value
-                                        : LayerMask.GetMask("Default");
+                                        : LayerMask.GetMask("Ground", "Default");
 
                                 if (UnityEngine.Physics.Raycast(
                                         eyePosition,
@@ -964,6 +964,10 @@ namespace Unity.MP_FPS
                                         weaponData.HitscanRange,
                                         placementMask))
                                 {
+                                    if (placementHit.collider.gameObject.layer == LayerMask.NameToLayer("PermitNeed"))
+                                    {
+                                        continue; //skip placement for this layer
+                                    }
                                     var placementPosition =
                                         placementHit.point +
                                         placementHit.normal *
