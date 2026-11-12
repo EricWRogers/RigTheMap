@@ -131,22 +131,22 @@
     position: absolute;
     width: 2px;
     height: 13px;
-    left: 131px;
-    top: 120px;
+    left: 130px;
+    top: 125px;
     background-color: rgb(255, 100, 0);
     transform-origin: center;
 }
 #hit-marker-bar-a{
-    rotate: 45deg;
+    rotate: 90deg;
 }
 #hit-marker-bar-b{
-    rotate: -45deg;
+    rotate: -90deg;
 }
 #hit-marker-bar-c{
-    rotate: 135deg;
+    rotate: 180deg;
 }
 #hit-marker-bar-d{
-    rotate: -135deg;
+    rotate: -180deg;
 }
 
 /* Low ammo warning style */

@@ -24,6 +24,7 @@ namespace Gameplay.Leaderboard
         private bool _hasOpenedMatchOverMenu;
         public int LastWinningTeamId {get; private set; } = -1;
         public static LeaderboardManager Instance { get; private set; }
+        public static LeaderboardManager ServerInstance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
         [SerializeField] private SoundDef m_MatchVictorySfx; 
 
@@ -103,6 +104,8 @@ namespace Gameplay.Leaderboard
         {
             _pendingPlayers.Clear();
             _pendingPlayers = null;
+            Instance = null;
+            ServerInstance = null;
         }
 
         public struct PlayerScoreEntry : IBufferElementData
@@ -650,8 +653,7 @@ namespace Gameplay.Leaderboard
                     if(!_hasOpenedMatchOverMenu)
                     {
                         _hasOpenedMatchOverMenu = true;
-                        //GameSettings.Instance.IsPauseMenuOpen = true;
-                        FindFirstObjectByType<PauseMenu>().TogglePauseMenuVisibility();
+                        GameSettings.Instance.IsPauseMenuOpen = true;
                     }
                 }
                 BuildModeChanged?.Invoke(

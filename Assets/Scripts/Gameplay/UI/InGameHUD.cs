@@ -3,6 +3,7 @@ using UnityEngine.UIElements;
 using Unity.Entities;
 using Unity.NetCode;
 using Gameplay.Leaderboard;
+using DG.Tweening;
 
 namespace Unity.MP_FPS
 {
@@ -31,6 +32,7 @@ namespace Unity.MP_FPS
         private bool m_HasSeenCombatPhase;
         private VisualElement m_Reticle;
         private VisualElement m_Hitmarker;
+        private Sequence m_HitMarkerTween;
 
         // UI-side timer to ensure shot feedback is visible for a minimum duration.
         private float m_shotFeedbackTimer = 0f;
@@ -43,10 +45,10 @@ namespace Unity.MP_FPS
         private const string k_CircularCrossClass = "kits-reticle-circularcross";
         private const string k_OpenCircularReticleClass = "kits-reticle-opencircular";
         //the hit-marker will flash a red crosshair when hit
-        private float m_HitMarkerTimer;
+
         private uint m_lastHitMarkerTick;
 
-        private const float k_HitMarkerDuration = 0.12f;
+  
 
         // ECS query fields
         private World m_ClientWorld;
@@ -230,12 +232,7 @@ namespace Unity.MP_FPS
             if(playerData.LastconfirmedHitTick != m_lastHitMarkerTick)
             {
                 m_lastHitMarkerTick = playerData.LastconfirmedHitTick;
-                m_HitMarkerTimer = k_HitMarkerDuration;
-
-                if(m_Hitmarker != null)
-                {
-                    m_Hitmarker.style.display = DisplayStyle.Flex;
-                }
+                PlayHitMarker();
             }
 
             // Update Reloading Indicator
@@ -342,14 +339,7 @@ namespace Unity.MP_FPS
                 greyReticleVisual = true;
             }
             //a flash of red when enemy has been hit
-            if(m_Hitmarker != null && m_HitMarkerTimer > 0f){
-            m_HitMarkerTimer -= Time.deltaTime;
-            if(m_HitMarkerTimer <= 0f)
-                {
-                    m_Hitmarker.style.display = DisplayStyle.None;
-                }
-            
-            }
+
             //update hit-marker
             if(m_Hitmarker != null){
             m_Hitmarker.style.rotate = new Rotate(new Angle(45f, AngleUnit.Degree));
@@ -359,6 +349,81 @@ namespace Unity.MP_FPS
             m_Reticle.style.unityBackgroundImageTintColor = greyReticleVisual 
                 ? new StyleColor(Color.gray)
                 : new StyleColor(Color.white);
+        }
+
+        private void PlayHitMarker()
+        {
+            if(m_Hitmarker == null)
+                return;
+            
+            m_HitMarkerTween?.Kill();
+
+            var bars = m_Hitmarker.Children();
+            var baseColor = new Color(1f, 100f / 255f, 0f, 1f);
+            var brightColor = new Color(1f, 0.9f, 0.2f, 1f);
+            var scale = new Vector2(0.75f, 1.15f);
+            float opacity = 1f;
+
+            m_Hitmarker.style.display = DisplayStyle.Flex;
+            m_Hitmarker.style.opacity = opacity;
+            m_Hitmarker.style.scale = new Scale(scale);
+
+            foreach(var bar in bars)
+                bar.style.backgroundColor = baseColor;
+            
+            m_HitMarkerTween = DOTween.Sequence().
+                Append(DOTween.To(
+                        () => scale,
+                value => {
+                    scale = value;
+                    m_Hitmarker.style.scale = new Scale(value); 
+                    },
+                new Vector2(0.55f, 1.25f), 0.05f).SetEase(Ease.InQuad))
+                .Append(DOTween.To(() => scale,
+                    value =>
+                    {
+                        scale = value;
+                        m_Hitmarker.style.scale = new Scale(value);
+                    },
+                    new Vector2(1.5f, 0.85f), 0.09f).SetEase(Ease.OutBack));
+            foreach(var bar in bars)
+            {
+                var target = bar;
+                var color = baseColor;
+                m_HitMarkerTween.Join(DOTween.To(() => color,
+                        value => 
+                        {
+                            color = value;
+                            target.style.backgroundColor = value;
+                        },
+                        brightColor, 0.08f).SetEase(Ease.OutQuad));
+            }
+
+            m_HitMarkerTween
+                .Append(DOTween.To(
+                    () => scale,
+                    value => 
+                    {
+                        scale = value;
+                        m_Hitmarker.style.scale = new Scale(value);
+                    },
+                    new Vector2(3f, 3f), 0.16f).SetEase(Ease.OutQuad))
+                .Join(DOTween.To(() => opacity,
+                    value => 
+                    {
+                        opacity = value;
+                        m_Hitmarker.style.opacity = value;
+                    },
+                    0f, 0.16f).SetEase(Ease.InQuad))
+                .OnComplete(() =>
+                {
+                m_Hitmarker.style.display = DisplayStyle.None;
+                m_Hitmarker.style.scale = new Scale(Vector2.one);
+                m_Hitmarker.style.opacity = 1f;
+
+                foreach (var bar in bars)
+                    bar.style.backgroundColor = StyleKeyword.Null;
+                });
         }
 
         private string GetReticleClassName(ReticleType reticleType)
@@ -409,6 +474,7 @@ namespace Unity.MP_FPS
 
         private void OnDisable()
         {
+            m_HitMarkerTween?.Kill();
             LeaderboardManager.BuildModeChanged -= OnBuildModeChanged;
         }
 
