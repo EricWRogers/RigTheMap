@@ -112,6 +112,10 @@ namespace Unity.MP_FPS
 
                 // Reset lives for the new phase.
                 joinedClientRef.ValueRW.lives = GameManager.PlayerLives;
+                if (currentPhase == LeaderboardManager.RoundPhase.BuildMode)
+                {
+                    joinedClientRef.ValueRW.BuildPlacementsLeft = GameManager.PlayerBuilds;
+                }
 
                 // Clear any old respawn timer.
                 if (state.EntityManager.HasComponent<PendingRespawn>(connectionEntity))
@@ -151,7 +155,8 @@ namespace Unity.MP_FPS
                     joinedClient.PlayerName,
                     joinedClient.CharacterIndex,
                     joinedClient.TeamId,
-                    GameManager.PlayerLives);
+                    GameManager.PlayerLives,
+                    joinedClientRef.ValueRO.BuildPlacementsLeft);
             }
         }
 
@@ -305,7 +310,8 @@ namespace Unity.MP_FPS
             FixedString64Bytes playerName,
             int characterIndex,
             int teamId,
-            int lives)
+            int lives,
+            int buildPlacementsLeft)
         {
             var playerEntityPrefabs = SystemAPI.GetSingleton<PlayerEntityPrefabs>();
             var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
@@ -389,6 +395,10 @@ namespace Unity.MP_FPS
                 PrimaryWeaponAmmo = magazineSize,
                 SecondaryWeaponAmmo = secondaryWeaponData != null ? secondaryWeaponData.MagazineSize : 30,
                 CurrentAmmo = magazineSize,
+                BuildPlacementsUsed = Mathf.Clamp(
+                    GameManager.PlayerBuilds - buildPlacementsLeft,
+                    0,
+                    GameManager.PlayerBuilds),
                 SelectedPlacementPrefabIndex = 0
             });
             ecb.AddComponent(playerEntity, new PlayerCharacterInitialized());
@@ -433,6 +443,7 @@ namespace Unity.MP_FPS
                     CharacterIndex = characterIndex,
                     TeamId = teamId,
                     lives = lives,
+                    BuildPlacementsLeft = buildPlacementsLeft,
                 });
             }
             else
@@ -445,7 +456,8 @@ namespace Unity.MP_FPS
                     PlayerName = joinedClient.PlayerName,
                     CharacterIndex = joinedClient.CharacterIndex,
                     TeamId = joinedClient.TeamId,
-                    lives = joinedClient.lives
+                    lives = joinedClient.lives,
+                    BuildPlacementsLeft = buildPlacementsLeft
                     // spectator = joinedClient.spectator
                 });
             }
@@ -477,6 +489,10 @@ namespace Unity.MP_FPS
                     }
 
                     var joinedClient = _joinedClientLookup[connectionEntity];
+                    joinedClient.BuildPlacementsLeft = Mathf.Clamp(
+                        GameManager.PlayerBuilds - playerGhost.ValueRO.BuildPlacementsUsed,
+                        0,
+                        GameManager.PlayerBuilds);
                     
                     bool isBuildMode = LeaderboardManager.Instance != null &&
                                LeaderboardManager.Instance.CurrentPhase ==
@@ -607,7 +623,8 @@ namespace Unity.MP_FPS
                                 joinedClientData.PlayerName,
                                 joinedClientData.CharacterIndex,
                                 joinedClientData.TeamId,
-                                joinedClientData.lives);
+                                joinedClientData.lives,
+                                joinedClientData.BuildPlacementsLeft);
 
                             ecb.RemoveComponent<PendingRespawn>(entity);
                             Debug.LogWarning(
@@ -698,7 +715,8 @@ namespace Unity.MP_FPS
                         request.ValueRO.PlayerName,
                         request.ValueRO.CharacterIndex,
                         teamId,
-                        GameManager.PlayerLives);
+                        GameManager.PlayerLives,
+                        GameManager.PlayerBuilds);
                     
                     var ownerNetworkId = SystemAPI.GetComponent<NetworkId>(connectionEntity);
                     AddPlayerToLeaderboard(ownerNetworkId.Value, request.ValueRO.PlayerName);

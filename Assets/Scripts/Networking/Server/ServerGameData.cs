@@ -15,6 +15,7 @@ namespace Unity.MP_FPS
         public int CharacterIndex;
         public int TeamId;
         public int lives;
+        public int BuildPlacementsLeft;
         public bool spectator;
     }
     
