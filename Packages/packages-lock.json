@@ -352,8 +352,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.wire": {
-      "version": "1.5.1",
-      "depth": 1,
+      "version": "1.6.2",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.services.core": "1.12.5",
