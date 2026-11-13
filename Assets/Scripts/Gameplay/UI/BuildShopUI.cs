@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 using Unity.MP_FPS;
 using Unity.MP_FPS.UI;
 using Unity.Entities;
-using Unity.NetCode;
+
 
 namespace Gameplay.BuildPoints.UI
 {
@@ -202,7 +202,7 @@ namespace Gameplay.BuildPoints.UI
 
             EntityQuery playerQuery = entityManager.CreateEntityQuery(
                 typeof(PredictedPlayerGhost),
-                typeof(Unity.NetCode.GhostOwner)
+                typeof(Unity.Netcode.GhostOwner)
             );
 
             if (!playerQuery.IsEmpty)
@@ -210,9 +210,9 @@ namespace Gameplay.BuildPoints.UI
                 using var entities = playerQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
                 foreach (var entity in entities)
                 {
-                    var ghostOwner = entityManager.GetComponentData<Unity.NetCode.GhostOwner>(entity);
+                    var ghostOwner = entityManager.GetComponentData<Unity.Netcode.GhostOwner>(entity);
 
-                    if (entityManager.HasComponent<Unity.NetCode.GhostOwnerIsLocal>(entity))
+                    if (entityManager.HasComponent<Unity.Netcode.GhostOwnerIsLocal>(entity))
                     {
                         var playerData = entityManager.GetComponentData<PredictedPlayerGhost>(entity);
                         playerData.SelectedPlacementPrefabIndex = targetIndex;

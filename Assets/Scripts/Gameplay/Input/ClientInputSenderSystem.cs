@@ -43,7 +43,7 @@ public partial class ClientInputSenderSystem : SystemBase
                     commandInput.SetFrom(in input.ValueRO);
                     commandInput.UpdateFrom(inProgressCommandInput);
                     commandInput.PlayerInput.WeaponScrollDelta = input.ValueRO.PlayerInput.WeaponScrollDelta;
-                    buffer.AddCommandData(commandInput);
+                    Unity.Netcode.CommandDataUtility.AddCommandData(                    buffer, commandInput);
 
                     // we can now start a new inprogress input
                     inProgressCommandInput = default;
@@ -68,11 +68,11 @@ public partial class ClientInputSenderSystem : SystemBase
 
                     // even though it's been sent, we add it again, so that the prediction
                     // system has the very latest data for this tick
-                    if (buffer.GetDataAtTick(tick, out var existingCommandData)
+                    if (Unity.Netcode.CommandDataUtility.GetDataAtTick(buffer, tick, out var existingCommandData)
                         && existingCommandData.Tick == tick)
                     {
                         existingCommandData.UpdateFrom(in input.ValueRO);
-                        buffer.AddCommandData(existingCommandData);
+                        Unity.Netcode.CommandDataUtility.AddCommandData(                        buffer, existingCommandData);
                     }
                     else
                     {
