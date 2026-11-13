@@ -252,7 +252,7 @@ namespace Unity.MP_FPS
 
         void AttachPlayerViewCamera()
         {
-            var playerCamera = GameObject.FindFirstObjectByType<Camera>();
+            var playerCamera = FindAnyObjectByType<Camera>();
             if (playerCamera != null)
             {
                 playerCamera.transform.parent = transform.Find("ViewPoint");
@@ -263,21 +263,25 @@ namespace Unity.MP_FPS
 
         private void CreateClientCamera()
         {
-            var existingCamera = MainCameraSingleton.Instance;
-            if (existingCamera != null)
-            {
-                existingCamera.enabled = false;
+            var existingCameraSingletons =
+                FindObjectsByType<MainCameraSingleton>();
 
+            foreach (var cameraSingleton in existingCameraSingletons)
+            {
+                var existingCamera = cameraSingleton.GetComponent<Camera>();
+                if (existingCamera == null)
+                    continue;
+
+                existingCamera.enabled = false;
                 var existingAudioListener =
                     existingCamera.GetComponent<AudioListener>();
                 if (existingAudioListener != null)
                     existingAudioListener.enabled = false;
-                if(existingCamera == s_DeathAudioCamera)
-                {
-                    Destroy(existingCamera.gameObject);
-                    s_DeathAudioCamera = null;
-                }
+
+                Destroy(existingCamera.gameObject);
             }
+
+            s_DeathAudioCamera = null;
 
             var mainCameraInstance = Instantiate(MainCameraPrefab, CameraTarget.transform);
             mainCameraInstance.transform.localPosition = Vector3.zero;

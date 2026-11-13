@@ -17,7 +17,6 @@ namespace Gameplay.Leaderboard
         public int CurrentRound => _currentRound;
         public float BuildTimer => _buildTimer ;
         private float _buildTimerSyncAccumulator;
-        private float _roundStateSyncAccumulator;
         public RoundPhase CurrentPhase => _roundPhase;
         public bool roundSkipped = false;
         private bool _hasInvokedInitialBuildMode = false;
@@ -336,6 +335,7 @@ namespace Gameplay.Leaderboard
             if (_currentRound > 3)
             {
                 _roundPhase = RoundPhase.MatchOver;
+                BroadcastRoundState(false, true, LastWinningTeamId);
 
                 Debug.Log("[MATCH] All three rounds have been completed.");
 
@@ -504,16 +504,11 @@ namespace Gameplay.Leaderboard
                 Debug.Log("[Server] LeaderboardManager not linked yet.");
                 return;
             }
-            _roundStateSyncAccumulator += deltaTime;
-            if (_roundStateSyncAccumulator >= 1f)
-            {
-                _roundStateSyncAccumulator = 0f;
-                BroadcastRoundState(_roundPhase == RoundPhase.BuildMode, _roundPhase == RoundPhase.MatchOver, LastWinningTeamId);
-            }
-            
+
             var buffer =
                 GhostGameObject.GetGhostDynamicBuffer<PlayerScoreEntry>();
 
+            bool playerAdded = false;
             while (_pendingPlayers != null && _pendingPlayers.Count > 0)
             {
                 var (networkId, playerName) =
@@ -551,7 +546,16 @@ namespace Gameplay.Leaderboard
 
                     // Announce join *after* successfully adding to the buffer
                     AnnouncePlayerJoined(playerName);
+                    playerAdded = true;
                 }
+            }
+
+            if (playerAdded)
+            {
+                BroadcastRoundState(
+                    _roundPhase == RoundPhase.BuildMode,
+                    _roundPhase == RoundPhase.MatchOver,
+                    LastWinningTeamId);
             }
 
             while (_killQueue.Count > 0)
@@ -626,40 +630,6 @@ namespace Gameplay.Leaderboard
                 _buildTimer = timerRpc.BuildTimer;
             }
 
-            while (GhostGameObject.ConsumeRPC(
-                       out RoundPhaseChangedRpc phaseRpc))
-            {
-                var previousPhase = _roundPhase;
-                _roundPhase = phaseRpc.IsMatchOver
-                    ? RoundPhase.MatchOver
-                    : phaseRpc.IsBuildMode
-                        ? RoundPhase.BuildMode
-                        : RoundPhase.Fighting;
-                _currentRound = phaseRpc.CurrentRound;
-                _buildTimer = phaseRpc.BuildTimer;
-
-                if (phaseRpc.WinningTeamId >= 0)
-                    LastWinningTeamId = phaseRpc.WinningTeamId;
-                    
-                if(previousPhase != RoundPhase.MatchOver && _roundPhase == RoundPhase.MatchOver && phaseRpc.WinningTeamId >= 0 
-                    && m_MatchVictorySfx != null && GameManager.Instance != null && GameManager.Instance.SoundSystem != null && MainCameraSingleton.Instance != null)
-                {
-                    GameManager.Instance.SoundSystem.CreateEmitter(m_MatchVictorySfx, MainCameraSingleton.Instance.transform);
-                }
-                if(phaseRpc.IsMatchOver)
-                {
-                    
-                    Debug.Log($"[Client match test]Match over received!" + $"WinningTeamId={phaseRpc.WinningTeamId}," + $"CurrentPhase={_roundPhase}");
-                    if(!_hasOpenedMatchOverMenu)
-                    {
-                        _hasOpenedMatchOverMenu = true;
-                        GameSettings.Instance.IsPauseMenuOpen = true;
-                    }
-                }
-                BuildModeChanged?.Invoke(
-                    phaseRpc.IsBuildMode);
-            }
-
             // Consume any kill feed RPCs received this frame
             while (GhostGameObject.ConsumeRPC(
                        out KillFeedEntryRpc killFeedRpc))
@@ -685,6 +655,50 @@ namespace Gameplay.Leaderboard
                 Debug.Log($"[Client] Player {purchaseRpc.NetworkId} purchased build item {purchaseRpc.BuildItemId} for {purchaseRpc.Cost} build points.");
             }
         }
+
+        public void ApplyRoundPhaseChangedRpc(RoundPhaseChangedRpc phaseRpc)
+        {
+            var previousPhase = _roundPhase;
+            _roundPhase = phaseRpc.IsMatchOver
+                ? RoundPhase.MatchOver
+                : phaseRpc.IsBuildMode
+                    ? RoundPhase.BuildMode
+                    : RoundPhase.Fighting;
+            _currentRound = phaseRpc.CurrentRound;
+            _buildTimer = phaseRpc.BuildTimer;
+
+            if (phaseRpc.WinningTeamId >= 0)
+                LastWinningTeamId = phaseRpc.WinningTeamId;
+
+            if (previousPhase != RoundPhase.MatchOver &&
+                _roundPhase == RoundPhase.MatchOver &&
+                phaseRpc.WinningTeamId >= 0 &&
+                m_MatchVictorySfx != null &&
+                GameManager.Instance != null &&
+                GameManager.Instance.SoundSystem != null &&
+                MainCameraSingleton.Instance != null)
+            {
+                GameManager.Instance.SoundSystem.CreateEmitter(
+                    m_MatchVictorySfx,
+                    MainCameraSingleton.Instance.transform);
+            }
+
+            if (phaseRpc.IsMatchOver)
+            {
+                Debug.Log(
+                    $"[Client match test]Match over received!" +
+                    $"WinningTeamId={phaseRpc.WinningTeamId}," +
+                    $"CurrentPhase={_roundPhase}");
+
+                if (!_hasOpenedMatchOverMenu)
+                {
+                    _hasOpenedMatchOverMenu = true;
+                    GameSettings.Instance.IsPauseMenuOpen = true;
+                }
+            }
+
+            BuildModeChanged?.Invoke(phaseRpc.IsBuildMode);
+        }
     }
 
     public struct KillFeedEntryRpc : IRpcCommand
@@ -705,6 +719,51 @@ namespace Gameplay.Leaderboard
         public int CurrentRound;
         public float BuildTimer;
         public int WinningTeamId;
+    }
+
+    [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateAfter(typeof(GhostGameObjectRPCReceiveSystem))]
+    [UpdateBefore(typeof(GhostGameObjectUpdateClientSystem))]
+    public partial struct RoundPhaseChangedRpcConsumeSystem : ISystem
+    {
+        public void OnCreate(ref SystemState state)
+        {
+            state.RequireForUpdate<RoundPhaseChangedRpc>();
+        }
+
+        public void OnUpdate(ref SystemState state)
+        {
+            var leaderboard = LeaderboardManager.Instance;
+            if (leaderboard == null)
+            {
+                Debug.LogError(
+                    "[RoundPhaseChangedRpcConsumeSystem] Received a round phase RPC before LeaderboardManager was available.");
+                return;
+            }
+
+            var query = SystemAPI.QueryBuilder()
+                .WithAll<RoundPhaseChangedRpc, ReceiveRpcCommandRequest>()
+                .Build();
+
+            if (query.IsEmptyIgnoreFilter)
+                return;
+
+            var entityManager = state.EntityManager;
+            var entities = query.ToEntityArray(Allocator.Temp);
+            var commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+            foreach (var entity in entities)
+            {
+                leaderboard.ApplyRoundPhaseChangedRpc(
+                    entityManager.GetComponentData<RoundPhaseChangedRpc>(entity));
+                commandBuffer.DestroyEntity(entity);
+            }
+
+            commandBuffer.Playback(entityManager);
+            commandBuffer.Dispose();
+            entities.Dispose();
+        }
     }
 
 
