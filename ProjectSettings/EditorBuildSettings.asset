@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/IFestMap1.unity
     guid: c997c225091142f41bdb4367519fe3aa
+  - enabled: 1
+    path: Assets/Scenes/PlazaMap.unity
+    guid: ff881c945141cb444a4f5d961b0a683b
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 8a359052d73013046af0cccc79347d43, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
