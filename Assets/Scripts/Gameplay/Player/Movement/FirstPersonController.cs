@@ -217,9 +217,9 @@ public class FirstPersonController : MonoBehaviour
     public GameObject CinemachineCameraTarget { get; private set; }
 
     [SerializeField, Tooltip("A small offset for the grounded spherecast. Should be a small positive value.")]
-    private float GroundedOffset = 0.35f;
+    private float GroundedOffset = 0.2f;
 
-    public PhysicsMaterial GroundPhysicsMaterial { get; private set; }
+    public Collider GroundSurfaceCollider { get; private set; }
 
     [field: SerializeField] public Vector3 ControllerOffset { get; private set; } = new Vector3(0f, 0f, 0f);
 
@@ -358,7 +358,7 @@ public class FirstPersonController : MonoBehaviour
         public Vector3 FlattestHitPoint => m_FlattestHit.point;
         public Vector3 FlattestHitNormal => m_FlattestHit.normal;
         public Vector3 ClosestHitNormal => m_ClosestHit.normal;
-        public PhysicsMaterial surfaceHit => m_SurfaceHit.collider != null ? m_SurfaceHit.collider.sharedMaterial : null;
+        public Collider surfaceHit => m_SurfaceHit.collider;
 
 
         public GroundCollisionVariables(RaycastHit closestHit, RaycastHit flattestHit, RaycastHit surfaceHit, float flattestHitDot)
@@ -377,30 +377,24 @@ public class FirstPersonController : MonoBehaviour
         Spikey
 
     }
-    private static GroundSurfaceType GetGroundSurfaceType(PhysicsMaterial mat) {
-        if (mat == null) return GroundSurfaceType.Normal;
+    private static GroundSurfaceType GetGroundSurfaceType(Collider collider) {
+        if (collider == null) return GroundSurfaceType.Normal;
 
-        switch (mat.name) {
-            case "Sticky":
-                return GroundSurfaceType.Sticky;
-            case "Slippery":
-                return GroundSurfaceType.Slippery;
-            case "Bounce":
-                return GroundSurfaceType.Bounce;
-            case "Spikey":
-                return GroundSurfaceType.Spikey;
-            default:
-                return GroundSurfaceType.Normal;
-        }
+        if(collider.CompareTag("Sticky")) return GroundSurfaceType.Sticky;
+        if(collider.CompareTag("Slippery")) return GroundSurfaceType.Slippery;
+        if(collider.CompareTag("Bounce")) return GroundSurfaceType.Bounce;
+        if(collider.CompareTag("Spikey")) return GroundSurfaceType.Spikey;
+
+        return GroundSurfaceType.Normal;
     }
 
     private Vector3 ApplySurfaceModifiers(ref ControllerState state, Vector3 move, Vector3 groundNormal) {
-        if (GroundPhysicsMaterial == null) {
+        if (GroundSurfaceCollider == null) {
 
             state.slipperyVelocity = Vector3.zero;
             return move;
         }
-        var surface = GetGroundSurfaceType(GroundPhysicsMaterial);
+        var surface = GetGroundSurfaceType(GroundSurfaceCollider);
 
         if (surface == GroundSurfaceType.Sticky) {
             Vector3 planarMove = Vector3.ProjectOnPlane(move, groundNormal);
@@ -468,17 +462,17 @@ public class FirstPersonController : MonoBehaviour
             var currentPos = GetGroundRaycastOrigin(state, m_Controller);
             // set sphere position, with offset
             var controllerCentre = transform.rotation * ControllerOffset;
-            var testRadius = math.min(m_Controller.radius, 0.1f);
-            var testStart = new Vector3(currentPos.x + controllerCentre.x, currentPos.y + +controllerCentre.y,
+            var testRadius = m_Controller.radius * 0.5f;
+            var testStart = new Vector3(currentPos.x + controllerCentre.x, m_Controller.bounds.min.y + testRadius + m_Controller.skinWidth + 0.01f + controllerCentre.y,
                 currentPos.z + controllerCentre.z);
             // float extraDistance = 0f;
             // if(state.MovementType == MovementType.Falling && state.JumpFallSpeed < 0f)
             // {
-            //    extraDistance = -state.JumpFallSpeed * deltaTime;
+            //    extraDistance = -state.JumpFallSpeed;
             // } 
-            float groundCheckDistance = GroundedOffset; //+ extraDistance;
+            // float groundCheckDistance = GroundedOffset; //+ extraDistance;
             var numHits = Physics.SphereCastNonAlloc(testStart, testRadius, Vector3.down,
-                m_GroundCheckRaycastResults, groundCheckDistance, consts.GroundLayers, QueryTriggerInteraction.Ignore);
+                m_GroundCheckRaycastResults, GroundedOffset, consts.GroundLayers);
 
 
             // Choose the best hit
@@ -511,9 +505,7 @@ public class FirstPersonController : MonoBehaviour
                     flattestHitIndex = i;
                 }
 
-                float distSq = raycastResult.point.sqrMagnitude > 0f
-                    ? math.distancesq(raycastResult.point, currentPos)
-                    : 0f; //point will be (0,0,0) if the spherecast starts inside the collider
+                float distSq = raycastResult.distance * raycastResult.distance; //point will be (0,0,0) if the spherecast starts inside the collider
 
                 if (distSq < closestDistSq)
                 {
@@ -521,8 +513,8 @@ public class FirstPersonController : MonoBehaviour
                     closestHitIndex = i;
                 }
 
-                var surfaceMaterial = raycastResult.collider.sharedMaterial;
-                if (dot > 0f && GetGroundSurfaceType(surfaceMaterial) != GroundSurfaceType.Normal && distSq < closestSurfaceDistSq) {
+                var surfaceCollider = raycastResult.collider;
+                if (dot > 0f && GetGroundSurfaceType(surfaceCollider) != GroundSurfaceType.Normal && distSq < closestSurfaceDistSq) {
                     closestSurfaceDistSq = distSq;
                     surfaceHitIndex = i;
                 }
@@ -553,12 +545,12 @@ public class FirstPersonController : MonoBehaviour
     {
         if (UpdateGround(state, consts, deltaTime, out var groundCollision))
         {
-            GroundPhysicsMaterial = groundCollision.surfaceHit;
+            GroundSurfaceCollider = groundCollision.surfaceHit;
             state.GroundNormal = groundCollision.FlattestHitNormal;
         }
         else
         {
-            GroundPhysicsMaterial = null;
+            GroundSurfaceCollider = null;
             state.GroundNormal = k_UpVector;
         }
         // Debug.Log($"[GRound] isGrounded");
@@ -579,18 +571,18 @@ public class FirstPersonController : MonoBehaviour
             if (isGrounded)
             {
                 state.GroundNormal = groundCollision.FlattestHitNormal;
-                GroundPhysicsMaterial = groundCollision.surfaceHit;
+                GroundSurfaceCollider = groundCollision.surfaceHit;
             }
             else
             {
                 state.GroundNormal = k_UpVector;
-                GroundPhysicsMaterial = null;
+                GroundSurfaceCollider = null;
             }
         }
         else
         {
             isGrounded = state.IsGrounded;
-            GroundPhysicsMaterial = null;
+            GroundSurfaceCollider = null;
         }
 
         #if ENABLE_MOVEMENT_DIAGNOSTICS
@@ -657,7 +649,7 @@ public class FirstPersonController : MonoBehaviour
         if (isGrounded)
         {
             state.GroundNormal = groundCollision.FlattestHitNormal;
-            GroundPhysicsMaterial = groundCollision.surfaceHit;
+            GroundSurfaceCollider = groundCollision.surfaceHit;
             if (shouldBounce)// Launch player
             {
                 #if ENABLE_MOVEMENT_DIAGNOSTICS
@@ -680,7 +672,7 @@ public class FirstPersonController : MonoBehaviour
         else
         {
             state.GroundNormal = k_UpVector;
-            GroundPhysicsMaterial = null;
+            GroundSurfaceCollider = null;
         }
     }
     public void ApplyInterpolatedClientState(ref ControllerState state,
@@ -1169,7 +1161,8 @@ public class FirstPersonController : MonoBehaviour
                     ClearFallingState(ref state);
 
                     if (AccumulateJump(ref state, in input, in consts, deltaTime) ||
-                        state.TimeInState < consts.LandingTimeout)
+                        (!state.IsGrounded && state.TimeInState < consts.LandingTimeout))
+                        
                     {
                         //we've just started jumping or we're in the process of landing so apply gravity
                         AccumulateGravity(ref state, in consts, deltaTime);

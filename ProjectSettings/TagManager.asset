@@ -11,6 +11,10 @@ TagManager:
   - VW
   - Primary
   - Secondary
+  - Slippery
+  - Sticky
+  - Spikey
+  - Bounce
   layers:
   - Default
   - TransparentFX

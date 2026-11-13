@@ -59,7 +59,7 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
     public float FallTimeout { get; private set; } = 0.15f;
 
     [field: SerializeField, Tooltip("Buffer time to continue applying gravity while in standing state, ensures player fully settles on the ground")]
-    public float LandingTimeout { get; private set; } = 0.15f;
+    public float LandingTimeout { get; private set; } = 0.215f;
 
     [field: SerializeField, Tooltip("Length of land animation for applying the landing speed multiplier and blocking turns")]
     public float LandingAnimTimeout { get; private set; } = 0.4f;
@@ -70,7 +70,7 @@ public class PredictedPlayerControllerConstsAuthoring : MonoBehaviour
     [field: Space(10)]
     [field: Header("Player Grounded")]
     [field: SerializeField, Tooltip("Additional offset for the grounded spherecast")]
-    public float GroundedOffset { get; private set; } = 0.14f;
+    public float GroundedOffset { get; private set; } = 0.24f;
 
     [field: SerializeField, Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers { get; private set; }

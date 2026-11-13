@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 2878977549067531896}
   m_Layer: 7
   m_Name: Honey
-  m_TagString: Building
+  m_TagString: Sticky
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
