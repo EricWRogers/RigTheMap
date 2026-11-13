@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6315766601279094581}
   m_Layer: 7
   m_Name: Ice
-  m_TagString: Building
+  m_TagString: Slippery
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,7 +102,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5628345089570679461}
-  m_Material: {fileID: 13400000, guid: 0565b1f75355c2744b82f0e2648b681d, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
