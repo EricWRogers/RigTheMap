@@ -153,7 +153,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                 // we need to re-process some of the input the server has missed in this snapshot
                 for (uint i = predictedClient.ValueRO.LastProcessedServerTick + 1; i < tick; i++)
                 {
-                    if (inputCommands.GetDataAtTick(new NetworkTick(i), out var missedCommand))
+                    if (Unity.Netcode.CommandDataUtility.GetDataAtTick(inputCommands, new NetworkTick(i), out var missedCommand))
                     {
                         if (logPredictionWarnings)
                         {
@@ -175,7 +175,7 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
 
             // else
             // {
-            if (inputCommands.GetDataAtTick(new NetworkTick(tick), out var inputCommand))
+            if (Unity.Netcode.CommandDataUtility.GetDataAtTick(inputCommands, new NetworkTick(tick), out var inputCommand))
             {
                 ClientCommandInput input = inputCommand;
                 commands.Add(input);
@@ -503,8 +503,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                 else
                 {
                     // we should just apply our current state
-                    controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
-                    controllerLink.Controller.GroundedCheck(
+                    controllerLink.Controller.Value.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
+                    controllerLink.Controller.Value.GroundedCheck(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts,
                         dt,

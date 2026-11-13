@@ -551,8 +551,8 @@ namespace Unity.MP_FPS
                 if (predictedClient.ValueRO.LastProcessedServerTick == 0)
                 {
                     // first frame, let's just get the latest data and set it
-                    if (buffer.GetDataAtTick(
-                            new NetworkTick(serverTick),
+                    if (Unity.Netcode.CommandDataUtility.GetDataAtTick(
+                            buffer, new NetworkTick(serverTick),
                             out var commandInput))
                     {
                         ClientCommandInput input =
@@ -585,8 +585,8 @@ namespace Unity.MP_FPS
                          tick <= serverTick;
                          tick++)
                     {
-                        if (buffer.GetDataAtTick(
-                                new NetworkTick(tick),
+                        if (Unity.Netcode.CommandDataUtility.GetDataAtTick(
+                                buffer, new NetworkTick(tick),
                                 out var commandInput)
                             && commandInput.Tick.TickIndexForValidTick !=
                             predictedClient.ValueRO.LastProcessedServerTick)
@@ -1737,7 +1737,7 @@ namespace Unity.MP_FPS
                 }
                 else
                 {
-                    controllerLink.Controller.GroundedCheck(
+                    controllerLink.Controller.Value.GroundedCheck(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         deltaTime,

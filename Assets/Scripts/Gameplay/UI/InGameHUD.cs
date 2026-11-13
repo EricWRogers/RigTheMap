@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.Entities;
-using Unity.Netcode;
+
+using Gameplay.Leaderboard;
+using DG.Tweening;
 
 namespace Unity.MP_FPS
 {
@@ -95,7 +97,7 @@ namespace Unity.MP_FPS
             // Find the active client world
             foreach (var world in World.All)
             {
-                if (world.IsClient())
+                if (Unity.Netcode.ClientServerWorldExtensions.IsClient(world))
                 {
                     m_ClientWorld = world;
                     m_EntityManager = world.EntityManager;
@@ -109,7 +111,7 @@ namespace Unity.MP_FPS
                 // and is owned by the local client.
                 m_LocalPlayerQuery = m_EntityManager.CreateEntityQuery(
                     ComponentType.ReadOnly<PredictedPlayerGhost>(),
-                    ComponentType.ReadOnly<GhostOwnerIsLocal>()
+                    ComponentType.ReadOnly<Unity.Netcode.GhostOwnerIsLocal>()
                 );
             }
         }

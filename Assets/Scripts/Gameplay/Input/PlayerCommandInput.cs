@@ -1,7 +1,7 @@
 using NUnit.Framework.Constraints;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+
 using UnityEngine;
 
 public struct PlayerInput
@@ -94,11 +94,11 @@ public struct ClientMovementInput : IComponentData
     }
 }
 
-public struct ClientCommandInput : ICommandData
+public struct ClientCommandInput : Unity.Netcode.ICommandData
 {
-    public NetworkTick Tick { get; set; }
+    public Unity.Netcode.NetworkTick Tick { get; set; }
 
-    public NetworkTick ClientInterpolationTick;
+    public Unity.Netcode.NetworkTick ClientInterpolationTick;
 
     public PlayerInput PlayerInput;
 
