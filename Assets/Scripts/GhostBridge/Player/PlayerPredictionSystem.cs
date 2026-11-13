@@ -285,6 +285,10 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                                     if (Physics.Raycast(eyePosition, aimDirection, out RaycastHit placementHit,
                                             weaponData.HitscanRange, placementMask))
                                     {
+                                        if (placementHit.collider.gameObject.layer == LayerMask.NameToLayer("PermitNeed"))
+                                        {
+                                            continue; //skip placement for this layer
+                                        }
                                         var placementPos = placementHit.point + placementHit.normal * weaponData.PlacementOffset;
                                         var surfaceRotation = Quaternion.FromToRotation(Vector3.up, placementHit.normal);
 
