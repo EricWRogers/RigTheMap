@@ -1,6 +1,6 @@
 using System;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 public abstract class GhostMonoBehaviour : MonoBehaviour

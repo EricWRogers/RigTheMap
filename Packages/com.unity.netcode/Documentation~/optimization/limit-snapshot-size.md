@@ -1,0 +1,48 @@
+# Limit snapshot size
+
+Limit the size of your snapshots to reduce bandwidth consumption and improve performance.
+
+Snapshots have a minimum send size to ensure that they're not sent unless at least some new or destroyed entities need to be replicated, but there are additional methods you can use to further optimize snapshot size.
+
+* Use [`GhostAuthoringComponent.MaxSendRate`](xref:Unity.Netcode.GhostAuthoringComponent.MaxSendRate) to limit the resend rate of each of your ghost prefab types. This can reduce total bandwidth consumption, particularly when snapshots are filling up with large ghosts with high priorities. For example, a `LootItem` ghost prefab type can be specified to only replicate, at most, on every tenth snapshot by setting `MaxSendRate` to 10.
+    * Note that `MaxSendRate` is distinct from importance. `MaxSendRate` enforces a cap on the resend interval (except when ghost chunk structural changes occur), whereas importance informs the `GhostSendSystem` of which ghost chunks should be prioritized in the next snapshot.
+* Use the per-connection component [`NetworkStreamSnapshotTargetSize`](xref:Unity.Netcode.NetworkStreamSnapshotTargetSize) to stop serializing entities into a snapshot if/when the snapshot goes above the specified byte size (`Value`). You can use this to enforce a (soft) limit on per-connection bandwidth consumption. To apply a limit globally, set a non-zero value in [`GhostSendSystemData.DefaultSnapshotPacketSize`](xref:Unity.Netcode.GhostSendSystemData.DefaultSnapshotPacketSize).
+* Use [`GhostSendSystemData.MaxSendChunks`](xref:Unity.Netcode.GhostSendSystemData.MaxSendChunks) to limit the maximum number of chunks added to any given snapshot.
+* Use [`GhostSendSystemData.MaxIterateChunks`](xref:Unity.Netcode.GhostSendSystemData.MaxIterateChunks) to limit the total number of chunks the `GhostSendSystem` iterates over and serializes when looking for ghosts to replicate. This can be useful when dealing with large numbers of static ghosts.
+* Use [`GhostSendSystemData.MinSendImportance`](xref:Unity.Netcode.GhostSendSystemData.MinSendImportance) to prevent a chunk's entities from being sent too frequently. You can also use [`GhostSendSystemData.FirstSendImportanceMultiplier`](xref:Unity.Netcode.GhostSendSystemData.FirstSendImportanceMultiplier) to bump the priority of chunks containing new entities and ensure they're replicated quickly, regardless of the `MinSendImportance` setting.
+    * It's recommended to use `GhostAuthoringComponent.MaxSendRate` instead of this global setting, where possible.
+
+> [!NOTE]
+> The optimizations described here are applied on the per-chunk level, and they're applied after a chunk's contents have been added to the snapshot. Thus, in practice, real send values will be higher. For example, if `MaxSendEntities` is set to 100, but you have two chunks, each with 99 entities, then you'd actually send 198 entities.
+
+## Reduce snapshot history size
+
+By default, Netcode for Entities stores up to 32 snapshot history buffer entries for each connection and ghost chunk pair, as defined by `GhostSystemConstants.SnapshotHistorySize:32`. This allows future snapshots to [delta-compress](compression.md) newer `GhostField` values against the latest acked of these 32 previously-sent snapshots. The `const` value of 32 is best suited for ghosts sending at very high rates (such as 60Hz), providing roughly 500ms worth of history.
+
+However, for MMO-scale games (where `MaxSendRate`s are often significantly lower), smaller snapshot history sizes may be preferable. Reducing the history size lowers memory consumption on both the server (per-connection, per-chunk baseline storage) and the client (the per-ghost received-snapshot ring buffer), which is especially valuable when you have large numbers of static or low-frequency ghosts. The trade-off is weaker delta-compression: with fewer stored baselines, the server is more likely to have overwritten an acked baseline slot before the client's ack arrives (at high round-trip-times or high send rates), which forces larger, less-compressed snapshots.
+
+### Globally, via scripting defines
+
+To change the global default `const`, define one of the following in your **Project Settings** > **Player** > **Scripting Define Symbols**:
+
+* `NETCODE_SNAPSHOT_HISTORY_SIZE_16` is a good middle-ground between size-reduction (for static ghosts) and ack availability (for dynamic ghosts). Recommended for projects where the highest `GhostPrefabCreation.Config.MaxSendRate` is 30Hz, or where the `ClientServerTickRate.NetworkTickRate` is 30.
+* `NETCODE_SNAPSHOT_HISTORY_SIZE_6` is best suited for larger scale projects, such as those with hundreds of dynamic ghosts, thousands of static ghosts, and where the player character controller is already sent at a significantly lower frequency due to congestion or widespread use of `GhostPrefabCreation.Config.MaxSendRate`.
+
+### Per ghost type, via authoring
+
+Use [`GhostAuthoringComponent.SnapshotHistorySize`](xref:Unity.Netcode.GhostAuthoringComponent.SnapshotHistorySize) (or [`GhostPrefabCreation.Config.SnapshotHistorySize`](xref:Unity.Netcode.GhostPrefabCreation.Config.SnapshotHistorySize) when creating prefabs from code) to override the history size for a single ghost prefab type. This lets you tune it independently per type. For example, a small history for numerous static ghosts, while keeping a large history for frequently-updated player characters. The value is resolved once, at bake time.
+
+* A value of `0` (the default) uses the global `GhostSystemConstants.SnapshotHistorySize` described above (including the scripting defines), so existing projects keep their current behavior.
+* Any other value is used as-is, clamped to the range [`GhostSystemConstants.MinSnapshotHistorySize`](xref:Unity.Netcode.GhostSystemConstants.MinSnapshotHistorySize) to [`GhostSystemConstants.MaxSnapshotHistorySize`](xref:Unity.Netcode.GhostSystemConstants.MaxSnapshotHistorySize) (an error is logged at bake time, and the value auto-corrected, if the authored value is outside this range).
+* The authoring inspector recommends a value per ghost, computed from its `MaxSendRate` and the configured `NetworkTickRate` assuming a worst-case ~350ms round-trip-time (refer to `GhostSystemConstants.CalculateRecommendedSnapshotHistorySize`): enough slots to retain every in-flight baseline at that RTT, plus five (the current write slot, an acked baseline, and headroom for send bursts that bypass `MaxSendRate`, such as streaming a large chunk to a joining client). A low-frequency ghost needs only a small history while an every-tick player needs a larger one.
+
+> [!NOTE]
+> The resolved per-type history size is baked into the ghost prefab and folded into the ghost type hash, so the client and server must agree on it. If they don't, whether from authoring drift, or from a client and server baked with mismatched `NETCODE_SNAPSHOT_HISTORY_SIZE_*` defines (which change how the `0` default resolves), the connection will be rejected with a ghost hash mismatch, rather than silently running with differently-sized buffers.
+
+> [!NOTE]
+> Be aware that ghost chunks may not be sent to a specific connection if their entire snapshot history buffer fills up with 'in-flight' snapshots (un-acked snapshots, sent less than one round trip ago, containing this ghost chunk). Smaller history sizes saturate sooner.
+> Refer to the `PacketDumpResult_SnapshotHistorySaturated` method for debugging.
+
+## Additional resources
+
+* [Ghosts and snapshots](../ghost-snapshots.md)

@@ -1,6 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Networking.Transport;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Multiplayer;
@@ -50,7 +50,7 @@ namespace Unity.MP_FPS
             };
         }
 
-        public void CreateClientDriver(World world, ref NetworkDriverStore driverStore, NetDebug netDebug)
+        public void CreateClientDriver(NetcodeWorld world, ref NetworkDriverStore driverStore, NetDebug netDebug)
         {
             var networkSettings = GameNetworkSettings(
                 sendQueueCapacity: 64, // Client only needs small buffers.
@@ -73,7 +73,7 @@ namespace Unity.MP_FPS
             }
         }
 
-        public void CreateServerDriver(World world, ref NetworkDriverStore driverStore, NetDebug netDebug)
+        public void CreateServerDriver(NetcodeWorld world, ref NetworkDriverStore driverStore, NetDebug netDebug)
         {
 #if UNITY_EDITOR || !UNITY_WEBGL
             const int expectedMaxPlayerCount = 1000;

@@ -1,0 +1,344 @@
+using NUnit.Framework;
+using System.Collections;
+using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.AddressableAssets.Build;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Build.DataBuilders;
+using UnityEditor.SceneManagement;
+#endif
+using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.Util;
+using UnityEngine.TestTools;
+using System;
+using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
+
+public abstract class AddressablesTestFixture : IPrebuildSetup, IPostBuildCleanup
+{
+    internal AddressablesImpl m_Addressables;
+    internal string m_RuntimeSettingsPath;
+    internal readonly string m_UniqueTestName;
+    protected virtual bool UseJsonCatalog => false;
+    protected string kCatalogExt => UseJsonCatalog ? ".json" : ".bin";
+
+    protected ContentCatalogData CreateCatalogData(string id = null) =>
+        AddressablesTestUtility.CreateCatalogData(UseJsonCatalog, id);
+
+    protected AddressablesTestFixture()
+    {
+        m_UniqueTestName = this.GetType().Name;
+    }
+
+    protected enum TestBuildScriptMode
+    {
+        Fast,
+        PackedPlaymode,
+        Packed,
+        SchemaDriven
+    }
+
+    protected virtual TestBuildScriptMode BuildScriptMode { get; }
+
+    protected string GetGeneratedAssetsPath()
+    {
+        return Path.Combine("Assets", "gen", m_UniqueTestName);
+    }
+
+    [UnitySetUp]
+    public virtual IEnumerator RuntimeSetup()
+    {
+#if ENABLE_CACHING
+        Caching.ClearCache();
+#endif
+        // Defensive: dispose if a prior setup/teardown path left an instance (e.g. teardown threw or aborted).
+        if (m_Addressables != null)
+        {
+            try
+            {
+                m_Addressables.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"AddressablesTestFixture: Dispose during UnitySetUp cleanup failed (continuing with fresh instance): {ex.Message}");
+            }
+            m_Addressables = null;
+        }
+
+        m_Addressables = new AddressablesImpl(new DefaultAllocationStrategy());
+        m_RuntimeSettingsPath = AddressablesImpl.ResolveInternalId(GetRuntimeAddressablesSettingsPath(m_UniqueTestName));
+        yield return InitAddressables();
+    }
+
+    protected virtual IEnumerator InitAddressables()
+    {
+        var op = m_Addressables.InitializeAsync(m_RuntimeSettingsPath, null, false);
+        yield return op;
+        Assert.AreEqual(AsyncOperationStatus.Succeeded, op.Status);
+        OnRuntimeSetup();
+        if (op.IsValid())
+            op.Release();
+    }
+
+    protected virtual void OnRuntimeSetup()
+    {
+    }
+
+    [TearDown]
+    public virtual void RuntimeTeardown()
+    {
+        if (m_Addressables == null)
+            return;
+        try
+        {
+            m_Addressables.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"AddressablesTestFixture: Dispose during TearDown failed: {ex.Message}");
+        }
+        m_Addressables = null;
+    }
+
+    void IPrebuildSetup.Setup()
+    {
+#if UNITY_EDITOR
+        bool currentIgnoreState = LogAssert.ignoreFailingMessages;
+        LogAssert.ignoreFailingMessages = true;
+
+        var activeScenePath = EditorSceneManager.GetActiveScene().path;
+
+        string rootFolder = GetGeneratedAssetsPath();
+        Directory.CreateDirectory(rootFolder);
+        AddressableAssetSettings settings = CreateSettings("Settings", rootFolder);
+        settings.EnableJsonCatalog = UseJsonCatalog;
+
+        Setup(settings, rootFolder);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
+        RunBuilder(settings);
+
+        if (activeScenePath != EditorSceneManager.GetActiveScene().path)
+            EditorSceneManager.OpenScene(activeScenePath, OpenSceneMode.Single);
+        LogAssert.ignoreFailingMessages = currentIgnoreState;
+#endif
+    }
+
+    void IPostBuildCleanup.Cleanup()
+    {
+#if UNITY_EDITOR
+        string path = Path.Combine("Assets", "gen");
+        if (Directory.Exists(path))
+            AssetDatabase.DeleteAsset(path);
+#endif
+    }
+
+#if UNITY_EDITOR
+
+    internal virtual void Setup(AddressableAssetSettings settings, string tempAssetFolder)
+    {
+    }
+
+    protected AddressableAssetSettings CreateSettings(string name, string rootFolder)
+    {
+        if (Directory.Exists(rootFolder))
+            DirectoryUtility.DeleteDirectory(rootFolder, false);
+        Directory.CreateDirectory(rootFolder);
+        return AddressableAssetSettings.Create(Path.Combine(rootFolder, name), "AddressableAssetSettings.Tests", false, true);
+    }
+
+    protected virtual void RunBuilder(AddressableAssetSettings settings)
+    {
+        RunBuilder(settings, m_UniqueTestName);
+    }
+
+    protected void RunBuilder(AddressableAssetSettings settings, string id)
+    {
+        var buildContext = new AddressablesDataBuilderInput(settings);
+        buildContext.RuntimeSettingsFilename = "settings" + id + ".json";
+        buildContext.RuntimeCatalogFilename = "catalog" + id + kCatalogExt;
+        //    buildContext.PathFormat = "{0}" + Addressables.LibraryPath + "{1}_" + id + kCatalogExt;
+        buildContext.PathSuffix = "_" + id;
+        if (BuildScriptMode == TestBuildScriptMode.PackedPlaymode)
+        {
+            IDataBuilder packedModeBuilder = GetBuilderOfType(settings, typeof(BuildScriptPackedMode));
+            packedModeBuilder.BuildData<AddressableAssetBuildResult>(buildContext);
+        }
+
+        IDataBuilder b = GetBuilderOfType(settings, GetBuildScriptTypeFromMode(BuildScriptMode));
+#if ENABLE_CONTENT_DIRECTORIES
+        if(BuildScriptMode == TestBuildScriptMode.SchemaDriven)
+            b.BuildData<AddressablesPlayerBuildResult>(buildContext);
+        else
+#endif
+            b.BuildData<AddressableAssetBuildResult>(buildContext);
+#if UNITY_EDITOR
+        SessionState.SetString(Addressables.kAddressablesRuntimeDataPath + id, SessionState.GetString(Addressables.kAddressablesRuntimeDataPath, ""));
+#else
+        Assert.Fail("Should not be running the builder in play mode.");
+        return;
+#endif
+    }
+
+    static IDataBuilder GetBuilderOfType(AddressableAssetSettings settings, Type modeType)
+    {
+        foreach (var db in settings.DataBuilders)
+        {
+            var b = db;
+            if (b.GetType() == modeType)
+                return b as IDataBuilder;
+        }
+
+        throw new Exception("DataBuilder not found");
+    }
+
+    protected Type GetBuildScriptTypeFromMode(TestBuildScriptMode mode)
+    {
+        switch (mode)
+        {
+            case TestBuildScriptMode.Fast: return typeof(BuildScriptFastMode);
+            case TestBuildScriptMode.Packed: return typeof(BuildScriptPackedMode);
+            case TestBuildScriptMode.PackedPlaymode: return typeof(BuildScriptPackedPlayMode);
+#if ENABLE_CONTENT_DIRECTORIES
+            case TestBuildScriptMode.SchemaDriven: return typeof(BuildScriptSchemaDriven);
+#endif
+        }
+
+        throw new Exception("Unknown script mode");
+    }
+
+#endif
+
+        protected string GetRuntimeAddressablesSettingsPath(string id)
+    {
+        if (BuildScriptMode == TestBuildScriptMode.Packed || BuildScriptMode == TestBuildScriptMode.PackedPlaymode || BuildScriptMode == TestBuildScriptMode.SchemaDriven)
+            return "{UnityEngine.AddressableAssets.Addressables.RuntimePath}/settings" + id + ".json";
+        else if (BuildScriptMode == TestBuildScriptMode.Fast)
+        {
+#if UNITY_EDITOR
+            return SessionState.GetString(Addressables.kAddressablesRuntimeDataPath + id, "");
+#else
+            Assert.Fail("FastMode should only be used in the editor..");
+            return null;
+#endif
+        }
+        else
+        {
+            return string.Format("{0}" + Addressables.LibraryPath + "settings_{1}.json", "file://{UnityEngine.Application.dataPath}/../", id);
+        }
+    }
+
+    internal static string CreateAssetPath(string rootFolder, string key, string extension)
+    {
+        return Path.Combine(rootFolder, String.Concat(key, extension));
+    }
+
+#if UNITY_EDITOR
+    internal static string CreateScene(string assetPath)
+    {
+        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+        EditorSceneManager.SaveScene(scene, assetPath);
+        return AssetDatabase.AssetPathToGUID(scene.path);
+    }
+
+    internal static string CreatePrefab(string assetPath)
+    {
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        PrefabUtility.SaveAsPrefabAsset(go, assetPath);
+        Object.DestroyImmediate(go, false);
+        return AssetDatabase.AssetPathToGUID(assetPath);
+    }
+           protected string CreateFolderDeep(string path)
+        {
+            path = path.Replace('\\', '/');
+            if (!path.StartsWith("Assets/", StringComparison.Ordinal))
+                return null;
+
+            if (Directory.Exists(path))
+            {
+                if (AssetDatabase.IsValidFolder(path))
+                    return AssetDatabase.AssetPathToGUID(path);
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+                return AssetDatabase.AssetPathToGUID(path);
+            }
+
+            Directory.CreateDirectory(path);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            return AssetDatabase.AssetPathToGUID(path);
+        }
+        protected string CreateAsset(string assetPath, string objectName = null)
+        {
+            if (string.IsNullOrEmpty(objectName))
+                objectName = Path.GetFileNameWithoutExtension(assetPath);
+
+            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = objectName;
+            //this is to ensure that bundles are different for every run.
+            go.transform.localPosition = UnityEngine.Random.onUnitSphere;
+            var mat = new Material(Shader.Find("Standard"));
+            var tex = new Texture2D(32, 32);
+            var texPath = assetPath.Replace(".prefab", ".png");
+            File.WriteAllBytes(texPath, tex.EncodeToPNG());
+            AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceSynchronousImport);
+            mat.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
+            var matPath = assetPath.Replace(".prefab", ".mat");
+            AssetDatabase.CreateAsset(mat, matPath);
+            AssetDatabase.ImportAsset(matPath, ImportAssetOptions.ForceSynchronousImport);
+            go.GetComponent<MeshRenderer>().sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(matPath);
+            string directoryName = Path.GetDirectoryName(assetPath);
+            CreateFolderDeep(directoryName);
+            try
+            {
+                Assert.IsTrue(AssetDatabase.IsValidFolder(directoryName), "Attempting to save prefab to invalid Folder : " + directoryName);
+                Assert.IsTrue(Directory.Exists(directoryName), "Folder is not in FileSystem, but is in ADB : " + directoryName);
+                Assert.IsNotNull(go, "Attempting to save null GameObject to Prefab");
+                PrefabUtility.SaveAsPrefabAsset(go, assetPath);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error while attempting to save prefab {objectName} to {assetPath} with Exception message {e.Message}");
+                throw e;
+            }
+
+            UnityEngine.Object.DestroyImmediate(go, false);
+            return AssetDatabase.AssetPathToGUID(assetPath);
+        }
+
+#endif
+
+    internal static IEnumerator UnloadSceneFromHandler(AsyncOperationHandle<SceneInstance> op, AddressablesImpl addressables, bool sceneExpectedToBeLoaded = true)
+    {
+        string sceneName = op.Result.Scene.name;
+        if (sceneExpectedToBeLoaded)
+        {
+            Assert.IsNotNull(sceneName);
+            Assert.IsTrue(SceneManager.GetSceneByName(sceneName).isLoaded);
+        }
+        var unloadOp = addressables.UnloadSceneAsync(op, UnloadSceneOptions.None, false);
+        yield return unloadOp;
+        Assert.IsTrue(unloadOp.IsValid());
+        Assert.AreEqual(AsyncOperationStatus.Succeeded, unloadOp.Status);
+        Assert.IsFalse(unloadOp.Result.Scene.isLoaded);
+        Assert.IsTrue(unloadOp.IsDone);
+        unloadOp.Release();
+        Assert.IsNull(SceneManager.GetSceneByName(sceneName).name);
+    }
+
+    internal static IEnumerator UnloadSceneFromHandlerRefCountCheck(AsyncOperationHandle<SceneInstance> op, AddressablesImpl addressables)
+    {
+        string sceneName = op.Result.Scene.name;
+        Assert.IsNotNull(sceneName);
+        var prevRefCount = op.ReferenceCount;
+        var unloadOp = addressables.UnloadSceneAsync(op, UnloadSceneOptions.None, false);
+        yield return unloadOp;
+        Assert.AreEqual(AsyncOperationStatus.Succeeded, unloadOp.Status);
+        Assert.IsFalse(unloadOp.Result.Scene.isLoaded);
+        if (op.IsValid())
+            Assert.AreEqual(prevRefCount - 1, op.ReferenceCount);
+    }
+}

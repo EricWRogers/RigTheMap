@@ -1,7 +1,7 @@
 using Unity.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.MP_FPS

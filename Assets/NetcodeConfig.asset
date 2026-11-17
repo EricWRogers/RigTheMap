@@ -11,9 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abd30ee0214cf6a45b2d76765a4615b1, type: 3}
   m_Name: NetcodeConfig
-  m_EditorClassIdentifier: Unity.NetCode::Unity.NetCode.NetCodeConfig
-  IsGlobalConfig: 0
+  m_EditorClassIdentifier: Unity.NetCode::Unity.Netcode.NetcodeConfig
+  m_IsGlobalConfig: 1
   EnableClientServerBootstrap: 1
+  HostWorldModeSelection: 1
   ClientServerTickRate:
     SimulationTickRate: 60
     PredictedFixedStepSimulationTickRatio: 1
@@ -26,7 +27,7 @@ MonoBehaviour:
     m_ClampPartialTicksThreshold: 5
     HandshakeApprovalTimeoutMS: 5000
   ClientTickRate:
-    InterpolationTimeNetTicks: 5
+    InterpolationTimeNetTicks: 2
     InterpolationTimeMS: 0
     MaxExtrapolationTimeSimTicks: 20
     ForcedInputLatencyTicks: 0
@@ -37,6 +38,7 @@ MonoBehaviour:
     NumAdditionalCommandsToSend: 2
     MaxPredictionStepBatchSizeRepeatedTick: 0
     MaxPredictionStepBatchSizeFirstTimeTick: 0
+    AlwaysRollbackAllPredictedGhosts: 0
     PredictionLoopUpdateMode: 0
     InterpolationDelayJitterScale: 1.25
     InterpolationDelayMaxDeltaTicksFraction: 0.1
@@ -68,6 +70,7 @@ MonoBehaviour:
   DisconnectTimeoutMS: 30000
   HeartbeatTimeoutMS: 500
   ReconnectionTimeoutMS: 2000
+  GhostPrefabLoadingTimeout: 0
   ClientSendQueueCapacity: 64
   ClientReceiveQueueCapacity: 64
   ServerSendQueueCapacity: 512

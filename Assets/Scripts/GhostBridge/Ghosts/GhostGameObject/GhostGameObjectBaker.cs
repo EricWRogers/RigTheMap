@@ -1,6 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using Hash128 = Unity.Entities.Hash128;

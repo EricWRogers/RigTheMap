@@ -2,7 +2,7 @@
 using Unity.Scenes.Editor;
 #endif
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 using Hash128 = Unity.Entities.Hash128;
 
@@ -75,6 +75,12 @@ public class GhostBridgeBootstrap : ClientServerBootstrap
     public override bool Initialize(string defaultWorldName)
     {
         Instance = this;
+
+        // This project creates its server worlds and calls Listen with the endpoint
+        // selected by the session/host flow. Netcode's default AutoConnectPort also
+        // listens during server world initialization, which binds the same driver
+        // before GameManager or the dedicated-server bootstrap calls Listen.
+        ClientServerBootstrap.AutoConnectPort = 0;
 
 #if UNITY_SERVER
         // turn off stack trace for logs (it clutters the console window)

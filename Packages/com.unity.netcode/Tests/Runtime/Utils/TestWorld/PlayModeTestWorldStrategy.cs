@@ -1,0 +1,166 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using NUnit.Framework;
+using Unity.Collections;
+using Unity.Entities;
+using UnityEngine;
+using UnityEngine.LowLevel;
+
+namespace Unity.Netcode.Tests
+{
+    internal partial class PlayModeTestWorldStrategy : NetCodeTestWorld.ITestWorldStrategy
+    {
+        NetCodeTestWorld m_TestWorld;
+        PlayerLoopSystem m_OldLoop;
+        int m_oldThinClientRequestCount;
+        public float DeltaTime { private get; set; } = 1 / 60f;
+        public World DefaultWorld => World.DefaultGameObjectInjectionWorld;
+
+        public void Dispose()
+        {
+            PlayerLoop.SetPlayerLoop(m_OldLoop);
+#if UNITY_EDITOR
+            MultiplayerPlayModePreferences.RequestedNumThinClients = m_oldThinClientRequestCount;
+#endif
+        }
+
+        internal void ApplyDT()
+        {
+
+        }
+
+        public void Bootstrap(NetCodeTestWorld testWorld)
+        {
+            this.m_TestWorld = testWorld;
+
+            var mainLoop = PlayerLoop.GetCurrentPlayerLoop();
+            var oldLoop = mainLoop;
+            m_OldLoop = oldLoop;
+#if UNITY_EDITOR
+            m_oldThinClientRequestCount = MultiplayerPlayModePreferences.RequestedNumThinClients;
+#endif
+            List<PlayerLoopSystem> systemList = new();
+            systemList.AddRange(mainLoop.subSystemList);
+            systemList.Insert(1, new PlayerLoopSystem()
+            {
+                type = typeof(PlayModeTestWorldStrategy),
+                updateDelegate = UpdateTimeFromUpdateLoop
+            });
+
+            mainLoop.subSystemList = systemList.ToArray();
+
+            Assert.AreNotEqual(mainLoop.subSystemList, m_OldLoop);
+            PlayerLoop.SetPlayerLoop(mainLoop);
+        }
+
+        #region world management
+        public NetcodeWorld CreateClientWorld(string name, bool thinClient, NetcodeWorld world = null)
+        {
+            if (world == null)
+            {
+                if (thinClient)
+                {
+                    TypeManager.SortSystemTypesInCreationOrder(NetCodeTestWorld.m_ThinClientSystems); // Ensure CreationOrder is respected.
+                    world = (NetcodeWorld)ClientServerBootstrap.CreateThinClientWorld(NetCodeTestWorld.m_ThinClientSystems, name);
+                }
+                else
+                {
+                    TypeManager.SortSystemTypesInCreationOrder(NetCodeTestWorld.m_ClientSystems); // Ensure CreationOrder is respected.
+                    world = (NetcodeWorld)ClientServerBootstrap.CreateClientWorld(name, NetCodeTestWorld.m_ClientSystems);
+                }
+            }
+            world.GetExistingSystemManaged<UpdateWorldTimeSystem>().Enabled = false;
+#if UNITY_EDITOR
+            if (thinClient)
+            {
+                MultiplayerPlayModePreferences.RequestedNumThinClients += 1; // this way any code calls don't conflict with editor side settings and we won't randomly get our code side thin client worlds destroyed by the editor
+                AutomaticThinClientWorldsUtility.AutomaticallyManagedWorlds.Add(world); // this makes the thin client world known to the automatic management system so it won't create an extra one
+            }
+#endif
+            return (NetcodeWorld)world;
+        }
+
+        public NetcodeWorld CreateServerWorld(string name, NetcodeWorld world = null)
+        {
+            if (world == null)
+            {
+                TypeManager.SortSystemTypesInCreationOrder(NetCodeTestWorld.m_ServerSystems); // Ensure CreationOrder is respected.
+                world = (NetcodeWorld)ClientServerBootstrap.CreateServerWorld(name, NetCodeTestWorld.m_ServerSystems);
+            }
+            world.GetExistingSystemManaged<UpdateWorldTimeSystem>().Enabled = false;
+            return (NetcodeWorld)world;
+        }
+
+        public NetcodeWorld CreateHostWorld(string name, NetcodeWorld world = null)
+        {
+            if (world == null)
+            {
+                TypeManager.SortSystemTypesInCreationOrder(NetCodeTestWorld.m_HostSystems); // Ensure CreationOrder is respected.
+                world = (NetcodeWorld)ClientServerBootstrap.CreateSingleWorldHost(name, NetCodeTestWorld.m_HostSystems);
+            }
+            world.GetExistingSystemManaged<UpdateWorldTimeSystem>().Enabled = false;
+            return (NetcodeWorld)world;
+        }
+
+        public void DisposeClientWorld(NetcodeWorld world)
+        {
+            if (m_TestWorld.AlwaysDispose || world.IsCreated)
+                world.Dispose();
+        }
+
+        public void DisposeServerWorld(NetcodeWorld world)
+        {
+            if (m_TestWorld.AlwaysDispose || world.IsCreated)
+                world.Dispose();
+        }
+        #endregion
+
+        #region ticking
+        public void TickNoAwait(float dt, bool skipSanityCheck = false)
+        {
+            throw new NotSupportedException("Must yield in playmode");
+        }
+
+        public async Task TickAsync(float dt, Awaitable awaitInstruction = null, bool skipSanityCheck = false)
+        {
+            DeltaTime = dt;
+            if (awaitInstruction == null)
+            {
+                await Awaitable.NextFrameAsync();
+                // await Awaitable.EndOfFrameAsync(); // TODO this hangs forever when in batchmode, so hacking this for now with yield in tests that need it
+            }
+            else
+                await awaitInstruction; // Unity depends on the type of the awaitable, rather than the actual functionality. So we can't return an
+                                                  // awaitable that "acts" as the specified awaitable (WaitForEndOfFrame for example), we need to return the
+                                                  // actual WaitForEndOfFrame awaitable
+        }
+
+        public void TickClientWorld(float dt, bool clientOnly)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TickServerWorld(float dt)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        public void RemoveWorldFromUpdateList(World world)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisposeDefaultWorld()
+        {
+            throw new NotImplementedException();
+        }
+
+        void UpdateTimeFromUpdateLoop()
+        {
+            m_TestWorld.ApplyDT(DeltaTime);
+        }
+    }
+}
