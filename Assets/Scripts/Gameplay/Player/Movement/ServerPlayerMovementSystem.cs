@@ -721,6 +721,8 @@ namespace Unity.MP_FPS
                 }
             }
 
+            UnityEngine.Physics.SyncTransforms();
+
             foreach (var (predictedPlayer, inputLookup, entity)
                      in SystemAPI.Query<
                          RefRW<PredictedPlayerGhost>,
@@ -1761,6 +1763,8 @@ namespace Unity.MP_FPS
                 }
                 else
                 {
+                    controllerLink.Controller.Value.ApplyPosRotImmediate(
+                        predictedPlayer.ValueRO.ControllerState);
                     controllerLink.Controller.Value.GroundedCheck(
                         ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
@@ -1794,6 +1798,8 @@ namespace Unity.MP_FPS
                 predictedPlayer.ValueRW.AccumulatedMovement =
                     float3.zero;
             }
+
+            UnityEngine.Physics.SyncTransforms();
 
             bool checkForPredictionErrors =
                 PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
