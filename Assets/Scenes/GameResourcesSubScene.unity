@@ -168,8 +168,8 @@ MonoBehaviour:
   <PlayerRifleEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: d66bf1c0cf4a94990815a86b3d55b686, type: 3}
   <PlayerRifleEntityPrefabB>k__BackingField: {fileID: 5939953900665156735, guid: a6af37d9cf6b0924899adb53077731dd, type: 3}
   <PlayerRifleEntityPrefabG>k__BackingField: {fileID: 0}
-  <PlayerShotgunEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: 4b8a5f6ec4d23ff4895b80ffbb3f2117, type: 3}
-  <PlayerShotgunEntityPrefabB>k__BackingField: {fileID: 0}
+  <PlayerShotgunEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: f4bc4302cb16c4e29aaa203772f1461c, type: 3}
+  <PlayerShotgunEntityPrefabB>k__BackingField: {fileID: 5939953900665156735, guid: 4b8a5f6ec4d23ff4895b80ffbb3f2117, type: 3}
   <PlayerShotgunEntityPrefabG>k__BackingField: {fileID: 0}
   <PlayerSharkEntityPrefab>k__BackingField: {fileID: 5939953900665156735, guid: abdf45bd23d9a4c458ba972b8772a0d9, type: 3}
   <PlayerSharkEntityPrefabB>k__BackingField: {fileID: 5939953900665156735, guid: b9fd7ce51a77b5f49b057d8e29034e61, type: 3}

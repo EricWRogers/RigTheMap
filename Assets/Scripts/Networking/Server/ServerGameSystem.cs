@@ -344,23 +344,23 @@ namespace Unity.MP_FPS
             var playerEntityPrefab = isBuildMode
                 ? GetTeamPrefab(
                     teamId,
-                    playerEntityPrefabs.PlayerBuildEntityPrefabB,
-                    playerEntityPrefabs.PlayerBuildEntityPrefabB,
+                    playerEntityPrefabs.PlayerBuildEntityPrefab,
+                    playerEntityPrefabs.PlayerBuildEntityPrefab,
                     playerEntityPrefabs.PlayerBuildEntityPrefab)
                 : characterIndex switch
             {// JURY RIGGED ALL BLUES
-                0 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefabB,
-                    playerEntityPrefabs.PlayerRifleEntityPrefabB, playerEntityPrefabs.PlayerRifleEntityPrefab),
-                1 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSharkEntityPrefabB,
-                    playerEntityPrefabs.PlayerSharkEntityPrefabB, playerEntityPrefabs.PlayerSharkEntityPrefab),
-                2 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerHammerEntityPrefabB,
-                    playerEntityPrefabs.PlayerHammerEntityPrefabB, playerEntityPrefabs.PlayerHammerEntityPrefab),
-                3 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerShotgunEntityPrefabB,
-                    playerEntityPrefabs.PlayerShotgunEntityPrefabB, playerEntityPrefabs.PlayerShotgunEntityPrefab),
-                4 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSixShooterEntityPrefabB,
-                    playerEntityPrefabs.PlayerSixShooterEntityPrefabB, playerEntityPrefabs.PlayerSixShooterEntityPrefab),
-                _ => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefabB,
-                    playerEntityPrefabs.PlayerRifleEntityPrefabB, playerEntityPrefabs.PlayerRifleEntityPrefab)
+                0 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefab,
+                    playerEntityPrefabs.PlayerRifleEntityPrefab, playerEntityPrefabs.PlayerRifleEntityPrefab),
+                1 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSharkEntityPrefab,
+                    playerEntityPrefabs.PlayerSharkEntityPrefab, playerEntityPrefabs.PlayerSharkEntityPrefab),
+                2 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerHammerEntityPrefab,
+                    playerEntityPrefabs.PlayerHammerEntityPrefab, playerEntityPrefabs.PlayerHammerEntityPrefab),
+                3 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerShotgunEntityPrefab,
+                    playerEntityPrefabs.PlayerShotgunEntityPrefab, playerEntityPrefabs.PlayerShotgunEntityPrefab),
+                4 => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerSixShooterEntityPrefab,
+                    playerEntityPrefabs.PlayerSixShooterEntityPrefab, playerEntityPrefabs.PlayerSixShooterEntityPrefab),
+                _ => GetTeamPrefab(teamId, playerEntityPrefabs.PlayerRifleEntityPrefab,
+                    playerEntityPrefabs.PlayerRifleEntityPrefab, playerEntityPrefabs.PlayerRifleEntityPrefab)
             };
             var playerEntity = ecb.Instantiate(playerEntityPrefab);
             Debug.LogWarning(
