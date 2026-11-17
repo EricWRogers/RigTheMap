@@ -525,8 +525,8 @@ namespace Unity.MP_FPS
             var unityFrameCount =
                 UnityEngine.Time.frameCount;
 
-            var logPredictionWarnings =
-                PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
+            var logPredictionWarnings = true;
+                //PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
 
             var clientCommandInputBufferLookup =
                 SystemAPI.GetBufferLookup<ClientCommandInput>(true);
