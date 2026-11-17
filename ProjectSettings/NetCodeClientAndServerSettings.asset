@@ -15,7 +15,7 @@ MonoBehaviour:
   FilterSettings:
     ExcludedBakingSystemAssemblies: []
   AdditionalScriptingDefines: []
-  GlobalNetcodeConfig: {fileID: 11400000, guid: e9c40b1217edc0647970011080376e0e, type: 2}
+  GlobalNetcodeConfig: {fileID: 11400000, guid: 496cedd42ea74ca4291828b250e677a4, type: 2}
   CurrentImportanceSuggestions:
   - MinValue: 1
     MaxValue: 4
