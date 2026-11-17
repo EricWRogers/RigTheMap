@@ -639,6 +639,7 @@ public class FirstPersonController : MonoBehaviour
             m_Controller.enabled = false;
             transform.position = state.CurrentPosition;
             m_Controller.enabled = true;
+            Physics.SyncTransforms();
 
 #if UNITY_EDITOR || DEBUG
             float deltaSqrd = math.distancesq(state.CurrentPosition, transform.position);
@@ -650,6 +651,7 @@ public class FirstPersonController : MonoBehaviour
         {
             // set directly, no physics required
             transform.position = state.CurrentPosition;
+            Physics.SyncTransforms();
         }
     }
 
@@ -657,6 +659,7 @@ public class FirstPersonController : MonoBehaviour
     {
         ApplyPosImmediate(state);
         transform.rotation = state.CurrentRotation;
+        Physics.SyncTransforms();
     }
 
     private static void GetStateConsts(out ControllerConsts.StateConsts stateConsts, ref ControllerState state,
@@ -813,6 +816,7 @@ public class FirstPersonController : MonoBehaviour
             {
                 // just apply our move as normal
                 m_Controller.Move(movementToApply);
+                Physics.SyncTransforms();
             }
         }
 

@@ -84,8 +84,8 @@ namespace Unity.MP_FPS
             var query = GetEntityQuery(typeof(PlayerControllerLink));
             foreach (var entity in query.ToEntityArray(Allocator.Temp))
             {
-                var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
-                controllerLink.Controller = null;
+                var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
+                controllerLink.Controller = default;
                 EntityManager.SetComponentData(entity, controllerLink);
             }
 
@@ -115,10 +115,10 @@ namespace Unity.MP_FPS
                          .WithAll<PlayerInputComponent, GhostGameObjectLink>()
                          .WithNone<PlayerControllerLink>())
             {
-                var gameObjectLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                if (gameObjectLink.LinkedInstance != null)
+                var gameObjectLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                if (gameObjectLink.LinkedInstance.Value != null)
                 {
-                    if (gameObjectLink.LinkedInstance.TryGetComponent<FirstPersonController>(out var controller))
+                    if (gameObjectLink.LinkedInstance.Value.TryGetComponent<FirstPersonController>(out var controller))
                     {
                         ecb.AddComponent(entity, new PlayerControllerLink { Controller = controller });
                         predictedPlayer.ValueRW.ControllerState.Init(localTransform.ValueRO.Position,
@@ -259,14 +259,16 @@ namespace Unity.MP_FPS
                 }
             }
 
+            UnityEngine.Physics.SyncTransforms();
+
             foreach (var (predictedPlayer, inputLookup,
                          entity)
                      in SystemAPI.Query<RefRW<PredictedPlayerGhost>, RefRO<PlayerClientCommandInputLookup>>()
                          .WithEntityAccess()
                          .WithAll<Simulate, GhostGameObjectLink>())
             {
-                var ghostLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                var playerGhost = ghostLink.LinkedInstance.GetComponent<PlayerGhost>();
+                var ghostLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                var playerGhost = ghostLink.LinkedInstance.Value.GetComponent<PlayerGhost>();
                 var predictedClient = predictedClientInputComponentLookup[inputLookup.ValueRO.ClientCommandInputEntity];
                 if (predictedClient.InputCount > 0)
                 {
@@ -510,17 +512,24 @@ namespace Unity.MP_FPS
                          .WithNone<GhostGameObjectDeferredActivation>()
                          .WithEntityAccess())
             {
-                var controllerLink = SystemAPI.ManagedAPI.GetComponent<PlayerControllerLink>(entity);
+                var controllerLink = SystemAPI.GetComponent<PlayerControllerLink>(entity);
                 if (math.lengthsq(predictedPlayer.ValueRO.AccumulatedMovement) > 0f)
                 {
-                    controllerLink.Controller.ApplyMovementUpdate(ref predictedPlayer.ValueRW.ControllerState,
+                    controllerLink.Controller.Value.ApplyMovementUpdate(ref predictedPlayer.ValueRW.ControllerState,
                         controllerConsts.ValueRO.ControllerConsts,
                         predictedPlayer.ValueRO.AccumulatedMovement,
                         deltaTime);
                 }
+                else
+                {
+                    controllerLink.Controller.Value.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
+                    controllerLink.Controller.Value.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts.ValueRO.ControllerConsts);
+                }
 
                 predictedPlayer.ValueRW.AccumulatedMovement = float3.zero;
             }
+
+            UnityEngine.Physics.SyncTransforms();
 
             bool checkForPredictionErrors = PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
 

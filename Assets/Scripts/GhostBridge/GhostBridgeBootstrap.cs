@@ -74,6 +74,7 @@ public class GhostBridgeBootstrap : ClientServerBootstrap
 
     public override bool Initialize(string defaultWorldName)
     {
+        UnityEngine.Physics.SyncTransforms();
         Instance = this;
 
         // This project creates its server worlds and calls Listen with the endpoint

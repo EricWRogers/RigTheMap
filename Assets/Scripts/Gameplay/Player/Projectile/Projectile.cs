@@ -92,6 +92,8 @@ namespace Unity.MP_FPS
             float projectileRadius = 0.2f;
             float distanceThisFrame = weaponData.ProjectileSpeed * deltaTime;
 
+            UnityEngine.Physics.SyncTransforms();
+
             // Combine layer masks for a single, efficient cast
             if (UnityEngine.Physics.SphereCast(transform.position, projectileRadius, transform.forward,
                     out RaycastHit hitInfo, distanceThisFrame, _hitLayerMask, QueryTriggerInteraction.Ignore))

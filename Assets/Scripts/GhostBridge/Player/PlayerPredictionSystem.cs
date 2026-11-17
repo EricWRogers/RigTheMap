@@ -366,8 +366,8 @@ public partial class PlayerPredictionSystem : SingletonSystem<PlayerPredictionSy
                 else
                 {
                     // we should just apply our current state
-                    controllerLink.Controller.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
-                    controllerLink.Controller.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
+                    controllerLink.Controller.Value.ApplyPosRotImmediate(predictedPlayer.ValueRO.ControllerState);
+                    controllerLink.Controller.Value.GroundedCheck(ref predictedPlayer.ValueRW.ControllerState, controllerConsts);
                 }
             }
 

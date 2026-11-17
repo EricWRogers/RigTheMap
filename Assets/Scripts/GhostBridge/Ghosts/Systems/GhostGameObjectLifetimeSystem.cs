@@ -21,13 +21,13 @@ public struct GhostGameObjectLink : ICleanupComponentData
 }
 
 // added to a ghost when it's activation is deferred until conditions are met
-public class GhostGameObjectDeferredActivation : ICleanupComponentData
+public struct GhostGameObjectDeferredActivation : ICleanupComponentData
 {
 }
 
 // added to all active ghosts. It is automatically removed when a ghost is marked as destroyed
 // (but potentially before the gameobject has been destroyed)
-public class GhostGameObjectActive : IComponentData
+public struct GhostGameObjectActive : IComponentData
 {
 }
 
@@ -94,7 +94,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
         m_GhostEntityList = new NativeList<Entity>(k_InitialGhostListCapacity, Allocator.Persistent);
 
-        RequireForUpdate<NetworkId>();
+        RequireForUpdate<Unity.Netcode.NetworkId>();
     }
 
     protected override void OnDestroy()
@@ -118,9 +118,9 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
     protected override void OnUpdate()
     {
-        bool isClient = World.IsClient();
-        bool isServer = World.IsServer();
-        int networkId = isClient ? SystemAPI.GetSingleton<NetworkId>().Value : 0;
+        bool isClient = Unity.Netcode.ClientServerWorldExtensions.IsClient(World);
+        bool isServer = Unity.Netcode.ClientServerWorldExtensions.IsServer(World);
+        int networkId = isClient ? SystemAPI.GetSingleton<Unity.Netcode.NetworkId>().Value : 0;
         var prefabSystem = GhostEntityPrefabSystem.Instance(World);
 
         if (!prefabSystem.PrefabsLoaded || ManagerGhostsSpawner.Instance == null)
@@ -134,7 +134,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
                      ghost,
                      localTransform, entity)
                  in SystemAPI
-                     .Query<RefRW<GhostGameObjectGuid>, RefRO<GhostGameObjectPrefabReference>, RefRO<GhostInstance>,
+                     .Query<RefRW<GhostGameObjectGuid>, RefRO<GhostGameObjectPrefabReference>, RefRO<Unity.Netcode.GhostInstance>,
                          RefRO<LocalTransform>>()
                      .WithNone<GhostGameObjectLink>()
                      .WithEntityAccess())
@@ -293,9 +293,9 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
                 bool isManager = ghostGameObject.TryGetComponent<IGhostManager>(out _);
                 var role = isServer ? MultiplayerRole.Server : MultiplayerRole.ClientProxy;
-                if (isClient && SystemAPI.HasComponent<GhostOwner>(entity))
+                if (isClient && SystemAPI.HasComponent<Unity.Netcode.GhostOwner>(entity))
                 {
-                    if (SystemAPI.GetComponent<GhostOwner>(entity).NetworkId == networkId)
+                    if (SystemAPI.GetComponent<Unity.Netcode.GhostOwner>(entity).NetworkId == networkId)
                     {
                         role = MultiplayerRole.ClientOwned;
                     }
@@ -351,7 +351,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
             // This robust check prevents the MissingReferenceException.
             // We check both the C# wrapper and the underlying Unity GameObject.
-            if (link.LinkedInstance != null && link.LinkedInstance.gameObject != null)
+            if (link.LinkedInstance.Value != null && link.LinkedInstance.Value.gameObject != null)
             {
                 link.LinkedInstance.Value.UpdateParentReference();
             }
@@ -549,7 +549,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
     private static void LogDormacy(List<GhostGameObject> ghostList, World world, bool logAwakeGhosts = false)
     {
         Type[] types;
-        if (world == ClientServerBootstrap.ServerWorld)
+        if (world == Unity.Netcode.ClientServerBootstrap.ServerWorld)
         {
             types = new Type[]
             {
@@ -647,10 +647,10 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         }
         else
         {
-            var world = ClientServerBootstrap.ServerWorld;
+            var world = Unity.Netcode.ClientServerBootstrap.ServerWorld;
             if (args[0] == "client")
             {
-                world = ClientServerBootstrap.ClientWorld;
+                world = Unity.Netcode.ClientServerBootstrap.ClientWorld;
             }
 
             if (world != null)
@@ -671,7 +671,7 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             return;
         }
 
-        if (ClientServerBootstrap.ServerWorld == null)
+        if (Unity.Netcode.ClientServerBootstrap.ServerWorld == null)
         {
             Debug.LogWarning("The command 'spawn' is only valid on the host");
             return;
