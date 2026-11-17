@@ -1081,6 +1081,11 @@ namespace Unity.MP_FPS
                                                     weaponData.HitscanRange,
                                                     s_HitscanLayerMask))
                                                 {
+                                                    Debug.Log(
+                                                        $"[Weapon Hit] Shotgun pellet collided with " +
+                                                        $"{hit.collider.gameObject.name} " +
+                                                        $"(collider: {hit.collider.name}).");
+
                                                     if (hit.collider.gameObject.layer ==
                                                         LayerMask.NameToLayer(
                                                             "ServerPlayer"))
@@ -1221,6 +1226,11 @@ namespace Unity.MP_FPS
                                                 weaponData.HitscanRange,
                                                 s_HitscanLayerMask))
                                             {
+                                                Debug.Log(
+                                                    $"[Weapon Hit] Hitscan collided with " +
+                                                    $"{hit.collider.gameObject.name} " +
+                                                    $"(collider: {hit.collider.name}).");
+
                                                 if (hit.collider.gameObject.layer ==
                                                     LayerMask.NameToLayer(
                                                         "ServerPlayer"))

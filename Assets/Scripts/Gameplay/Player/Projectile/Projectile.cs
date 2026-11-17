@@ -295,6 +295,9 @@ namespace Unity.MP_FPS
             {
                 // We hit something! The precise impact point is in hitInfo.point
                 GameObject hitObject = hitInfo.collider.gameObject;
+                Debug.Log(
+                    $"[Weapon Hit] Projectile collided with {hitObject.name} " +
+                    $"(collider: {hitInfo.collider.name}).");
 
                 var projectileData = GhostGameObject.ReadGhostComponentData<ProjectileData>();
 
