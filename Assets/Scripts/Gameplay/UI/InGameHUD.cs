@@ -3,7 +3,6 @@ using UnityEngine.UIElements;
 using Unity.Entities;
 
 using Gameplay.Leaderboard;
-using DG.Tweening;
 
 namespace Unity.MP_FPS
 {
