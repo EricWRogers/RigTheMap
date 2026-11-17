@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gameplay.Leaderboard;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;

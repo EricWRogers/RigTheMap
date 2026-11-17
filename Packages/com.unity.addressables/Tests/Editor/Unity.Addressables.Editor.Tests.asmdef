@@ -1,0 +1,64 @@
+{
+    "name": "Unity.Addressables.Editor.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Unity.AutoGroupGenerator.Editor",
+        "Unity.Addressables.Editor",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.ScriptableBuildPipeline.Editor",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner",
+        "Unity.Addressables.Runtime.Tests",
+        "Unity.Services.Ccd.Management",
+        "Unity.Services.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Moq.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[2.0.0,4.0.0)",
+            "define": "ENABLE_CCD"
+        },
+        {
+            "name": "com.unity.profiling.core",
+            "expression": "[1.0.2,3.0.0)",
+            "define": "ENABLE_ADDRESSABLE_PROFILER"
+        },
+        {
+            "name": "nuget.moq",
+            "expression": "2.0.0",
+            "define": "ENABLE_MOQ"
+        },
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[3.0.0,4.0.0)",
+            "define": "CCD_3_OR_NEWER"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.6.0b1",
+            "define": "ENABLE_CONTENT_DIRECTORIES"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.7.0b1",
+            "define": "ENABLE_BUILD_HISTORY_EXTERNAL_BUILDS"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -59,6 +59,7 @@ namespace Unity.MP_FPS
             {
                 m_Settings = settings;
                 m_ProfilingSampler = new ProfilingSampler("DepthNormals_Custom");
+                ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
 
                 RenderQueueRange renderQueueRange = settings.renderQueueType switch
                 {
@@ -109,6 +110,11 @@ namespace Unity.MP_FPS
                 TextureHandle normalsTexture = resourceData.cameraNormalsTexture;
                 TextureHandle renderingLayersTexture = resourceData.renderingLayersTexture;
 
+                if (!depthTexture.IsValid() ||
+                    !UnityEngine.Experimental.Rendering.GraphicsFormatUtility.IsDepthFormat(
+                        depthTexture.GetDescriptor(renderGraph).format))
+                    return;
+
                 if (!normalsTexture.IsValid())
                 {
                     var descriptor = cameraData.cameraTargetDescriptor;
@@ -118,18 +124,6 @@ namespace Unity.MP_FPS
 
                     normalsTexture = UniversalRenderer.CreateRenderGraphTexture(
                         renderGraph, descriptor, DepthNormalOnlyPass.k_CameraNormalsTextureName, false);
-                }
-
-                if (!depthTexture.IsValid())
-                {
-                    var descriptor = cameraData.cameraTargetDescriptor;
-                    descriptor.msaaSamples = 1;
-                    descriptor.depthBufferBits = 32;
-                    descriptor.colorFormat = RenderTextureFormat.Depth;
-                    descriptor.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.None;
-
-                    depthTexture = UniversalRenderer.CreateRenderGraphTexture(
-                        renderGraph, descriptor, "_CameraDepthTexture", false);
                 }
 
                 if (m_Settings.enableRenderingLayers && !renderingLayersTexture.IsValid())

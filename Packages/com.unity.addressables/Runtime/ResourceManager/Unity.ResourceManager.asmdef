@@ -1,0 +1,27 @@
+{
+    "name": "Unity.ResourceManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b46779583a009f04ba9f5f31d0e7e6ac"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[2.0.0,4.0.0)",
+            "define": "ENABLE_CCD"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.6.0b1",
+            "define": "ENABLE_CONTENT_DIRECTORIES"
+        }
+    ],
+    "noEngineReferences": false
+}

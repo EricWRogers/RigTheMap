@@ -1,0 +1,82 @@
+# Network Profiler tool
+
+Use the Netcode for Entities Profiler to view detailed information about the network performance and behavior of your project.
+
+The Profiler captures and visualizes networking data to help identify sources of high bandwidth consumption, analyze the cost of synchronizing [ghosts](../ghosts.md), and inspect data for client-side [prediction](../prediction.md) and [interpolation](../interpolation.md).
+
+There are two modules for the [Unity Profiler](https://docs.unity3d.com/Manual/Profiler.html), one for the client world and one for the server world, which you can use to analyze performance from different perspectives.
+
+## Requirements
+
+To use the client and server Profiler modules, your project must meet the following requirements:
+
+* Unity version: Unity 6.0 or newer
+* Netcode for Entities: `com.unity.netcode` package version 1.12.0 or newer
+
+## Usage
+
+You can access the Profiler modules from the Unity Profiler window (**Window** > **Analysis** > **Profiler**) or from the multiplayer menu (**Window** > **Multiplayer** > **Network Profiler**). The **Client World** and **Server World** modules can be toggled from the **Profiler Modules** dropdown menu and are not enabled by default. Press the **Record** button to begin capturing data during a play session.
+
+The Netcode Profiler data is organized into three tabs:
+
+* [**Frame Overview** tab](#frame-overview-tab)
+* [**Snapshot Overview** tab](#snapshot-overview-tab)
+* [**Prediction and Interpolation** tab](#prediction-and-interpolation-tab)
+
+### Frame Overview tab
+
+The **Frame Overview** tab provides a high-level summary of all network activity for the selected frame. Use this tab to get an initial overview of [snapshot](../ghost-snapshots.md#snapshots) and [command](../command-stream.md) data, and to identify frames with high bandwidth usage
+
+Key metrics include total bandwidth usage, packet counts, and number of instances.
+
+>[!NOTE]
+> Not every frame will contain snapshot data depending on the network tick rate, the application’s frame rate, and the individual send rates of your ghosts.
+> If the network update rate is lower than the frame rate then it's expected behavior to see empty frames in the Netcode for Entities Profiler.
+
+### Snapshot Overview tab
+
+The **Snapshot Overview** tab provides a detailed breakdown of the data contained within each network snapshot. It features a tree view that lists all synchronized ghost types and their components.
+
+For each item, the following metrics are available:
+
+* **Size:** The total data size for this item in the snapshot.
+* **% of snapshot:** Indicates the relative data size of a selected item compared to the total size of the entire snapshot for that frame.
+* **Instance Count:** The number of instances of this ghost type currently being synchronized.
+* **Compression Efficiency:** A measure of how effectively the data was compressed, where higher is generally better. You can increase your efficiency using different compression options. Refer to the [Data Compression](../optimization/compression.md) page for more information. New spawns may appear to have lower compression efficiency to start with, because they don't have a baseline to delta compress against. Negative compression efficiency is possible, but unlikely in most scenarios. Refer to the [best practices section](#best-practices) for more information if you encounter it.
+* **Avg size / instance:** The average size of a single instance for a given ghost type or ghost component type.
+
+You can use this tab to identify the ghost types and components that contribute most to network bandwidth usage.
+
+#### Overhead
+
+The **Overhead** item in the tree view represents the metadata that Netcode for Entities requires to manage and synchronize the snapshot data. This data isn't part of any user-defined component but is used internally to identify and synchronize ghosts.
+
+Overhead is displayed at two levels: a global overhead for the entire tick, and a per-ghost type overhead. While this display can be toggled in the Profiler settings, the overhead is a fundamental and unavoidable part of the snapshot's data size. Refer to the [overhead section](#per-ghost-overhead) for more information.
+
+### Prediction and Interpolation tab
+
+The **Prediction and Interpolation** tab's data is only available for the **Client World** module. It's a specialized view for debugging entities that use client-side prediction and interpolation. You can use it to diagnose issues related to character smoothness and input responsiveness by visualizing prediction errors.
+
+## Best practices
+
+* General workflow: Use the **Frame Overview** tab and the graph counters to find frames with high bandwidth usage. After identifying a frame of interest, switch to the **Snapshot Overview** tab to investigate the specific ghosts and components that contributed to the data usage in that frame.
+* For optimization: In the **Snapshot Overview**, check the **Size** column and the **% of snapshot column** to identify the ghost types that contribute most to your bandwidth. Focus [optimization](../optimizations.md) efforts on these high-cost items.
+* Testing network environments: For the most accurate data, use the [PlayMode Tool](playmode-tool.md) window to run your application under representative network conditions, such as a client-hosted server with multiple clients and simulated latency.
+* Negative compression efficiency: This can rarely happen when there are extreme value changes with no quantization. A new spawn with an initial value of `Int32.MaxValue`, for example, can't be quantized (because it's an int) and doesn't take advantage of delta compression (because the baseline is 0). In this case, the compression process has overhead and adds a few bits to the sent value, sending 38 bits instead of 32, producing a negative compression efficiency. If this happens too often, consider using a different syncing mechanism for those values.
+
+## Per ghost overhead
+Snapshot data contains a ghost's state information, such as a character's health and position, but also contains metadata used by Netcode for Entities, which is referred to as overhead. Overhead can vary in size and you can influence how much of it is used.
+
+* Ghost data is serialized per chunk and for each chunk a common set of information (shared among all entities) is serialized first. Ensure that chunks are as full as possible to improve the ratio of overhead to data.
+* A few bytes of overhead are added during the compression of baseline information. Netcode for Entities then serializes each ghost in chunk order with its ghost ID, spawn tick (if a new spawn), data size, buffer data size, change masks, enableable masks, and then ghost data. All of these are compressed, but can still take a few bytes per ghost. Using fewer ghosts with more replicated components (rather than many small ghosts) can help reduce overhead size.
+* High overhead with few changes to component data often means you should investigate your [ghosts’ optimization mode](../optimization/optimize-ghosts.md#optimization-mode). When ghosts use the `dynamic` optimization mode, their baseline, ghost ID, change masks, and other metadata are still sent even if there’s no data changes for that ghost. Changing this to `static` skips the ghost entirely if there are no changes.
+
+## Per snapshot overhead
+In addition to sending ghost data, Netcode for Entities includes various other operations, such as spawns, despawns, prefab list syncing, and eventual consistency protocols information (like sequence IDs), as part of the snapshot data. These are included in the snapshot overhead.
+
+## Untracked overhead
+The Netcode for Entities Profiler doesn’t track bytes added to the overhead by [Unity Transport](https://docs.unity3d.com/Packages/com.unity.transport@latest/index.html) protocols. This is usually a small amount and varies depending on the [pipeline](https://docs.unity3d.com/Packages/com.unity.transport@latest?subfolder=/manual/pipelines-usage.html) in use. If you notice discrepancies between the Netcode for Entities Profiler and other packet inspection tools, this is likely why.
+
+## Additional resources
+
+* [Unity Profiler documentation](https://docs.unity3d.com/Manual/Profiler.html)

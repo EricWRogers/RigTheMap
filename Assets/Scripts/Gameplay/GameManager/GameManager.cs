@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Unity.Entities;
 using Unity.GhostBridge;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -1,6 +1,7 @@
 using System.Globalization;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
+using Unity.Netcode.NetcodeTime;
 using UnityEngine;
 
 [UpdateInGroup(typeof(GhostInputSystemGroup)), UpdateAfter(typeof(ClientInputReaderSystem))]

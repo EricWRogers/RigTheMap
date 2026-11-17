@@ -8,16 +8,16 @@ using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.NetCode;
+using Unity.Netcode;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Jobs;
 using Hash128 = Unity.Entities.Hash128;
 using Object = UnityEngine.Object;
 
-public class GhostGameObjectLink : ICleanupComponentData
+public struct GhostGameObjectLink : ICleanupComponentData
 {
-    public GhostGameObject LinkedInstance;
+    public UnityObjectRef<GhostGameObject> LinkedInstance;
 }
 
 // added to a ghost when it's activation is deferred until conditions are met
@@ -102,8 +102,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
         var query = GetEntityQuery(typeof(GhostGameObjectLink));
         foreach (var entity in query.ToEntityArray(Allocator.Temp))
         {
-            var ghostLink = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-            ghostLink.LinkedInstance = null;
+            var ghostLink = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+            ghostLink.LinkedInstance = default;
             EntityManager.SetComponentData(entity, ghostLink);
         }
 
@@ -280,8 +280,8 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
             foreach (var entity in deferredGhostsQuery.ToEntityArray(Allocator.Temp))
             {
                 var ghostGuid = SystemAPI.GetComponent<GhostGameObjectGuid>(entity);
-                var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
-                var ghostGameObject = link.LinkedInstance;
+                var link = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
+                var ghostGameObject = link.LinkedInstance.Value;
 
                 // This check is crucial. If the GameObject was destroyed by another system this frame, skip it.
                 if (ghostGameObject == null)
@@ -347,13 +347,13 @@ public partial class GhostGameObjectLifetimeSystem : ClientServerSingletonSystem
 
         foreach (var entity in parentSetupQuery.ToEntityArray(Allocator.Temp))
         {
-            var link = SystemAPI.ManagedAPI.GetComponent<GhostGameObjectLink>(entity);
+            var link = SystemAPI.GetComponent<GhostGameObjectLink>(entity);
 
             // This robust check prevents the MissingReferenceException.
             // We check both the C# wrapper and the underlying Unity GameObject.
             if (link.LinkedInstance != null && link.LinkedInstance.gameObject != null)
             {
-                link.LinkedInstance.UpdateParentReference();
+                link.LinkedInstance.Value.UpdateParentReference();
             }
             else
             {

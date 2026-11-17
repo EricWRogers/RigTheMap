@@ -1,0 +1,44 @@
+{
+    "name": "Unity.Addressables.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.ScriptableBuildPipeline.Editor",
+        "Unity.ScriptableBuildPipeline",
+        "Unity.Services.Core",
+        "Unity.Services.Ccd.Management"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[2.0.0,4.0.0)",
+            "define": "ENABLE_CCD"
+        },
+        {
+            "name": "com.unity.services.ccd.management",
+            "expression": "[3.0.0,4.0.0)",
+            "define": "CCD_REQUEST_LOGGING"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.6.0b1",
+            "define": "ENABLE_CONTENT_DIRECTORIES"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.7.0b1",
+            "define": "ENABLE_BUILD_HISTORY_EXTERNAL_BUILDS"
+        }
+    ],
+    "noEngineReferences": false
+}

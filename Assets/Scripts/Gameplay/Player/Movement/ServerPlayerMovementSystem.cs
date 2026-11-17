@@ -2,15 +2,16 @@ using Gameplay.Leaderboard;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
+using Unity.Netcode;
+using Unity.Netcode.NetcodeTime;
 using Unity.Transforms;
 using UnityEngine;
 
 namespace Unity.MP_FPS
 {
-    public class PlayerControllerLink : IComponentData
+    public struct PlayerControllerLink : IComponentData
     {
-        public FirstPersonController Controller;
+        public UnityObjectRef<FirstPersonController> Controller;
     }
 
     struct ProjectileSpawnData
