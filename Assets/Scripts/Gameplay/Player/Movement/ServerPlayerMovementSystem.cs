@@ -525,8 +525,8 @@ namespace Unity.MP_FPS
             var unityFrameCount =
                 UnityEngine.Time.frameCount;
 
-            var logPredictionWarnings = true;
-                //PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
+            var logPredictionWarnings = //true;
+                PlayerPredictionSystem.CheckForPredictionErrors.IsEnabled;
 
             var clientCommandInputBufferLookup =
                 SystemAPI.GetBufferLookup<ClientCommandInput>(true);
@@ -1756,6 +1756,8 @@ namespace Unity.MP_FPS
                         predictedPlayer.ValueRO.AccumulatedMovement,
                         deltaTime,
                         performPhysicsCheck: true);
+
+                    Debug.LogWarning($"Player {ghostOwnerLookup[entity].NetworkId} ; {predictedPlayer.ValueRO.ControllerState.CurrentPosition}");
                 }
                 else
                 {
