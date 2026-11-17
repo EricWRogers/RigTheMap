@@ -315,6 +315,15 @@ namespace Unity.MP_FPS
                     if (GhostGameObject.TryFindGhostGameObject(hitObject, out var hitGhostObject) &&
                         playerGhostLookup.HasComponent(hitGhostObject.LinkedEntity))
                     {
+                        var targetPredictedPlayer =
+                            playerGhostLookup.GetRefRO(hitGhostObject.LinkedEntity);
+
+                        Debug.Log(
+                            $"[Weapon Hit Debug] target={hitInfo.collider.name} " +
+                            $"colliderPos={hitInfo.collider.transform.position} " +
+                            $"ghostPos={hitGhostObject.transform.position} " +
+                            $"statePos={targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition}");
+
                         var hitPlayerOwner = ghostOwnerLookup[hitGhostObject.LinkedEntity];
                         if (hitPlayerOwner.NetworkId == projectileData.OwnerNetworkId)
                         {

@@ -1102,6 +1102,12 @@ namespace Unity.MP_FPS
                                                             var targetPredictedPlayer =
                                                                 playerGhostLookup.GetRefRW(targetEntity);
 
+                                                            Debug.Log(
+                                                                $"[Weapon Hit Debug] target={hit.collider.name} " +
+                                                                $"colliderPos={hit.collider.transform.position} " +
+                                                                $"ghostPos={hitGhostObject.transform.position} " +
+                                                                $"statePos={targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition}");
+
                                                             var targetNetworkId =
                                                                 ghostOwnerLookup[targetEntity].NetworkId;
 
@@ -1246,6 +1252,12 @@ namespace Unity.MP_FPS
 
                                                         var targetPredictedPlayer =
                                                             playerGhostLookup.GetRefRW(targetEntity);
+
+                                                        Debug.Log(
+                                                            $"[Weapon Hit Debug] target={hit.collider.name} " +
+                                                            $"colliderPos={hit.collider.transform.position} " +
+                                                            $"ghostPos={hitGhostObject.transform.position} " +
+                                                            $"statePos={targetPredictedPlayer.ValueRO.ControllerState.CurrentPosition}");
 
                                                         var targetNetworkId =
                                                             ghostOwnerLookup[targetEntity].NetworkId;
