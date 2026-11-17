@@ -623,12 +623,12 @@ public class FirstPersonController : MonoBehaviour
 
 
             bool isClientOwned = m_PlayerGhost.Role == MultiplayerRole.ClientOwned;
-            if (isClientOwned && m_Animator_1P != null)
-            {
-                var eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
-                if(eventHandler != null)
-                    eventHandler.onFootDown = true;
-            }
+            // if (isClientOwned && m_Animator_1P != null)
+            // {
+            //     var eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
+            //     if(eventHandler != null)
+            //         eventHandler.onFootDown = true;
+            // }
         }
         else if (!isGrounded && state.MovementType == MovementType.Standing)
         {
@@ -1111,34 +1111,34 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleFirstPersonFootstepSFX(ControllerState state)
     {
-        if (state.MovementType == MovementType.Standing && m_Controller != null && m_Controller.enabled && gameObject.activeInHierarchy)
-        {
-            bool isClientOwned = (m_PlayerGhost.Role == MultiplayerRole.ClientOwned);
-            if (isClientOwned)
-            {
-                if (transform.position.x == state.CurrentPosition.x && transform.position.z == state.CurrentPosition.z)
-                {
-                    footstepTriggerTimer = 0;
-                }
-                else
-                {
-                    if (footstepTriggerTimer == 0)
-                    {
-                        footstepTriggerTimer = Time.time;  // This is called multiple times per update. So I can't use Time.delta
-                        footstepStartTimer = footstepTriggerTimer;
-                    }
-                    footstepTriggerTimer = Time.time;
+        // if (state.MovementType == MovementType.Standing && m_Controller != null && m_Controller.enabled && gameObject.activeInHierarchy)
+        // {
+        //     bool isClientOwned = (m_PlayerGhost.Role == MultiplayerRole.ClientOwned);
+        //     if (isClientOwned)
+        //     {
+        //         if (transform.position.x == state.CurrentPosition.x && transform.position.z == state.CurrentPosition.z)
+        //         {
+        //             footstepTriggerTimer = 0;
+        //         }
+        //         else
+        //         {
+        //             if (footstepTriggerTimer == 0)
+        //             {
+        //                 footstepTriggerTimer = Time.time;  // This is called multiple times per update. So I can't use Time.delta
+        //                 footstepStartTimer = footstepTriggerTimer;
+        //             }
+        //             footstepTriggerTimer = Time.time;
 
-                    float t = footstepTriggerTimer - footstepStartTimer;
-                    if (t >= 0.5f)
-                    {
-                        footstepStartTimer += 0.5f;
-                        Unity.MP_FPS.EventHandler eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
-                        eventHandler.onFootDown = true;
-                    }
-                }
-            }
-        }
+        //             float t = footstepTriggerTimer - footstepStartTimer;
+        //             if (t >= 0.5f)
+        //             {
+        //                 footstepStartTimer += 0.5f;
+        //                 Unity.MP_FPS.EventHandler eventHandler = m_Animator_1P.GetComponent<Unity.MP_FPS.EventHandler>();
+        //                 eventHandler.onFootDown = true;
+        //             }
+        //         }
+        //     }
+        // }
     }
 
 
