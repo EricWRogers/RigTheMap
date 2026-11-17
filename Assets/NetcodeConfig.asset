@@ -27,7 +27,7 @@ MonoBehaviour:
     m_ClampPartialTicksThreshold: 5
     HandshakeApprovalTimeoutMS: 5000
   ClientTickRate:
-    InterpolationTimeNetTicks: 2
+    InterpolationTimeNetTicks: 3
     InterpolationTimeMS: 0
     MaxExtrapolationTimeSimTicks: 20
     ForcedInputLatencyTicks: 0
