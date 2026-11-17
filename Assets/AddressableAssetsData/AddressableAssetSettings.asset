@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: AddressableAssetSettings
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetSettings
   m_DefaultGroup: 92b6b833b5f846f45bbe32bd85d5ee8d
-  m_currentHash:
-    serializedVersion: 2
-    Hash: 114d37bdcd0ddcb2273fbd5bbae31015
+  m_ExtractTypeTreeData: 0
+  m_DisableWriteTypeTree: 0
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0

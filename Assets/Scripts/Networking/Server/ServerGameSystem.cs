@@ -406,6 +406,7 @@ namespace Unity.MP_FPS
 
             if (lives > 0 && FindSpawnPoint(ref state, teamId, out var spawnPoint))
             {
+                Debug.Log($"[Spawn Position] Team={teamId}, " + $"NetworkId={ownerNetworkId.Value}, " + $"Position={spawnPoint.Position}");
                 ecb.SetComponent(playerEntity, new LocalTransform { Position = spawnPoint.Position, Rotation = spawnPoint.Rotation, Scale = 1.0f });
             }
             else if (lives > 0) // Spawn at origin if no spawnPointsFound
@@ -507,6 +508,18 @@ namespace Unity.MP_FPS
                     { // I don't think this works right now
                         joinedClient.lives--;
                         AddDeathToLeaderboard(networkId);
+
+                        // notify clients when a player loses final life
+                        if (joinedClient.lives <=0)
+                        {
+                            var rpcEntity = ecb.CreateEntity();
+                            ecb.AddComponent(rpcEntity, new PlayerEliminatedRpc
+                            {
+                                NetworkId = networkId
+                            });
+                            ecb.AddComponent(rpcEntity, new SendRpcCommandRequest());
+                            Debug.Log($"[Spectator] Player {networkId} has been eliminated from the game.");
+                        }
                     }
                     else
                         joinedClient.lives = GameManager.PlayerLives;

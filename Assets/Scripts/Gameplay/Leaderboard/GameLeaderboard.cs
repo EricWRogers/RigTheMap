@@ -25,6 +25,7 @@ namespace Gameplay.Leaderboard
         public static LeaderboardManager Instance { get; private set; }
         public static LeaderboardManager ServerInstance { get; private set; }
         public static event System.Action<bool> BuildModeChanged;
+        public static event System.Action<int> PlayerELiminated;
         [SerializeField] private SoundDef m_MatchVictorySfx; 
 
         public enum RoundPhase
@@ -198,7 +199,9 @@ namespace Gameplay.Leaderboard
 
         public void CheckForWinningTeam()
         {
-            if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting || roundSkipped)
+           
+            Debug.Log($"[Round Check] Role = {Role},"+ $"Phase= {_roundPhase},"+ $"RoundSkipped={roundSkipped}");
+            if (Role != MultiplayerRole.Server || _roundPhase != RoundPhase.Fighting)
                 return;
 
             if (GhostGameObject == null || !GhostGameObject.IsGhostLinked() || !GhostGameObject.World.IsCreated)
@@ -240,6 +243,8 @@ namespace Gameplay.Leaderboard
                 return;
 
             LastWinningTeamId = winningTeamId;
+
+            Debug.Log($"[Round Debug] WinRound triggered" + $"WinningTeam = {winningTeamId},"+ $"CurrentRound = {_currentRound}, " + $"CurrentPhase={_roundPhase}");
 
             if (!_roundWins.ContainsKey(winningTeamId))
             {
@@ -654,6 +659,12 @@ namespace Gameplay.Leaderboard
                 //send a message to the action feed that the player bought an itme.
                 Debug.Log($"[Client] Player {purchaseRpc.NetworkId} purchased build item {purchaseRpc.BuildItemId} for {purchaseRpc.Cost} build points.");
             }
+
+            while (GhostGameObject.ConsumeRPC(out PlayerEliminatedRpc eliminatedRpc))
+            {
+                Debug.Log($"[Spectator] Client recieved elimintation message {eliminatedRpc.NetworkId}");
+                PlayerELiminated?.Invoke(eliminatedRpc.NetworkId);
+            }
         }
 
         public void ApplyRoundPhaseChangedRpc(RoundPhaseChangedRpc phaseRpc)
@@ -719,6 +730,11 @@ namespace Gameplay.Leaderboard
         public int CurrentRound;
         public float BuildTimer;
         public int WinningTeamId;
+    }
+
+    public struct PlayerEliminatedRpc : IRpcCommand
+    {
+        public int NetworkId;
     }
 
     [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
