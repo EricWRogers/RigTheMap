@@ -68,6 +68,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
+    - _Clamp: 0.9
     - _Cull: 2
     - _Cutout_Size: 0.1
     - _DstBlend: 10

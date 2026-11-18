@@ -52,6 +52,21 @@ MonoBehaviour:
         w: 0
   PlacementGhostPrefabs:
   - <GhostPrefab>k__BackingField:
+      m_AssetGUID: 250c4879b1be34d43a9780c67da32ff7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    <AssetName>k__BackingField: Jump-Pad
+    <RotatesToSurface>k__BackingField: 0
+    <FixedPlacementEuler>k__BackingField: {x: 3.3332213e-12, y: 0, z: 0.60588926}
+    m_GhostGuid:
+      Value:
+        x: 2542059602
+        y: 1296296731
+        z: 1812494755
+        w: 2146581207
+  - <GhostPrefab>k__BackingField:
       m_AssetGUID: 319fc96a6ab465a4c91a2bf6e3eb93e7
       m_SubObjectName: 
       m_SubObjectType: 
@@ -96,21 +111,6 @@ MonoBehaviour:
         y: 1285046666
         z: 2229283465
         w: 3790268945
-  - <GhostPrefab>k__BackingField:
-      m_AssetGUID: 250c4879b1be34d43a9780c67da32ff7
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
-    <AssetName>k__BackingField: Jump-Pad
-    <RotatesToSurface>k__BackingField: 0
-    <FixedPlacementEuler>k__BackingField: {x: 3.3332213e-12, y: 0, z: 0.60588926}
-    m_GhostGuid:
-      Value:
-        x: 2542059602
-        y: 1296296731
-        z: 1812494755
-        w: 2146581207
   - <GhostPrefab>k__BackingField:
       m_AssetGUID: ed31529030d37904b98094f985aea96e
       m_SubObjectName: 
