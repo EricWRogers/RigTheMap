@@ -60,6 +60,7 @@ namespace Unity.MP_FPS.UI
         private void OnBuildModeChanged(bool isBuildMode)
         {
             m_ShowBuildModeMessage = isBuildMode;
+            Debug.Log($"[Spectator] BuildModeChanged received: {isBuildMode}, Spectating: {m_IsSpectating}");
             if (isBuildMode)
             {
                 m_IsSpectating = false;
@@ -70,6 +71,11 @@ namespace Unity.MP_FPS.UI
         
         private void OnPlayerEliminated(int eliminatedNetworkId)
         {
+            if (LeaderboardManager.Instance != null && LeaderboardManager.Instance.CurrentPhase != LeaderboardManager.RoundPhase.Fighting)
+            {
+                Debug.Log("[Spectator] Ignoiring elimination outside fighting");
+                return;
+            }
             if (m_ClientWorld == null || !m_ClientWorld.IsCreated)
                 return;
 
@@ -82,7 +88,7 @@ namespace Unity.MP_FPS.UI
             if (eliminatedNetworkId != localNetworkId)
                 return;
             
-            Debug.Log("[Spectator] Local Player eliminated");
+            Debug.Log("[Spectator] Enabling spectator mode! Frame: {Time.frameCount}");
             MoveCameraToSpawnPoint();
             m_IsSpectating = true;
             //swithc to spectator
