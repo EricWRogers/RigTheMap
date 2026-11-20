@@ -237,6 +237,7 @@ public class FirstPersonController : MonoBehaviour
 
 
     private CharacterController m_Controller;
+    private CollisionFlags m_LastMoveCollisionFlags;
     public CharacterController CharacterController => m_Controller;
 
     private PlayerGhost m_PlayerGhost;
@@ -436,10 +437,10 @@ public class FirstPersonController : MonoBehaviour
         }
         return move;
     }
-    private bool ShouldUpdateGround(MovementType movementType)
+    private bool ShouldUpdateGround(in ControllerState state)
     {
         
-        return movementType != MovementType.Jumping;
+        return state.MovementType != MovementType.Jumping || state.isBounce;
         
     }
 
@@ -457,7 +458,7 @@ public class FirstPersonController : MonoBehaviour
     private bool UpdateGround(in ControllerState state, in ControllerConsts consts, float deltaTime,
         out GroundCollisionVariables groundCollision)
     {
-        if (ShouldUpdateGround(state.MovementType))
+        if (ShouldUpdateGround(state))
         {
             var currentPos = GetGroundRaycastOrigin(state, m_Controller);
             // set sphere position, with offset
@@ -597,7 +598,8 @@ public class FirstPersonController : MonoBehaviour
         #endif
 
         bool wasAirborne = state.MovementType != MovementType.Standing;
-        bool isLanded = isGrounded && wasAirborne && state.JumpFallSpeed <= 0f;
+        bool hasLandingContact = state.isBounce ? (m_LastMoveCollisionFlags & CollisionFlags.Below) != 0 : isGrounded;
+        bool isLanded = hasLandingContact && wasAirborne && state.JumpFallSpeed <= 0f;
 
         bool landedFromBounce = isLanded && state.isBounce;
 
@@ -606,8 +608,9 @@ public class FirstPersonController : MonoBehaviour
         bool shouldBounce = isGrounded && state.BounceCooldown <= 0f && surfaceType == GroundSurfaceType.Bounce && !state.isBounce;
 
         if (isLanded)
-        {
-            state.JumpTimeoutDelta = consts.LandingTimeout;
+        {   
+            state.IsGrounded = true;
+            state.JumpTimeoutDelta = consts.JumpTimeout;
             state.LandingTimeRemaining = consts.LandingTimeout;
             state.Land = true;
             state.LandTriggered = true;
@@ -674,6 +677,7 @@ public class FirstPersonController : MonoBehaviour
             state.GroundNormal = k_UpVector;
             GroundSurfaceCollider = null;
         }
+        m_LastMoveCollisionFlags = CollisionFlags.None;
     }
     public void ApplyInterpolatedClientState(ref ControllerState state,
         in ControllerConsts consts, in LocalTransform localTransform, float deltaTime, bool applyAnimation = false)
@@ -1050,7 +1054,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void ApplyMove(ref ControllerState state, in ControllerConsts consts, in float3 accumulatedMovement,
         float deltaTime)
+
     {
+        m_LastMoveCollisionFlags = CollisionFlags.None;
         var posDelta = (Vector3)state.CurrentPosition - transform.position;
         if (posDelta.sqrMagnitude > 0f)
         {
@@ -1070,7 +1076,7 @@ public class FirstPersonController : MonoBehaviour
             if (m_Controller != null && m_Controller.enabled && gameObject.activeInHierarchy)
             {
                 // just apply our move as normal
-                m_Controller.Move(movementToApply);
+                m_LastMoveCollisionFlags = m_Controller.Move(movementToApply);
                 Physics.SyncTransforms();
             }
         }
@@ -1186,7 +1192,12 @@ public class FirstPersonController : MonoBehaviour
                     state.JumpTimeoutDelta = math.max(consts.JumpTimeout, state.JumpTimeoutDelta);
 
                     // fall timeout
-                    if (state.FallTimeoutDelta < consts.FallTimeout)
+                    if (state.isBounce)
+                    {
+                        state.FallTimeoutDelta = 0f;
+                        state.Fall = false;
+                    }
+                    else if (state.FallTimeoutDelta < consts.FallTimeout)
                     {
                         state.FallTimeoutDelta += deltaTime;
                     }
@@ -1197,7 +1208,7 @@ public class FirstPersonController : MonoBehaviour
 
                     AccumulateGravity(ref state, in consts, deltaTime);
 
-                    var newMovementState = state.JumpFallSpeed >= 0f ? MovementType.Jumping : MovementType.Falling;
+                    var newMovementState = state.isBounce || state.JumpFallSpeed >= 0f ? MovementType.Jumping : MovementType.Falling;
                     SetMovementType(ref state, newMovementState);
                 }
                 break;
