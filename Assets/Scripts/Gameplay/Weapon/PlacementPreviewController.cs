@@ -180,12 +180,6 @@ public class PlacementPreviewController : MonoBehaviour
                 Vector3 position = hit.point + hit.normal * currentWeaponData.PlacementOffset;
                 Quaternion surfaceRotation = currentWeaponData.PlacementGhostPrefabs[selectedIndex]
                     .GetPlacementRotation(hit.normal, currentRotationDegrees);
-                // if (gameObject.CompareTag("VW"))
-                // {
-                //     Quaternion VWRotation = surfaceRotation * Quaternion.Euler(0f, currentRotationDegrees, 90f);
-                //     previewInstance.transform.SetPositionAndRotation(position, VWRotation);
-
-                // }
 
                 previewInstance.transform.SetPositionAndRotation(position, surfaceRotation);
 
